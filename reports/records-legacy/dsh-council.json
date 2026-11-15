@@ -1,0 +1,81 @@
+{
+  "schema_version": "3.2",
+  "project": {
+    "name": "dsh-council",
+    "type": "engineering",
+    "snapshot": "session-8a065ebc-ba15-4226-ba3c-24cbfa895997 archived snapshot",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "scope": {
+    "inputs": [
+      "session archive seq 5144-5206",
+      "dsh-council source and README"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "Earlier read-only project review; not a clean-environment reproduction"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "Final modifications have no archived verification result",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "session seq 5206",
+          "observation": "verification invoked; archive ends without result or final conclusion"
+        }
+      ],
+      "remediation": {
+        "action": "Apply the project-specific review recommendation",
+        "acceptance": "Run the project-specific acceptance in a writable pinned environment",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [],
+  "literature_sources": [],
+  "comparisons": [],
+  "quality_metrics": {
+    "code_maintainability": "B",
+    "documentation_completeness": 0.8,
+    "test_coverage_percent": 70,
+    "reproducibility_score": "C",
+    "overall_maturity": 60
+  },
+  "milestone_tracking": [
+    {
+      "name": "Host/Client implementation",
+      "status": "completed",
+      "target_date": "2026-11-10",
+      "actual_date": "2026-11-10"
+    },
+    {
+      "name": "Final verification",
+      "status": "delayed",
+      "target_date": "2026-11-11",
+      "delay_reason": "Archive ended without result; not completed in session"
+    }
+  ],
+  "strategy_evidence": {
+    "decisions": [
+      {
+        "decision": "Use side panel instead of input box for model selection",
+        "rationale": "Side panel allows richer context display and easier state management",
+        "alternatives_considered": [
+          "Inline multi-select in input box",
+          "Modal dialog"
+        ],
+        "rejection_reasons": [
+          "Inline multi-select limited by input box height",
+          "Modal dialog interrupts workflow"
+        ]
+      }
+    ]
+  },
+  "gate": "REJECT"
+}

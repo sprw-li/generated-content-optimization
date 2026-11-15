@@ -1,0 +1,42 @@
+{
+  "schema_version": "3.2",
+  "project": {
+    "name": "evidence-locator-probe-fixed",
+    "type": "engineering",
+    "snapshot": "probe with resolve_root enabled",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "review-skill-system"
+    ],
+    "exclusions": [],
+    "readonly": true,
+    "coverage_note": "probe: same fabricated locator, but resolve_root enabled",
+    "resolve_root": "."
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "probe: locator points at a file that does not exist",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "D:/definitely/not/a/real/file.py:99999-100000",
+          "observation": "fabricated observation with no verifiable source"
+        }
+      ],
+      "remediation": {
+        "action": "probe",
+        "acceptance": "probe",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [],
+  "literature_sources": [],
+  "comparisons": [],
+  "gate": "REJECT"
+}

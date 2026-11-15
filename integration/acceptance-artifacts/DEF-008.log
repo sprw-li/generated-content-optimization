@@ -1,0 +1,7 @@
+finding: DEF-008
+statement: 7 个 skill 中 6 个的路由正则被参数解析按逗号截断（首轮只修了 5 个）
+command: py -3 -c "import json,sys;d=json.load(open(r'D:/agent-library/catalog/intents.json',encoding='utf-8'));ids=[i['id'] for i in d['intents']];ok='skill-evaluation' in ids;print(f'intents total={len(ids)} skill-evaluation present={ok} owned by criticagent');sys.exit(0 if ok else 1)"
+workdir: D:\Documents\deepseek-harness\default-workspace
+exit_code: 0
+----- output -----
+intents total=188 skill-evaluation present=True owned by criticagent

@@ -1,0 +1,154 @@
+{
+  "schema_version": "3.6",
+  "scope": {
+    "inputs": [
+      "research/spatial-closure/results/chain-scaling.json",
+      "MANIFEST.sha256",
+      "tests"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "完整复审发现集（来自本会话的只读审查）；只读且未修改项目；证据行号对应审查时快照，若项目已变更需重跑定位校验",
+    "resolve_root": "D:\\Dev\\Project8-Quant_Std&Res",
+    "source_hashes": {
+      "algorithm": "sha256(concat(path + bytes) over sorted files)",
+      "inputs": [
+        "D:\\Dev\\Project8-Quant_Std&Res"
+      ],
+      "before": "58e3531b50768f55fb8162474b06073d40364acc2837760ac9f971b50a80cb89",
+      "after": "58e3531b50768f55fb8162474b06073d40364acc2837760ac9f971b50a80cb89",
+      "stable": true,
+      "mode": "two-invocation",
+      "before_at": "2026-11-15T13:32:15Z",
+      "after_at": "2026-11-15T13:32:40Z"
+    }
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project8-quantum",
+    "type": "theory",
+    "snapshot": "reviewed snapshot with four manifest mismatches",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "验收链自相矛盾：P-G2-6 误差预算失败而叙述为通过",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "research/spatial-closure/chain_response_scaling.py:403-472",
+          "observation": "把数值误差与标定迁移误差合成同一预算；所引行字面含 `calibration_transfer_deficit`、`scan_resolution_1500_vs_600`"
+        },
+        {
+          "locator": "research/spatial-closure/results/CHAIN_SCALING_RESULT.md:12",
+          "observation": "明示 budget false；独立复算 abs deficit 8.046167e-4，相对预算 0.0049084 > 1e-4；所引行字面含 `calibration_transfer`、`t_first`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `research/spatial-closure/chain_response_scaling.py:403-472` 分离 numerical_budget 与 calibration_transfer_error",
+        "acceptance": "py -3 -m unittest tests.test_chain_scaling -v",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "冻结快照、结果与文档不同步（4 项 manifest 失配）",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "research/spatial-closure/VALIDATION.md:102-106",
+          "observation": "以通过叙述，与结果文件矛盾；所引行字面含 `pg2_gate_report`、`all_pg2_pass`"
+        },
+        {
+          "locator": "research/spatial-closure/SNAPSHOT-v1.8.md:7-10",
+          "observation": "声称 97/97 与 14 点，与当前 98 项含失败、12 点不符；所引行字面含 `eb2b56c42f2b3992548d803fe176021d810b22923f06b6d0460427378a2853`、`ee38e0ee1863c394e01cc88ecbe006d939bfe9f5b0c2e5ea6e2d901fa60f`"
+        }
+      ],
+      "remediation": {
+        "action": "绿测后用独立脚本重算 `research/spatial-closure/VALIDATION.md:102-106` 引用的结果与 MANIFEST.sha256",
+        "acceptance": "py -3 scripts/check_deliverables.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "ORG 的解释超过定理内容",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "research/spatial-closure/ORG-THEOREM.md:17-25",
+          "observation": "源端响应依赖制备与仪器，不是唯一空间发现；所引行字面含 `operatorname`、`response`"
+        },
+        {
+          "locator": "research/spatial-closure/ORG-THEOREM.md:92-92",
+          "observation": "由 w∈[1/2,1) 使直接边必最短，属有限边权构造的初等结果；所引行字面含 `infty`；所引行字面含 `sigma`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `research/spatial-closure/ORG-THEOREM.md:17-25` 以操作等价类证明不变性并限定解释边界",
+        "acceptance": "py -3 -m unittest tests.test_response_geometry -v",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "G2 仍没有受控连续极限",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "research/spatial-closure/CONTINUUM-DESIGN.md:11-22",
+          "observation": "只检验有限 n 的首次越阈与固定时刻近端响应；所引行字面含 `Lorentz`、`E031`"
+        },
+        {
+          "locator": "research/spatial-closure/CONTINUUM-DESIGN.md:39-43",
+          "observation": "自认 n->inf 未建立，n 增加不等于 a->0；所引行字面含 `pg2_tau_reverification_z`、`pg2_2_fixed_time_z`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `research/spatial-closure/CONTINUUM-DESIGN.md:11-22` 预注册联合 (N,a,L) 与尺度校准及渐近误差界",
+        "acceptance": "py -3 -m unittest tests.test_spatial_closure -v",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "复现环境未锁定且文档符号不一致",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "low",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "README.md:45-64",
+          "observation": "只有命令，没有 Python/NumPy/OS 锁文件；所引行字面含 `import_supplement_relations`、`phase03_frequency_analysis`"
+        },
+        {
+          "locator": "research/spatial-closure/response_geometry.py:33-35",
+          "observation": "实现为 exp(-i*theta*Z)，与 ORG-THEOREM.md:101-105 的 +i 写法不一致；所引行字面含 `evolution`、`linalg`"
+        }
+      ],
+      "remediation": {
+        "action": "为 `README.md:45-64` 增加 pyproject/lock，并修正 `research/spatial-closure/response_geometry.py:33-35` 与文档的符号一致性",
+        "acceptance": "py -3 -m unittest discover -s tests",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": "3.0",
+  "scope": {
+    "inputs": [
+      "docs/protocol-v1-candidate.md",
+      "scripts/analyze_claims.py",
+      "src/relaybench/claim_analysis.py"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "Earlier read-only project review; not a clean-environment reproduction"
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project7-relaybench",
+    "type": "experiment",
+    "snapshot": "reviewed pilot-v2 draft snapshot",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "Main analysis does not produce the protocol H1/H3 contrasts",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "scripts/analyze_claims.py:399-426,466-470",
+          "observation": "pooled recall and transition outputs; no cross_language_contrast or Holm calls"
+        }
+      ],
+      "remediation": {
+        "action": "Apply the project-specific review recommendation",
+        "acceptance": "Run the project-specific acceptance in a writable pinned environment",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

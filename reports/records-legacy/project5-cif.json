@@ -1,0 +1,44 @@
+{
+  "schema_version": "3.0",
+  "scope": {
+    "inputs": [
+      "cifkit/geom/standardize.py",
+      "in-memory diamond supercell probe",
+      "tests"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "Earlier read-only project review; not a clean-environment reproduction"
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project5-cif",
+    "type": "mixed",
+    "snapshot": "pre-existing dirty worktree; no clean HEAD claim",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "Arbitrary primitive multiple is incorrectly accepted as conventional",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "cifkit/geom/standardize.py:149-176",
+          "observation": "oblique diamond supercell retained instead of cubic conventional cell"
+        }
+      ],
+      "remediation": {
+        "action": "Apply the project-specific review recommendation",
+        "acceptance": "Run the project-specific acceptance in a writable pinned environment",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

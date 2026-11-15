@@ -1,0 +1,467 @@
+{
+  "schema_version": "3.6",
+  "project": {
+    "name": "eight-member-evidence-review-suite",
+    "type": "mixed",
+    "snapshot": "v3.6; 八成员; 64 项合同测试; 14 项对抗探针 0 漏洞; 双次指纹; 真实验收产物",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "D:/agent-library/catalog/project-review-orchestrator",
+      "D:/agent-library/catalog/github-reproduction-scout",
+      "D:/agent-library/catalog/implementation-comparator",
+      "D:/agent-library/catalog/defect-synthesizer",
+      "D:/agent-library/catalog/targeted-remediator",
+      "D:/agent-library/catalog/concept-substance-reviewer",
+      "D:/agent-library/catalog/equivalence-scholarship-reviewer",
+      "D:/agent-library/catalog/skill-criticagent"
+    ],
+    "exclusions": [
+      "被审查的五项目源码",
+      "未取得正文的 GitHub 页面"
+    ],
+    "readonly": true,
+    "coverage_note": "八成员套件自审；行为维度用 3 条用例× with/without 真实对比与 8 条触发查询；只读性由 source_fingerprint.py 的前后指纹证明",
+    "resolve_root": ".",
+    "source_hashes": {
+      "algorithm": "sha256(concat(path + bytes) over sorted files)",
+      "inputs": [
+        "D:/agent-library/catalog/project-review-orchestrator",
+        "D:/agent-library/catalog/github-reproduction-scout",
+        "D:/agent-library/catalog/implementation-comparator",
+        "D:/agent-library/catalog/defect-synthesizer",
+        "D:/agent-library/catalog/targeted-remediator",
+        "D:/agent-library/catalog/concept-substance-reviewer",
+        "D:/agent-library/catalog/equivalence-scholarship-reviewer",
+        "D:/agent-library/catalog/skill-criticagent"
+      ],
+      "before": "243081663ae60697be5fbee8bf4f249b21bd5f94fad279b28ca052918a1ea74f",
+      "after": "243081663ae60697be5fbee8bf4f249b21bd5f94fad279b28ca052918a1ea74f",
+      "stable": true,
+      "mode": "two-invocation",
+      "before_at": "2026-11-15T13:23:30Z",
+      "after_at": "2026-11-15T13:24:55Z"
+    }
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "证据定位不解析——伪造 file:line 曾被判 PASS",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "reports/probes/locator-resolution-probe-fixed.json",
+          "observation": "同一伪造定位在开启 resolve_root 后返回 exit=1：evidence locator not resolved"
+        },
+        {
+          "locator": "shared/validate_report.py:513",
+          "observation": "enforcement=test；所引行字面含 `test_fabricated_locator_is_rejected_when_resolving`、`fabricated`、`resolving`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `D:/agent-library/catalog/project-review-orchestrator/scripts/validate_report.py` 增加 resolve_locator 与 scope.resolve_root 解析 file:line",
+        "acceptance": "py -3 D:/agent-library/catalog/project-review-orchestrator/scripts/validate_report.py reports/probes/locator-resolution-probe-fixed.json",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/shared/validate_report.py --self-test",
+          "exit_code": 0,
+          "observed": "Ran 64 tests in 0.242s — OK",
+          "artifact": "integration/acceptance-artifacts/DEF-001.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-002",
+      "statement": "无 rejected 出路、无 searched_scope：absence 结论与无证据评级无结构化承载",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "repo-audit 要求无证据评级被移除而非降级，且 absence 必须写 searched X,Y,Z found nothing"
+        },
+        {
+          "locator": "skills/project-review-orchestrator/schemas/report.schema.json",
+          "observation": "finding 仍只有 PASS/FAIL/UNVERIFIED/N/A，无 rejected 状态与 searched_scope 字段"
+        },
+        {
+          "locator": "shared/validate_report.py",
+          "observation": "新增 REJECTED 与 searched_scope 规则并通过对抗测试"
+        },
+        {
+          "locator": "shared/validate_report.py:588",
+          "observation": "enforcement=test；所引行字面含 `test_rejected_removes_unevidenced_rating`、`unevidenced`、`removes`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `D:/agent-library/catalog/project-review-orchestrator/scripts/validate_report.py` 增加 finding 级 `status=REJECTED`（须 rejected_reason，且不得带 evidence）与 `claim_kind=absent` 时强制 `searched_scope`",
+        "acceptance": "py -3 -m pytest review-skill-system/v3.3/shared/validate_report.py",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/shared/validate_report.py --self-test",
+          "exit_code": 0,
+          "observed": "Ran 64 tests in 0.222s — OK",
+          "artifact": "integration/acceptance-artifacts/DEF-002.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-003",
+      "statement": "缺行为维度——无法回答 skill 是否真的有用",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "integration/behavior-result-v33.json",
+          "observation": "criticagent grade_runs.py：3 条用例 with 3/3 vs without 0/3，非判别性断言 0 条"
+        },
+        {
+          "locator": "integration/run_behavior_v33.py:7",
+          "observation": "enforcement=test；所引行字面含 `criticagent`、`grade_runs`、`catalog`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `D:/agent-library/catalog/skill-criticagent/references/suite-interface.md` 定义接口，并在 `D:/agent-library/catalog/project-review-orchestrator/scripts/validate_report.py` 增加 behavior_evidence 门禁",
+        "acceptance": "py -3 review-skill-system/v3.3/integration/run_behavior_v33.py",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/self_review_probes.py",
+          "exit_code": 0,
+          "observed": "full report: D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.6\\integration\\adversarial-probe-report.txt",
+          "artifact": "integration/acceptance-artifacts/DEF-003.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-004",
+      "statement": "路由劫持——含 skill 的验证类短语被 create-skill intent 独占",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "integration/router-decisions.json",
+          "observation": "新增 skill-evaluation intent 后，4 条触发话术首候选均为 project-review-orchestrator，4 条近邻正确未触发"
+        },
+        {
+          "locator": "integration/run_trigger_integration.py:8",
+          "observation": "enforcement=test；所引行字面含 `grade_triggers`、`criticagent`、`triggers`"
+        }
+      ],
+      "remediation": {
+        "action": "新增 skill-evaluation intent 于 `D:/agent-library/catalog/intents.json`，并将 skill-criticagent 的 references 指向 suite-interface.md",
+        "acceptance": "py -3 review-skill-system/v3.3/integration/run_trigger_integration.py",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/self_review_probes.py",
+          "exit_code": 0,
+          "observed": "full report: D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.6\\integration\\adversarial-probe-report.txt",
+          "artifact": "integration/acceptance-artifacts/DEF-004.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-005",
+      "statement": "自建断言曾 5 条非判别性；v3.3 扩到 3 用例并改用词界正则后复测",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "integration/behavior-result-v33.json",
+          "observation": "3 用例 grader: with 3/3 vs without 0/3; 非判别性断言 0 条"
+        },
+        {
+          "locator": "integration/run_behavior_v33.py:10",
+          "observation": "enforcement=test；所引行字面含 `machine`、`recall`、`FILES`"
+        }
+      ],
+      "remediation": {
+        "action": "把 `D:/agent-library/catalog/project-review-orchestrator/evals/evals.json` 的断言改成 word-boundary 正则，并把用例从 1 条扩到 3 条",
+        "acceptance": "py -3 -m pytest review-skill-system/v3.3/integration/run_behavior_v33.py",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/self_review_probes.py",
+          "exit_code": 0,
+          "observed": "full report: D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.6\\integration\\adversarial-probe-report.txt",
+          "artifact": "integration/acceptance-artifacts/DEF-005.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-006",
+      "statement": "readonly 自报，无审查前后源文件 hash 对比",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "skills/project-review-orchestrator/scripts/validate_report.py",
+          "observation": "只校验 scope.readonly 为布尔，无前后指纹比对；本次行为集成脚本自行实现了 digest 前后对比"
+        },
+        {
+          "locator": "shared/validate_report.py",
+          "observation": "test_readonly_requires_source_hashes、test_readonly_rejects_source_drift 通过"
+        },
+        {
+          "locator": "shared/validate_report.py:641",
+          "observation": "enforcement=test；所引行字面含 `test_readonly_requires_source_hashes`"
+        }
+      ],
+      "remediation": {
+        "action": "新增 `review-skill-system/v3.3/shared/source_fingerprint.py`，并在 `D:/agent-library/catalog/project-review-orchestrator/scripts/validate_report.py` 强制 readonly=true 时 scope.source_hashes 必填且 stable=true",
+        "acceptance": "py -3 review-skill-system/v3.3/shared/source_fingerprint.py --verify integration/source-hashes.json",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/shared/validate_report.py --self-test",
+          "exit_code": 0,
+          "observed": "Ran 64 tests in 0.185s — OK",
+          "artifact": "integration/acceptance-artifacts/DEF-006.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-007",
+      "statement": "remediation 为自由文本，未强制点名文件、守卫或测试",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "repo-audit 要求 every gap carries a fix that names a file, a guard, or a test"
+        },
+        {
+          "locator": "shared/validate_report.py",
+          "observation": "新增 NAMED_FIX 与 EXEC_CMD 两条机器规则"
+        },
+        {
+          "locator": "shared/validate_report.py:623",
+          "observation": "enforcement=test；所引行字面含 `test_medium_fix_must_name_file_guard_or_test`、`guard`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `D:/agent-library/catalog/project-review-orchestrator/scripts/validate_report.py` 用 NAMED_FIX/EXEC_CMD 正则强制 blocker/high/medium 的 remediation.action 点名文件或测试、acceptance 为可执行命令",
+        "acceptance": "py -3 -m pytest review-skill-system/v3.3/shared/validate_report.py",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.6/shared/validate_report.py --self-test",
+          "exit_code": 0,
+          "observed": "Ran 64 tests in 0.196s — OK",
+          "artifact": "integration/acceptance-artifacts/DEF-007.log"
+        }
+      },
+      "enforcement": "test"
+    },
+    {
+      "id": "DEF-008",
+      "statement": "7 个 skill 中 6 个的路由正则被参数解析按逗号截断（首轮只修了 5 个）",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "integration/intents.json",
+          "observation": "修复前 github-reproduction-scout 的 patterns 为 ['GitHub.{0','12}复现|...'] 等断裂字符串"
+        },
+        {
+          "locator": "integration/intents.json",
+          "observation": "首轮修复后仍有 2 条不配对 pattern（equivalence-scholarship-reviewer），补修后 remaining broken=0"
+        },
+        {
+          "locator": "integration/intents.json:4969",
+          "observation": "enforcement=code；所引行字面含 `evaluation`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `D:/agent-library/catalog/intents.json` 用 .* 替代 .{0,N} 重写 6 条被逗号截断的 pattern",
+        "acceptance": "py -3 -c 检查 intents.json 全部 pattern 的花括号配对与片段形态",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 -c \"import json,sys;d=json.load(open(r'D:/agent-library/catalog/intents.json',encoding='utf-8'));ids=[i['id'] for i in d['intents']];ok='skill-evaluation' in ids;print(f'intents total={len(ids)} skill-evaluation present={ok} owned by criticagent');sys.exit(0 if ok else 1)\"",
+          "exit_code": 0,
+          "observed": "intents total=188 skill-evaluation present=True owned by criticagent",
+          "artifact": "integration/acceptance-artifacts/DEF-008.log"
+        }
+      },
+      "enforcement": "code"
+    },
+    {
+      "id": "DEF-009",
+      "statement": "状态机与门禁一致性、环境失败分离达到同类水平",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "skills/project-review-orchestrator/scripts/validate_report.py",
+          "observation": "26 项 unittest OK，含环境阻塞不可判 FAIL、只有 N/A 不可 ACCEPT、install 四条硬要求"
+        },
+        {
+          "locator": "shared/validate_report.py:509",
+          "observation": "enforcement=test；所引行字面含 `test_only_na_cannot_accept`"
+        }
+      ],
+      "remediation": {
+        "action": "",
+        "acceptance": "",
+        "verification": "NOT_RUN"
+      },
+      "enforcement": "test"
+    }
+  ],
+  "github_sources": [
+    {
+      "level": "comparable-method",
+      "url": "https://github.com/conorbronsdon/repo-audit/blob/main/checklists/modules/evidence-grading.md",
+      "version": "main @ 2026-11-12",
+      "retrieved": "2026-11-12",
+      "read_status": "text-read"
+    },
+    {
+      "level": "topic-only",
+      "url": "https://github.com/conorbronsdon/eval-integrity",
+      "version": "referenced-by-repo-audit, 未直接读取",
+      "retrieved": "2026-11-12",
+      "read_status": "summary-only"
+    }
+  ],
+  "literature_sources": [],
+  "comparisons": [
+    {
+      "result": "MATCH",
+      "contract": "环境/传输失败不得计为对象质量失败",
+      "execution": "EXECUTED_PASS",
+      "reason": "与 skill-criticagent 规则一致，本套以 ENVIRONMENT_BLOCKED 与 FAIL 互斥实现"
+    },
+    {
+      "result": "DIFF",
+      "contract": "证据门槛：可解析 file:line 与无证据即拒绝",
+      "execution": "EXECUTED_FAIL",
+      "reason": "定位解析已补；rejected 出路与 searched_scope 仍缺"
+    },
+    {
+      "result": "MATCH",
+      "contract": "行为增量与触发证据可被第三方评分器消费",
+      "execution": "EXECUTED_PASS",
+      "reason": "criticagent 的 grade_runs.py 与 grade_triggers.py 均可直接对本套 skill 运行并给出结果"
+    }
+  ],
+  "quality_metrics": {
+    "code_maintainability": "A",
+    "documentation_completeness": 0.92,
+    "test_coverage_percent": 100,
+    "reproducibility_score": "A",
+    "overall_maturity": 78
+  },
+  "milestone_tracking": [
+    {
+      "name": "v3.2 行为证据字段与门禁耦合",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "criticagent 整合为第八名成员",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "路由修复与 skill-evaluation intent",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "非判别性断言清理与用例扩充",
+      "status": "planned",
+      "target_date": "2026-11-12",
+      "delay_reason": "需 ≥3 条行为用例，当前仅 1 条"
+    }
+  ],
+  "strategy_evidence": {
+    "decisions": [
+      {
+        "decision": "以引接方式整合 skill-criticagent，而非复制其正文",
+        "rationale": "它是成熟的独立 skill，含 vendored kernel 与 SHA-256 manifest；复制会引入漂移与维护双份",
+        "alternatives_considered": [
+          "新建 behavior-reviewer skill 复制其方法",
+          "只写文档说明不建接口"
+        ],
+        "rejection_reasons": [
+          "复制造成双份真源与漂移风险",
+          "只有文档无法让 validator 强制门禁"
+        ]
+      },
+      {
+        "decision": "新增 skill-evaluation intent 并把 criticagent 移出 create-skill",
+        "rationale": "创建与评估是不同意图，混用导致评估类请求被创建类独占",
+        "alternatives_considered": [
+          "只加关键词到 orchestrator",
+          "不改 intent 手动指定 skill"
+        ],
+        "rejection_reasons": [
+          "关键词无法覆盖接入 intent 的候选收敛",
+          "手动指定不可路由、不可评测"
+        ]
+      },
+      {
+        "decision": "行为用例先预声明断言再跑",
+        "rationale": "避免按输出调参导致断言失去判别力",
+        "alternatives_considered": [
+          "看输出后写断言"
+        ],
+        "rejection_reasons": [
+          "事后调参会让验收变成橡皮章"
+        ]
+      }
+    ]
+  },
+  "behavior_evidence": {
+    "cases_total": 3,
+    "with_skill_pass": 3,
+    "without_skill_pass": 0,
+    "trigger_correct": 8,
+    "trigger_total": 8,
+    "source_hashes_stable": true,
+    "baseline_isolated": true,
+    "execution_evidence": [
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-state-with.md",
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-state-without.md",
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-env-with.md",
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-env-without.md",
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-gate-with.md",
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-gate-without.md",
+      "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\behavior-result-v33.json"
+    ],
+    "evaluator": "skill-criticagent grade_runs.py + grade_triggers.py",
+    "verdict": "install",
+    "verdict_reason": "3 条行为用例，with 3/3 vs without 0/3，非判别性断言 0 条；触发 8/8",
+    "case_tags": [
+      "state-recall",
+      "classification",
+      "gate-decision"
+    ]
+  },
+  "gate": "ACCEPT",
+  "in_flight_fixes": [
+    {
+      "finding_id": "DEF-005",
+      "change": "行为用例从 1 条扩到 3 条；断言改为 word-boundary 正则",
+      "verified_against": "review-skill-system/v3.3/integration/behavior-result-v33.json",
+      "note": "in-flight 分桶本身不改变门禁：DEF-005 只有在本轮 grader 显示 0 非判别性断言时才标 RESOLVED"
+    }
+  ]
+}

@@ -1,0 +1,5089 @@
+{
+  "schemaVersion": 1,
+  "note": "意图路由表：用户话术 -> intent -> 候选 skill。实体（乙醇、阿司匹林等）是 slot，不建索引。",
+  "intents": [
+    {
+      "id": "draw-chemistry",
+      "description": "把化学名、SMILES、CAS 画成结构式/反应式（快速 PNG/SVG 或精确排版的 CDXML），含聚合物重复单元",
+      "patterns": [
+        "(画|绘制|生成|导出|draw).{0,10}(结构式|结构|分子|化学式|structure|molecule)",
+        "(画|绘制|draw)\\s*(出|一个|个|张)?\\s*[A-Za-z0-9\\u4e00-\\u9fa5\\-]{2,24}",
+        "(chemdraw|chem office|cdxml|cdx)",
+        "(投稿|精确|排版|可编辑).{0,8}(结构式|结构图|图)",
+        "(聚丙烯|聚乙烯|聚苯乙烯|聚氯乙烯|聚四氟乙烯|聚乙二醇|聚合物|polymer|重复单元)"
+      ],
+      "keywords": [
+        "结构式",
+        "画分子",
+        "乙醇",
+        "苯环",
+        "chemdraw",
+        "cdx",
+        "cdxml",
+        "精确排版",
+        "投稿图",
+        "聚丙烯",
+        "聚乙烯",
+        "聚合物",
+        "重复单元",
+        "polymer"
+      ],
+      "excludes": [
+        "流程图",
+        "架构图",
+        "图表",
+        "曲线",
+        "示意图",
+        "uml",
+        "er图",
+        "logp",
+        "合成路线",
+        "柱状图",
+        "折线图",
+        "饼图",
+        "散点图",
+        "趋势图",
+        "数据图",
+        "矢量图",
+        "论文图",
+        "配图",
+        "科研图",
+        "画质|画风|画面|画笔|画布",
+        "架构|模块|依赖|项目结构|目录结构|代码结构|仓库结构"
+      ],
+      "slots": {
+        "chemical": "(?:(?:把|将)\\s*([^\\s，。；;]{2,30}?)\\s*(?:画|绘制|draw|生成|导出)|(?:画|绘制|draw|生成|导出)\\s*(?:出|一个|个|张|一下|一幅)?\\s*((?![把将])[^\\s，。；;]{2,30})|([A-Za-z0-9\\u4e00-\\u9fa5\\-]{2,30})\\s*的?\\s*(?:结构式|结构图|结构|分子式|化学式|cdxml|cdx))"
+      },
+      "skills": [
+        "chemdraw"
+      ],
+      "category": "science",
+      "examples": [
+        "帮我画出乙醇",
+        "画一个阿司匹林的结构式",
+        "draw ethanol",
+        "用 ChemDraw 画甲苯",
+        "生成一个 CDXML",
+        "把阿司匹林排成 ChemDraw 结构式",
+        "画聚丙烯",
+        "画聚乙烯",
+        "把聚丙烯画成 CDXML"
+      ]
+    },
+    {
+      "id": "molecular-property",
+      "description": "计算分子描述符、ADMET、logP、Lipinski、相似性等性质",
+      "patterns": [
+        "(logp|log p|描述符|admet|lipinski|tpsa|qsar|性质|property|descriptor|相似性)"
+      ],
+      "keywords": [
+        "logP",
+        "描述符",
+        "ADMET",
+        "Lipinski",
+        "QSAR"
+      ],
+      "excludes": [
+        "画结构",
+        "合成路线",
+        "反应机理",
+        "点群",
+        "空间群",
+        "布拉维",
+        "点阵",
+        "铁碳",
+        "渗碳体",
+        "纯金属",
+        "表面能"
+      ],
+      "slots": {
+        "chemical": "(?:帮我|请|给我)?\\s*(?:算|计算|预测|评估|查|看一下|看看)?\\s*(?:一下|下)?\\s*([A-Za-z0-9\\u4e00-\\u9fa5\\-]{2,30})\\s*的?\\s*(?:logp|log p|描述符|admet|lipinski|tpsa|qsar|性质|property|descriptor|相似性)"
+      },
+      "skills": [
+        "rdkit-screen",
+        "o4s-bio-chemoinformatics-molecular-descriptors",
+        "o4s-bio-chemoinformatics-admet-prediction"
+      ],
+      "category": "science",
+      "examples": [
+        "乙醇的 logP 是多少",
+        "算一下这个分子的 TPSA",
+        "ADMET 预测"
+      ]
+    },
+    {
+      "id": "retrosynthesis",
+      "description": "从目标分子倒推合成路线/单步逆合成",
+      "patterns": [
+        "(逆合成|retrosynth|怎么合成|如何合成|合成路线|路线规划|synthetic route)"
+      ],
+      "keywords": [
+        "逆合成",
+        "合成路线",
+        "retrosynthesis",
+        "路线"
+      ],
+      "excludes": [
+        "画结构式"
+      ],
+      "slots": {
+        "chemical": "(?:帮我|请|给我)?\\s*(?:设计|规划|做)?\\s*(?:一条|一个)?\\s*([A-Za-z0-9\\u4e00-\\u9fa5\\-]{1,30}?)\\s*(?:能|可以|要)?\\s*(?:怎么|如何|怎样)?\\s*(?:合成|制备|做出来|得到)"
+      },
+      "skills": [
+        "o4s-retrosynthesis-planning",
+        "o4s-bio-chemoinformatics-retrosynthesis",
+        "o4s-single-step-retrosynthesis"
+      ],
+      "category": "science",
+      "examples": [
+        "乙醇怎么合成",
+        "帮我规划一条逆合成路线",
+        "这个分子能怎么合成"
+      ]
+    },
+    {
+      "id": "literature-search",
+      "description": "检索论文、文献综述、查某主题的研究",
+      "patterns": [
+        "(找|搜|检索|查).{0,8}(论文|文献|paper|literature)",
+        "文献综述",
+        "综述",
+        "literature review",
+        "survey"
+      ],
+      "keywords": [
+        "论文",
+        "文献",
+        "paper",
+        "arXiv",
+        "PubMed",
+        "综述"
+      ],
+      "excludes": [
+        "引用格式",
+        "参考文献格式"
+      ],
+      "skills": [
+        "paper-search-pro",
+        "scispark",
+        "giiisp-paper-search-apis",
+        "loop-literature-search",
+        "o4s-literature-review"
+      ],
+      "category": "research",
+      "examples": [
+        "找几篇 RAG 的论文",
+        "做一份文献综述",
+        "search papers on agents"
+      ]
+    },
+    {
+      "id": "paper-writing",
+      "description": "写论文、改章节、rebuttal、投稿材料",
+      "patterns": [
+        "(写|改|润色|投稿|rebuttal).{0,10}(论文|paper|章节|abstract|introduction)",
+        "(润色|改写|修改).{0,10}(摘要|段落|章节|正文|abstract|introduction)",
+        "(摘要|段落|章节|正文).{0,10}(润色|改写|修改|精简|扩写)",
+        "学术写作",
+        "academic writing"
+      ],
+      "keywords": [
+        "论文",
+        "写作",
+        "rebuttal",
+        "投稿",
+        "abstract",
+        "润色",
+        "摘要",
+        "期刊"
+      ],
+      "excludes": [
+        "找论文",
+        "检索文献"
+      ],
+      "skills": [
+        "academic-writing",
+        "loop-scientific-writer",
+        "papercheck"
+      ],
+      "category": "research",
+      "examples": [
+        "帮我改论文的 introduction",
+        "写 rebuttal",
+        "润色这段 abstract"
+      ]
+    },
+    {
+      "id": "prepare-defense",
+      "description": "准备答辩/开题/汇报：PPT、讲稿、审阅材料",
+      "patterns": [
+        "(答辩|开题|预答辩|毕业答辩|defense)",
+        "(准备|做|写|改).{0,8}(汇报|讲稿|演示)"
+      ],
+      "keywords": [
+        "答辩",
+        "开题",
+        "汇报",
+        "讲稿",
+        "defense"
+      ],
+      "excludes": [],
+      "skills": [
+        "visual-deck-builder",
+        "scientific-humanization",
+        "academic-writing"
+      ],
+      "category": "research",
+      "examples": [
+        "我需要准备答辩",
+        "开题报告怎么做",
+        "帮我准备答辩讲稿"
+      ]
+    },
+    {
+      "id": "make-presentation",
+      "description": "制作/修改 PPT、演示文稿、幻灯片",
+      "patterns": [
+        "(做|制作|生成|改|美化).{0,8}(ppt|幻灯片|演示文稿|slides|deck)",
+        "把.*做成.*ppt"
+      ],
+      "keywords": [
+        "PPT",
+        "幻灯片",
+        "演示",
+        "slides",
+        "deck"
+      ],
+      "excludes": [
+        "答辩"
+      ],
+      "skills": [
+        "office-pptx",
+        "visual-deck-builder",
+        "ppt-visual-reconstruct"
+      ],
+      "category": "documents",
+      "examples": [
+        "把这份材料做成 PPT",
+        "改一下这套幻灯片",
+        "生成一个 deck"
+      ]
+    },
+    {
+      "id": "code-review",
+      "description": "评审代码、PR、改动影响面",
+      "patterns": [
+        "(代码评审|code review|review).{0,10}(代码|改动|pr|diff)?",
+        "评审.{0,6}(pr|代码)",
+        "(调用方|调用链|影响面|blast radius|detect-changes)"
+      ],
+      "keywords": [
+        "代码评审",
+        "review",
+        "PR",
+        "diff",
+        "调用方",
+        "调用链",
+        "影响面"
+      ],
+      "excludes": [
+        "调用方",
+        "调用链",
+        "影响面",
+        "图谱",
+        "blast radius"
+      ],
+      "skills": [
+        "eng-code-review",
+        "code-review-graph"
+      ],
+      "category": "engineering",
+      "examples": [
+        "评审这个改动的影响面",
+        "review 这个 PR",
+        "这组改动风险在哪"
+      ]
+    },
+    {
+      "id": "debug-bug",
+      "description": "诊断 bug、报错、崩溃、性能回归，要求找根因而非打补丁",
+      "patterns": [
+        "(bug|报错|崩溃|不工作|失败|异常|debug|诊断|排查|修复|查原因|找原因|定位原因|定位问题|根因)",
+        "为什么.{0,10}(失败|报错|崩溃|挂了|不通|超时)"
+      ],
+      "keywords": [
+        "bug",
+        "报错",
+        "崩溃",
+        "debug",
+        "诊断",
+        "查原因",
+        "根因",
+        "排查"
+      ],
+      "excludes": [],
+      "skills": [
+        "eng-diagnosing-bugs",
+        "eng-improve-codebase-architecture",
+        "eng-implement-spec"
+      ],
+      "category": "engineering",
+      "examples": [
+        "这个报错怎么修",
+        "为什么程序崩溃",
+        "诊断这个 bug"
+      ]
+    },
+    {
+      "id": "data-analysis",
+      "description": "数据分析、统计检验、实验设计",
+      "patterns": [
+        "(数据分析|统计分析|统计检验|显著性|方差分析|t检验|回归|dataset|data analysis)"
+      ],
+      "keywords": [
+        "数据分析",
+        "统计",
+        "t检验",
+        "ANOVA",
+        "回归"
+      ],
+      "excludes": [
+        "画图",
+        "做PPT"
+      ],
+      "skills": [
+        "loop-data-analysis",
+        "statistical-analysis",
+        "experiment-design",
+        "o4s-audit-dataset"
+      ],
+      "category": "data",
+      "examples": [
+        "分析这份数据",
+        "做一个探索性分析",
+        "clean this CSV"
+      ]
+    },
+    {
+      "id": "make-figure",
+      "description": "画科研图、论文配图、多面板 figure",
+      "patterns": [
+        "(科研图|论文配图|figure|图表).{0,8}(画|做|生成|设计)?",
+        "(画|做|生成).{0,8}(科研图|论文图|figure)",
+        "(重画|重绘|改画|重制|重新做).{0,8}(图|figure)",
+        "(矢量图|论文图|配图)"
+      ],
+      "keywords": [
+        "科研图",
+        "figure",
+        "配图",
+        "绘图",
+        "矢量图",
+        "论文图"
+      ],
+      "excludes": [
+        "结构式",
+        "化学式"
+      ],
+      "skills": [
+        "o4s-figure-composer",
+        "o4s-figure-style",
+        "loop-scientific-figure"
+      ],
+      "category": "research",
+      "examples": [
+        "画一张科研图",
+        "做论文配图",
+        "生成多面板 figure"
+      ]
+    },
+    {
+      "id": "build-mcp",
+      "description": "创建/评估 MCP server",
+      "patterns": [
+        "(mcp).{0,8}(server|服务|工具|搭建|创建|评估|测试)",
+        "(搭建|创建|写).{0,6}mcp"
+      ],
+      "keywords": [
+        "MCP",
+        "server",
+        "工具"
+      ],
+      "excludes": [],
+      "skills": [
+        "mcp-builder",
+        "mcp-criticagent",
+        "mcp-config-lookup"
+      ],
+      "category": "meta",
+      "examples": [
+        "搭一个 MCP server",
+        "评估这个 MCP",
+        "写个 MCP 工具"
+      ]
+    },
+    {
+      "id": "agent-library-skill-create",
+      "category": "meta",
+      "description": "用一条命令创建 agent-library skill（manifest + intent + 可选 agent 覆盖）",
+      "patterns": [
+        "(agent-library|aglib).{0,10}(skill|技能)",
+        "(创建|新建|做).{0,8}skill.{0,8}(intent|ignore|特殊版)"
+      ],
+      "keywords": [
+        "创建 skill",
+        "skill 入库",
+        "manifest",
+        "intent",
+        "ignore"
+      ],
+      "excludes": [
+        "评估 skill"
+      ],
+      "examples": [
+        "用 agent-library-skill-create 建一个技能",
+        "做一个 skill 并入库"
+      ],
+      "skills": [
+        "agent-library-skill-create"
+      ]
+    },
+    {
+      "id": "create-skill",
+      "description": "创建/改进/评估 agent skill",
+      "patterns": [
+        "(创建|写|做|改进|评估|评审).{0,8}(skill|技能)",
+        "skill creator",
+        "skill 怎么写"
+      ],
+      "keywords": [
+        "skill",
+        "技能",
+        "SKILL.md"
+      ],
+      "excludes": [
+        "skill 用法",
+        "agent-library-skill-create",
+        "create_skill\\.py"
+      ],
+      "skills": [
+        "agent-library-skill-create",
+        "skill-creator",
+        "self-learning"
+      ],
+      "category": "meta",
+      "examples": [
+        "创建一个 skill",
+        "评估这个技能",
+        "怎么写 SKILL.md"
+      ]
+    },
+    {
+      "id": "send-email",
+      "description": "发邮件、收邮件、查邮箱",
+      "patterns": [
+        "(发|收|查|写).{0,6}(邮件|email|邮箱|mail)",
+        "(自动|定时|批量).{0,6}(回复|发送|收|整理).{0,4}(邮件|email|邮箱)",
+        "(邮件|email|邮箱).{0,4}(机器人|bot|助手)"
+      ],
+      "keywords": [
+        "邮件",
+        "email",
+        "邮箱",
+        "SMTP",
+        "IMAP"
+      ],
+      "excludes": [],
+      "skills": [
+        "agent-mail"
+      ],
+      "category": "communication",
+      "examples": [
+        "帮我发邮件",
+        "查一下邮箱",
+        "写一封 email"
+      ]
+    },
+    {
+      "id": "install-app",
+      "description": "安装软件、下载、解压、选安装路径",
+      "patterns": [
+        "(安装|下载|解压|install|setup).{0,8}(软件|应用|app|程序|包)?",
+        "(装|放到).{0,6}(d盘|app目录)"
+      ],
+      "keywords": [
+        "安装",
+        "下载",
+        "解压",
+        "路径"
+      ],
+      "excludes": [
+        "cif|mof|晶体|晶胞|超胞|supercell|slab|真空层|补氢|补充氢|切面|rcsr|poscar|vasp",
+        "skill|技能"
+      ],
+      "skills": [
+        "d-app-install"
+      ],
+      "category": "meta",
+      "examples": [
+        "安装这个软件",
+        "下载并解压",
+        "装到 D 盘"
+      ]
+    },
+    {
+      "id": "document-word",
+      "category": "documents",
+      "description": "创建/读取/编辑 Word docx",
+      "patterns": [
+        "(docx|word文档|word 文档|\\.docx|word document)"
+      ],
+      "keywords": [
+        "docx",
+        "Word",
+        "文档"
+      ],
+      "excludes": [
+        "pdf",
+        "xlsx",
+        "pptx"
+      ],
+      "examples": [
+        "把这份内容写成 docx",
+        "读一下这个 Word 文档"
+      ],
+      "skills": [
+        "office-docx",
+        "doc-coauthoring"
+      ]
+    },
+    {
+      "id": "document-pdf",
+      "category": "documents",
+      "description": "读取/拆分/合并/OCR PDF",
+      "patterns": [
+        "(pdf|\\.pdf|pdf文件|pdf 文档)",
+        "(网页|文件|文档|图片).{0,4}(保存|转|导出|生成).{0,4}(pdf)"
+      ],
+      "keywords": [
+        "PDF",
+        "pdf"
+      ],
+      "excludes": [
+        "docx",
+        "xlsx",
+        "pptx"
+      ],
+      "examples": [
+        "读一下这个 PDF",
+        "把两个 PDF 合并"
+      ],
+      "skills": [
+        "document-pdf",
+        "office-export-pdf",
+        "o4s-pdf-explore"
+      ]
+    },
+    {
+      "id": "document-excel",
+      "category": "documents",
+      "description": "读取/编辑/生成 Excel 表格",
+      "patterns": [
+        "(xlsx|excel|表格|spreadsheet|csv|tsv|\\.xlsx)"
+      ],
+      "keywords": [
+        "Excel",
+        "xlsx",
+        "表格",
+        "CSV"
+      ],
+      "excludes": [
+        "pdf",
+        "docx",
+        "pptx"
+      ],
+      "examples": [
+        "整理这个 Excel",
+        "从 CSV 生成表"
+      ],
+      "skills": [
+        "office-xlsx",
+        "office-recalculate",
+        "standard-curve"
+      ]
+    },
+    {
+      "id": "reaction-prediction",
+      "category": "science",
+      "description": "反应产物/条件/产率/原子映射预测",
+      "patterns": [
+        "(反应预测|反应条件|产率|yield|forward prediction|retrosynthesis|反应机理)"
+      ],
+      "keywords": [
+        "反应",
+        "产率",
+        "条件",
+        "机理"
+      ],
+      "excludes": [
+        "画结构式"
+      ],
+      "examples": [
+        "预测这个反应的产物",
+        "推荐反应条件",
+        "产率大概多少"
+      ],
+      "skills": [
+        "o4s-reaction-forward-prediction",
+        "o4s-reaction-condition-recommendation",
+        "o4s-reaction-yield-estimation",
+        "o4s-reaction-atom-mapping"
+      ]
+    },
+    {
+      "id": "chemistry-data",
+      "category": "science",
+      "description": "化学数据分析、HPLC 标准曲线、Jupyter",
+      "patterns": [
+        "(标准曲线|calibration curve|hplc|化学数据|jupyter|notebook|实验数据)"
+      ],
+      "keywords": [
+        "标准曲线",
+        "HPLC",
+        "Jupyter",
+        "实验数据"
+      ],
+      "excludes": [],
+      "examples": [
+        "建立 HPLC 标准曲线",
+        "用 notebook 分析化学数据"
+      ],
+      "skills": [
+        "standard-curve",
+        "jupyter-chem-run",
+        "o4s-audit-dataset"
+      ]
+    },
+    {
+      "id": "experiment-design",
+      "category": "research",
+      "description": "实验设计、样本量、统计功效、预注册",
+      "patterns": [
+        "(实验设计|样本量|统计功效|随机化|预注册|experiment design|power analysis)"
+      ],
+      "keywords": [
+        "实验设计",
+        "样本量",
+        "统计功效",
+        "预注册"
+      ],
+      "excludes": [
+        "数据分析"
+      ],
+      "examples": [
+        "帮我设计一个实验",
+        "样本量要多大",
+        "做随机化方案"
+      ],
+      "skills": [
+        "experiment-design",
+        "research-baseline-builder",
+        "o4s-plan-ml-experiment"
+      ]
+    },
+    {
+      "id": "statistics",
+      "category": "data",
+      "description": "t 检验/ANOVA/相关/效应量等统计分析",
+      "patterns": [
+        "(统计分析|t检验|方差分析|anova|显著性|效应量|相关分析|回归分析)"
+      ],
+      "keywords": [
+        "统计",
+        "t检验",
+        "ANOVA",
+        "效应量"
+      ],
+      "excludes": [
+        "实验设计"
+      ],
+      "examples": [
+        "做组间 t 检验",
+        "算效应量和置信区间",
+        "多重比较校正"
+      ],
+      "skills": [
+        "statistical-analysis",
+        "o4s-audit-dataset"
+      ]
+    },
+    {
+      "id": "citation-check",
+      "category": "research",
+      "description": "引用合规、参考文献匹配、论文审阅",
+      "patterns": [
+        "(引用|参考文献|citation|gbt|7714|查重|论文审阅|thesis audit)"
+      ],
+      "keywords": [
+        "引用",
+        "参考文献",
+        "GB/T 7714",
+        "审阅"
+      ],
+      "excludes": [
+        "找论文",
+        "综述"
+      ],
+      "examples": [
+        "检查这份论文的引用",
+        "GB/T 7714 格式对不对",
+        "审阅这篇学位论文"
+      ],
+      "skills": [
+        "papercheck",
+        "thesis-audit-reviewer"
+      ]
+    },
+    {
+      "id": "web-research",
+      "category": "communication",
+      "description": "网页检索、调研报告、浏览器抓取",
+      "patterns": [
+        "(网页|浏览器|调研|web research|联网搜索|抓取).{0,10}(报告|资料|信息|网页)?",
+        "(搜索|查).{0,6}(网上|网页|资料)"
+      ],
+      "keywords": [
+        "网页",
+        "调研",
+        "搜索",
+        "browser"
+      ],
+      "excludes": [
+        "代码"
+      ],
+      "examples": [
+        "帮我做一份网页调研报告",
+        "搜一下这个主题",
+        "抓取这个网页"
+      ],
+      "skills": [
+        "web-research-report",
+        "feed-scroll-scrape",
+        "unknown-gap-research",
+        "sci-employee-deep-research"
+      ]
+    },
+    {
+      "id": "ui-automation",
+      "category": "communication",
+      "description": "浏览器/桌面 UI 自动化、Playwright、秀米",
+      "patterns": [
+        "(ui automation|playwright|pyautogui|点击|浏览器自动化|网页测试|秀米|xiumi)"
+      ],
+      "keywords": [
+        "UI 自动化",
+        "Playwright",
+        "点击",
+        "秀米"
+      ],
+      "excludes": [],
+      "examples": [
+        "用 Playwright 测这个页面",
+        "帮我点这个按钮",
+        "在秀米里排版"
+      ],
+      "skills": [
+        "win-ui-automation",
+        "webapp-testing",
+        "xiumi-studio-layout"
+      ]
+    },
+    {
+      "id": "app-development",
+      "category": "engineering",
+      "description": "应用开发：架构、网络、打包、同步、UI",
+      "patterns": [
+        "(app开发|应用开发|前端|后端|webview|electron|ota|打包|发布|同步)"
+      ],
+      "keywords": [
+        "app",
+        "应用开发",
+        "Electron",
+        "WebView",
+        "OTA"
+      ],
+      "excludes": [
+        "网页设计"
+      ],
+      "examples": [
+        "这个 app 的网络层怎么设计",
+        "打包发布到商店",
+        "多设备同步怎么做"
+      ],
+      "skills": [
+        "app-dev-code",
+        "app-dev-network",
+        "app-dev-release",
+        "app-dev-sync",
+        "app-dev-ui",
+        "h2ops"
+      ]
+    },
+    {
+      "id": "design-frontend",
+      "category": "design",
+      "description": "网页/前端视觉设计、改版、设计系统",
+      "patterns": [
+        "(网页设计|界面设计|ui设计|前端设计|landing page|redesign|视觉稿|设计系统)",
+        "(网页|页面|官网|界面).{0,10}(改|重做|重设计|美化|好看|风格|改版)",
+        "(仿|像|类似).{0,8}(官网|风格|设计|视觉)"
+      ],
+      "keywords": [
+        "设计",
+        "UI",
+        "前端",
+        "landing page",
+        "官网",
+        "风格",
+        "改版",
+        "重做"
+      ],
+      "excludes": [
+        "生图"
+      ],
+      "examples": [
+        "设计一个落地页",
+        "把这个页面改好看",
+        "做一套设计系统"
+      ],
+      "skills": [
+        "frontend-design",
+        "taste-skill",
+        "gpt-tasteskill",
+        "soft-skill",
+        "minimalist-skill",
+        "redesign-skill",
+        "canvas-design"
+      ]
+    },
+    {
+      "id": "image-generation",
+      "category": "design",
+      "description": "生成图片/海报/配图/前端视觉参考",
+      "patterns": [
+        "(生成图|生图|image generation|插画|海报|配图|imagegen)"
+      ],
+      "keywords": [
+        "生图",
+        "海报",
+        "配图",
+        "image"
+      ],
+      "excludes": [
+        "结构式"
+      ],
+      "examples": [
+        "生成一张海报",
+        "给这个页面生成视觉参考",
+        "画个插画"
+      ],
+      "skills": [
+        "imagegen-frontend-web",
+        "imagegen-frontend-mobile",
+        "image-to-code-skill",
+        "giiisp-scientific-image-generation",
+        "brandkit"
+      ]
+    },
+    {
+      "id": "git-workflow",
+      "category": "engineering",
+      "description": "commit/push/PR/自动提交",
+      "patterns": [
+        "(commit|push|提交|推送|pull request|pr|合并请求)"
+      ],
+      "keywords": [
+        "git",
+        "commit",
+        "push",
+        "PR"
+      ],
+      "excludes": [
+        "代码评审"
+      ],
+      "examples": [
+        "帮我提交并推送",
+        "开一个 PR",
+        "commit 这些改动"
+      ],
+      "skills": [
+        "git-push-workflow",
+        "git-fix-autopush"
+      ]
+    },
+    {
+      "id": "research-loop",
+      "category": "research",
+      "description": "迭代式研究循环：假设/文献综述/优化/清洗",
+      "patterns": [
+        "(loop|迭代|反复|自检|hypothesis|文献综述|literature survey|tabular cleanup)",
+        "(细化|制定|写成|拆成).{0,8}(计划|plan).{0,8}(代码|开发|实现|执行)"
+      ],
+      "keywords": [
+        "迭代",
+        "循环",
+        "假设",
+        "综述",
+        "清洗"
+      ],
+      "excludes": [],
+      "examples": [
+        "用 loop 迭代改进这个方案",
+        "生成并验证研究假设",
+        "做一轮文献综述"
+      ],
+      "skills": [
+        "loop-hypothesis-gen",
+        "loop-literature-survey",
+        "loop-optimize-loop",
+        "loop-plan-loop",
+        "loop-tabular-cleanup",
+        "loop-claim-verify"
+      ]
+    },
+    {
+      "id": "teaching-course",
+      "category": "documents",
+      "description": "课程/教程/作业/教学视频",
+      "patterns": [
+        "(课程|教程|作业|课件|教学视频|pku|cs101)"
+      ],
+      "keywords": [
+        "课程",
+        "教程",
+        "作业",
+        "教学"
+      ],
+      "excludes": [],
+      "examples": [
+        "做一套课程视频",
+        "帮我做计概作业",
+        "写一份教程"
+      ],
+      "skills": [
+        "practical-course-producer",
+        "pku-cs101-learn",
+        "pku-cs101"
+      ]
+    },
+    {
+      "id": "code-graph",
+      "category": "engineering",
+      "description": "代码知识图谱：影响面、调用链、架构总览、死代码、改名预览",
+      "patterns": [
+        "(影响面|调用方|调用链|blast radius|detect-changes|代码图谱|架构总览|死代码|改名预览)"
+      ],
+      "keywords": [
+        "影响面",
+        "调用链",
+        "代码图谱",
+        "blast radius"
+      ],
+      "excludes": [
+        "代码风格"
+      ],
+      "examples": [
+        "查这个函数的调用方",
+        "评审这个改动的影响面",
+        "给仓库建一张代码图谱"
+      ],
+      "skills": [
+        "code-review-graph"
+      ]
+    },
+    {
+      "id": "personal-potential",
+      "category": "personal",
+      "description": "发掘个人潜力、隐藏天赋、优势与人生/职业方向",
+      "patterns": [
+        "(发掘|发现|挖掘|探索|找到).{0,8}(潜力|天赋|优势|长处|人生方向|职业方向)",
+        "(隐藏天赋|个人潜力|人生设计|我擅长什么|我适合做什么)"
+      ],
+      "keywords": [
+        "潜力",
+        "天赋",
+        "优势",
+        "人生设计",
+        "职业方向",
+        "成长"
+      ],
+      "excludes": [
+        "代码",
+        "bug"
+      ],
+      "examples": [
+        "帮我发掘个人潜力",
+        "我有什么隐藏天赋",
+        "帮我做人生设计"
+      ],
+      "skills": [
+        "kazk-12-prompts",
+        "cognitive-profile"
+      ]
+    },
+    {
+      "id": "skill-improvement",
+      "category": "meta",
+      "description": "skill 不好用、收工复盘、把经验沉淀成规范/脚本/评测",
+      "patterns": [
+        "(skill|技能).{0,8}(不好用|要改|改进|优化|沉淀|复盘)",
+        "(收工|完工).{0,8}(复盘|沉淀|经验)",
+        "(经验|做法).{0,8}(规范|沉淀|固化)",
+        "improvement"
+      ],
+      "keywords": [
+        "skill 不好用",
+        "收工",
+        "复盘",
+        "沉淀",
+        "规范",
+        "improvement"
+      ],
+      "excludes": [],
+      "examples": [
+        "这个 skill 不好用，怎么改",
+        "收工了，这次有什么要沉淀的",
+        "把这次经验整理成规范"
+      ],
+      "skills": [
+        "skill-retro",
+        "skill-creator",
+        "self-learning"
+      ]
+    },
+    {
+      "id": "ralph-loop",
+      "category": "meta",
+      "description": "Ralph 式沙箱迭代：基线、holdout、实验账本、最佳 patch",
+      "patterns": [
+        "(ralph|沙箱|sandbox).{0,10}(迭代|优化|实验|循环)?",
+        "(不要停|继续go|一直go).{0,10}(迭代|优化)?",
+        "(ralph|uniralph).{0,16}(嵌套|套娃|套|层级|max.?depth|最多.{0,3}级)",
+        "(ralph|uniralph).{0,16}(评审|交叉评审|改动.?评审|定时|定轮|多模型)"
+      ],
+      "keywords": [
+        "Ralph",
+        "沙箱",
+        "迭代",
+        "holdout",
+        "实验账本",
+        "嵌套",
+        "层级",
+        "max-depth",
+        "评审",
+        "交叉评审",
+        "定时",
+        "定轮",
+        "多模型"
+      ],
+      "excludes": [],
+      "examples": [
+        "用 Ralph 在沙箱迭代 aglib",
+        "建个小沙箱优化路由，不要停",
+        "继续跑实验，直到指标稳定",
+        "ralph 最多套3级",
+        "让 uniralph 嵌套三层",
+        "ralph 做改动-评审-改动",
+        "ralph 交叉评审多个模型",
+        "ralph 定时跑 30 分钟"
+      ],
+      "skills": [
+        "uniralph",
+        "qoder-cli"
+      ]
+    },
+    {
+      "id": "fetch-github",
+      "category": "meta",
+      "description": "从 GitHub 拉取仓库/文件；直连慢、超时或需要完整大仓库时走 CLab",
+      "patterns": [
+        "(github|仓库|repo).{0,12}(下载|克隆|clone|拉取|拉下来|下下来)",
+        "(下载|克隆|clone|拉取).{0,12}(github|仓库|repo)",
+        "github.{0,6}(太慢|超时|连不上|打不开)"
+      ],
+      "keywords": [
+        "github",
+        "clab",
+        "codeload",
+        "仓库",
+        "repo",
+        "clone",
+        "克隆"
+      ],
+      "excludes": [
+        "安装软件",
+        "装到 D 盘",
+        "安装包"
+      ],
+      "examples": [
+        "GitHub 太慢，用 CLab 下载这个仓库",
+        "把这个 GitHub 仓库拉到 D 盘",
+        "用 CLab 拉最新仓库"
+      ],
+      "skills": [
+        "clab-github-fetch"
+      ]
+    },
+    {
+      "id": "qoder-cli",
+      "category": "meta",
+      "description": "Qoder CN CLI 非交互调用与 uniralph worker",
+      "patterns": [
+        "(qoder\\s*cli|qoderclicn|qoder_worker)",
+        "(qoder).{0,8}(非交互|worker)",
+        "qoder\\s*(命令行|命令|终端)",
+        "(让|用|叫)\\s*qoder\\b"
+      ],
+      "keywords": [
+        "Qoder CLI",
+        "qoderclicn",
+        "uniralph worker",
+        "qoder"
+      ],
+      "excludes": [],
+      "examples": [
+        "用 Qoder CLI 跑一个 prompt",
+        "把 Qoder CLI 接成 uniralph worker",
+        "qoderclicn 提示 Not logged in"
+      ],
+      "skills": [
+        "qoder-cli",
+        "uniralph"
+      ]
+    },
+    {
+      "id": "concept-analysis",
+      "category": "thinking",
+      "description": "概念/本质/原理剖析：双层解释、第一性原理拆解",
+      "patterns": [
+        "(概念|本质|原理|定义).{0,8}(剖析|分析|解释|拆解|理解)",
+        "(什么是|是什么意思|如何理解).{0,20}"
+      ],
+      "keywords": [
+        "概念",
+        "本质",
+        "原理",
+        "定义",
+        "第一性原理",
+        "双层解释"
+      ],
+      "excludes": [
+        "代码",
+        "bug"
+      ],
+      "examples": [
+        "进行未至之境概念本质剖析",
+        "解释一下这个概念的底层逻辑",
+        "用第一性原理拆解这个问题"
+      ],
+      "skills": [
+        "kazk-12-prompts"
+      ]
+    },
+    {
+      "id": "skill-academy-guide",
+      "category": "general",
+      "description": "Stop and check this skill before finishing any reply to a question about how to use Claude or a Claude product — it recommends matching courses, tutorials, and use cases from Claude Academy (academy.claude.com), Anthropi",
+      "patterns": [
+        "academy\\-guide",
+        "recommendation",
+        "documentation",
+        "organization",
+        "connectors",
+        "academy"
+      ],
+      "keywords": [
+        "recommendation",
+        "documentation",
+        "organization",
+        "connectors",
+        "academy"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "academy-guide"
+      ]
+    },
+    {
+      "id": "skill-brutalist-skill",
+      "category": "general",
+      "description": "Raw mechanical interfaces fusing Swiss typographic print with military terminal aesthetics. Rigid grids, extreme type scale contrast, utilitarian color, analog degradation effects. For data-heavy dashboards, portfolios, ",
+      "patterns": [
+        "brutalist\\-skill",
+        "declassified",
+        "degradation",
+        "typographic",
+        "utilitarian",
+        "brutalist"
+      ],
+      "keywords": [
+        "declassified",
+        "degradation",
+        "typographic",
+        "utilitarian",
+        "brutalist"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "brutalist-skill"
+      ]
+    },
+    {
+      "id": "skill-cursor-save-conflict",
+      "category": "general",
+      "description": "Resolves Cursor Save Conflict by merging the editor buffer and on-disk file (user edits vs agent/script write). Use when the user mentions save conflict, Save Conflict, Cursor Save Conflict, 双端整合, 冲突页, or a file shows tw",
+      "patterns": [
+        "cursor\\-save\\-conflict",
+        "conflict",
+        "resolves",
+        "versions",
+        "merging",
+        "cursor",
+        "save"
+      ],
+      "keywords": [
+        "conflict",
+        "resolves",
+        "versions",
+        "merging",
+        "cursor",
+        "save"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "cursor-save-conflict"
+      ]
+    },
+    {
+      "id": "skill-eng-codebase-design",
+      "category": "engineering",
+      "description": "Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when an",
+      "patterns": [
+        "eng\\-codebase\\-design",
+        "opportunities",
+        "vocabulary",
+        "deepening",
+        "designing",
+        "eng",
+        "codebase"
+      ],
+      "keywords": [
+        "opportunities",
+        "vocabulary",
+        "deepening",
+        "designing",
+        "eng",
+        "codebase"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-codebase-design"
+      ]
+    },
+    {
+      "id": "skill-eng-domain-modeling",
+      "category": "engineering",
+      "description": "Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a GLOSSARY.md, or recording or editing an ADR.",
+      "patterns": [
+        "eng\\-domain\\-modeling",
+        "terminology",
+        "discussing",
+        "recording",
+        "codebase",
+        "eng",
+        "domain",
+        "modeling"
+      ],
+      "keywords": [
+        "terminology",
+        "discussing",
+        "recording",
+        "codebase",
+        "eng",
+        "domain",
+        "modeling"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-domain-modeling"
+      ]
+    },
+    {
+      "id": "skill-eng-prototype",
+      "category": "engineering",
+      "description": "Build a throwaway prototype to answer a design question. Use when the user wants to sanity-check whether a state model or logic feels right, or explore what a UI should look like.",
+      "patterns": [
+        "eng\\-prototype",
+        "prototype",
+        "throwaway",
+        "question",
+        "explore",
+        "eng"
+      ],
+      "keywords": [
+        "prototype",
+        "throwaway",
+        "question",
+        "explore",
+        "eng"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-prototype"
+      ]
+    },
+    {
+      "id": "skill-eng-tdd",
+      "category": "engineering",
+      "description": "Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions \"red-green-refactor\", or wants integration tests.",
+      "patterns": [
+        "eng\\-tdd",
+        "integration",
+        "eng",
+        "tdd"
+      ],
+      "keywords": [
+        "integration",
+        "eng",
+        "tdd"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-tdd"
+      ]
+    },
+    {
+      "id": "skill-eng-to-spec",
+      "category": "engineering",
+      "description": "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed.",
+      "patterns": [
+        "eng\\-to\\-spec",
+        "discussed",
+        "interview",
+        "synthesis",
+        "publish",
+        "eng",
+        "to",
+        "spec"
+      ],
+      "keywords": [
+        "discussed",
+        "interview",
+        "synthesis",
+        "publish",
+        "eng",
+        "to",
+        "spec"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-to-spec"
+      ]
+    },
+    {
+      "id": "skill-eng-to-tickets",
+      "category": "engineering",
+      "description": "Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker (edges as text in one file per ticket locally, or native blockin",
+      "patterns": [
+        "eng\\-to\\-tickets",
+        "configured",
+        "declaring",
+        "published",
+        "blocking",
+        "eng",
+        "to",
+        "tickets"
+      ],
+      "keywords": [
+        "configured",
+        "declaring",
+        "published",
+        "blocking",
+        "eng",
+        "to",
+        "tickets"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-to-tickets"
+      ]
+    },
+    {
+      "id": "skill-eng-triage",
+      "category": "engineering",
+      "description": "Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.",
+      "patterns": [
+        "eng\\-triage",
+        "categorise",
+        "external",
+        "machine",
+        "briefs",
+        "eng",
+        "triage"
+      ],
+      "keywords": [
+        "categorise",
+        "external",
+        "machine",
+        "briefs",
+        "eng",
+        "triage"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "eng-triage"
+      ]
+    },
+    {
+      "id": "skill-fill-missing-plugin",
+      "category": "general",
+      "description": "当前任务或正在用的 skill 点名了本机没有的小插件 命令或 import 因未安装失败",
+      "patterns": [
+        "fill\\-missing\\-plugin",
+        "点名了本机没有的小插件",
+        "当前任务或正在用的",
+        "missing",
+        "import",
+        "fill",
+        "plugin"
+      ],
+      "keywords": [
+        "点名了本机没有的小插件",
+        "当前任务或正在用的",
+        "missing",
+        "import",
+        "fill",
+        "plugin"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "fill-missing-plugin"
+      ]
+    },
+    {
+      "id": "skill-find-science-skills",
+      "category": "general",
+      "description": "Use when a user asks which research Skill, MCP service, academic workflow, experimental tool, simulation capability, analysis resource, writing aid, or publication resource is available for a scientific task.",
+      "patterns": [
+        "find\\-science\\-skills",
+        "experimental",
+        "publication",
+        "capability",
+        "scientific",
+        "find",
+        "skills"
+      ],
+      "keywords": [
+        "experimental",
+        "publication",
+        "capability",
+        "scientific",
+        "find",
+        "skills"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "find-science-skills"
+      ]
+    },
+    {
+      "id": "skill-ingested-skills-router",
+      "category": "general",
+      "description": "Router for the 2026-09-30 GitHub-ingested skill pack under ~/.cursor/skills (o4s-*, loop-*, eng-*, paper-search-pro, etc.). Use when unsure which ingested skill to open, or when the user asks 装了哪些外部 skill / 外来 skill 怎么用.",
+      "patterns": [
+        "ingested\\-skills\\-router",
+        "ingested",
+        "cursor",
+        "github",
+        "router",
+        "skills"
+      ],
+      "keywords": [
+        "ingested",
+        "cursor",
+        "github",
+        "router",
+        "skills"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "ingested-skills-router"
+      ]
+    },
+    {
+      "id": "skill-kickoff-collab",
+      "category": "general",
+      "description": "开工只查与当前任务的抵触，不查软件开关机",
+      "patterns": [
+        "kickoff\\-collab",
+        "开工只查与当前任务的抵触",
+        "kickoff",
+        "不查软件开关机",
+        "collab"
+      ],
+      "keywords": [
+        "开工只查与当前任务的抵触",
+        "kickoff",
+        "不查软件开关机",
+        "collab"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "kickoff-collab"
+      ]
+    },
+    {
+      "id": "skill-loop-research-proposal",
+      "category": "research-loop",
+      "description": "Use when the user has a research proposal (problem + proposed methodology + planned experiments) and wants it iteratively strengthened until it clears a passing grade. ScholarEval grades the proposal against the literatu",
+      "patterns": [
+        "loop\\-research\\-proposal",
+        "contribution",
+        "strengthened",
+        "experiments",
+        "iteratively",
+        "loop",
+        "proposal"
+      ],
+      "keywords": [
+        "contribution",
+        "strengthened",
+        "experiments",
+        "iteratively",
+        "loop",
+        "proposal"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "loop-research-proposal"
+      ]
+    },
+    {
+      "id": "skill-loop-research-question",
+      "category": "research-loop",
+      "description": "Use when the user has a vague topic or area of interest and wants it sharpened into a few strong, novel, feasible research questions. Drafts candidate questions, scores each against a fixed rubric (Specific, Answerable, ",
+      "patterns": [
+        "loop\\-research\\-question",
+        "predictions",
+        "significant",
+        "answerable",
+        "hypothesis",
+        "loop",
+        "question"
+      ],
+      "keywords": [
+        "predictions",
+        "significant",
+        "answerable",
+        "hypothesis",
+        "loop",
+        "question"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "loop-research-question"
+      ]
+    },
+    {
+      "id": "skill-loop-swe-loop",
+      "category": "research-loop",
+      "description": "Use when the user has a coding prompt — a feature, bug fix, or refactor — and wants it implemented end to end by a self-checking software loop, not a single pass. It refines the prompt into an executable plan (running th",
+      "patterns": [
+        "loop\\-swe\\-loop",
+        "accumulated",
+        "conciseness",
+        "correctness",
+        "implemented",
+        "loop",
+        "swe"
+      ],
+      "keywords": [
+        "accumulated",
+        "conciseness",
+        "correctness",
+        "implemented",
+        "loop",
+        "swe"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "loop-swe-loop"
+      ]
+    },
+    {
+      "id": "skill-manim-agent",
+      "category": "general",
+      "description": "Use when Codex needs to create, run, review, debug, or package Manim Agent workflows for mathematical or technical explainer videos: Manim animations, narrated teaching videos, formula or proof visualization, concept exp",
+      "patterns": [
+        "manim\\-agent",
+        "visualization",
+        "mathematical",
+        "animations",
+        "explainers",
+        "manim"
+      ],
+      "keywords": [
+        "visualization",
+        "mathematical",
+        "animations",
+        "explainers",
+        "manim"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "manim-agent"
+      ]
+    },
+    {
+      "id": "skill-md-table-png",
+      "category": "general",
+      "description": "Export Chinese markdown/HTML tables to cropped PNG screenshots. Use when the user asks 导出为图, 表截图, 把表做成图, PNG of tables, or shareable table images from a report.",
+      "patterns": [
+        "md\\-table\\-png",
+        "screenshots",
+        "shareable",
+        "markdown",
+        "chinese",
+        "md",
+        "table",
+        "png"
+      ],
+      "keywords": [
+        "screenshots",
+        "shareable",
+        "markdown",
+        "chinese",
+        "md",
+        "table",
+        "png"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "md-table-png"
+      ]
+    },
+    {
+      "id": "skill-o4s-admet-genetic",
+      "category": "science",
+      "description": "ADMET-guided genetic molecule optimization workflow from seed SMILES; use when the agent needs to build or run an RDKit/SA-Score/ADMET-AI GA pipeline for molecule optimization, enforce molecule lineage logs, render optim",
+      "patterns": [
+        "o4s\\-admet\\-genetic",
+        "dashboards",
+        "candidate",
+        "molecule",
+        "enforce",
+        "admet",
+        "genetic"
+      ],
+      "keywords": [
+        "dashboards",
+        "candidate",
+        "molecule",
+        "enforce",
+        "admet",
+        "genetic"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-admet-genetic"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-conformer-generation",
+      "category": "science",
+      "description": "Generates 3D conformer ensembles using RDKit ETKDGv3 with knowledge-enhanced distance geometry, MMFF94/UFF force-field optimization, CREST + GFN2-xTB semi-empirical refinement, and macrocycle-aware torsion preferences. P",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-conformer\\-generation",
+        "chemoinformatics",
+        "conformational",
+        "preferences",
+        "descriptor",
+        "conformer",
+        "generation"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "conformational",
+        "preferences",
+        "descriptor",
+        "conformer",
+        "generation"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-conformer-generation"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-covalent-design",
+      "category": "science",
+      "description": "Designs covalent inhibitors and warheads targeting cysteine, lysine, serine, threonine, tyrosine, and aspartate residues, with explicit handling of warhead reactivity (acrylamide, chloroacetamide, vinyl sulfone, sulfonyl",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-covalent\\-design",
+        "chemoinformatics",
+        "chloroacetamide",
+        "fluorosulfate",
+        "rationalizing",
+        "covalent"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "chloroacetamide",
+        "fluorosulfate",
+        "rationalizing",
+        "covalent"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-covalent-design"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-free-energy-calculations",
+      "category": "science",
+      "description": "Performs alchemical free-energy calculations including relative binding free energy (RBFE / FEP+) and absolute binding free energy (ABFE) via OpenFE, FEP+, GROMACS, AMBER pmemd, and OpenMM with explicit lambda scheduling",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-free\\-energy\\-calculations",
+        "chemoinformatics",
+        "alternatives",
+        "calculations",
+        "appropriate",
+        "free",
+        "energy"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "alternatives",
+        "calculations",
+        "appropriate",
+        "free",
+        "energy"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-free-energy-calculations"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-generative-design",
+      "category": "science",
+      "description": "Designs novel molecules using REINVENT 4 (de novo, scaffold decoration, linker design, R-group, molecular optimization), MolMIM, Diffusion-based generators (DiGress, DiffSMol), and JT-VAE with explicit handling of multi-",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-generative\\-design",
+        "chemoinformatics",
+        "simultaneously",
+        "accessibility",
+        "reinforcement",
+        "generative"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "simultaneously",
+        "accessibility",
+        "reinforcement",
+        "generative"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-generative-design"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-ml-docking-rescoring",
+      "category": "science",
+      "description": "Performs ML-based protein-ligand pose prediction and scoring using DiffDock-L (diffusion-based), Boltz-1 / Boltz-2 (foundation model with affinity), Chai-1, AlphaFold3 ligand, EquiBind, TANKBind, NeuralPLexer, and hybrid",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-ml\\-docking\\-rescoring",
+        "chemoinformatics",
+        "neuralplexer",
+        "posebusters",
+        "alphafold3",
+        "ml",
+        "docking",
+        "rescoring"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "neuralplexer",
+        "posebusters",
+        "alphafold3",
+        "ml",
+        "docking",
+        "rescoring"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-ml-docking-rescoring"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-molecular-io",
+      "category": "science",
+      "description": "Reads, writes, and converts molecular file formats (SMILES, InChI, SDF V2000/V3000, MOL2, PDB, and BinaryCIF) using RDKit and Open Babel with rigorous handling of aromaticity perception, stereochemistry, implicit/explici",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-molecular\\-io",
+        "chemoinformatics",
+        "standardization",
+        "stereochemistry",
+        "kekulization",
+        "molecular",
+        "io"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "standardization",
+        "stereochemistry",
+        "kekulization",
+        "molecular",
+        "io"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-molecular-io"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-molecular-standardization",
+      "category": "science",
+      "description": "Standardizes molecular structures using the ChEMBL structure pipeline for normalization and parent selection plus RDKit rdMolStandardize for explicit custom steps such as tautomer canonicalization, salt/solvent stripping",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-molecular\\-standardization",
+        "canonicalization",
+        "chemoinformatics",
+        "rdmolstandardize",
+        "standardization",
+        "molecular"
+      ],
+      "keywords": [
+        "canonicalization",
+        "chemoinformatics",
+        "rdmolstandardize",
+        "standardization",
+        "molecular"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-molecular-standardization"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-pharmacophore-modeling",
+      "category": "science",
+      "description": "Builds and applies 3D pharmacophore models using RDKit Pharm3D, the apo2ph4 receptor-based workflow (Heider et al. 2023), Pharmer / Pharmit for search, and PharmacoForge for protein-pocket-conditioned pharmacophore gener",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-pharmacophore\\-modeling",
+        "chemoinformatics",
+        "pharmacophores",
+        "pharmacoforge",
+        "pharmacophore",
+        "modeling"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "pharmacophores",
+        "pharmacoforge",
+        "pharmacophore",
+        "modeling"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-pharmacophore-modeling"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-pose-validation",
+      "category": "science",
+      "description": "Validates docked / generated protein-ligand poses using PoseBusters physical-validity tests, strain energy quantification, geometric checks (planarity, vdW overlap, bond/angle distortion), and pose-energy reasonableness.",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-pose\\-validation",
+        "chemoinformatics",
+        "quantification",
+        "reasonableness",
+        "posebusters",
+        "pose",
+        "validation"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "quantification",
+        "reasonableness",
+        "posebusters",
+        "pose",
+        "validation"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-pose-validation"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-protac-degraders",
+      "category": "science",
+      "description": "Designs PROTACs, molecular glues, and bivalent degraders with explicit handling of E3 ligase choice (VHL, CRBN, IAP, MDM2, KEAP1), linker design (length, composition, rigidity), ternary complex prediction (PRosettaC, Dee",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-protac\\-degraders",
+        "characterization",
+        "chemoinformatics",
+        "reconciliation",
+        "cooperativity",
+        "protac",
+        "degraders"
+      ],
+      "keywords": [
+        "characterization",
+        "chemoinformatics",
+        "reconciliation",
+        "cooperativity",
+        "protac",
+        "degraders"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-protac-degraders"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-reaction-enumeration",
+      "category": "science",
+      "description": "Enumerates virtual chemical libraries via reaction SMARTS transformations using RDKit and reaction templates, with explicit handling of atom mapping, RDChiral template extraction, product validation, RECAP/BRICS fragment",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-reaction\\-enumeration",
+        "chemoinformatics",
+        "transformations",
+        "combinatorial",
+        "decomposition",
+        "reaction",
+        "enumeration"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "transformations",
+        "combinatorial",
+        "decomposition",
+        "reaction",
+        "enumeration"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-reaction-enumeration"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-scaffold-analysis",
+      "category": "science",
+      "description": "Analyzes chemical libraries by scaffold using Bemis-Murcko scaffolds, generic frameworks, cyclic skeletons, matched molecular pair (MMP) analysis via mmpdb, R-group decomposition, Free-Wilson analysis, scaffold hopping, ",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-scaffold\\-analysis",
+        "chemoinformatics",
+        "transformation",
+        "decomposition",
+        "decomposing",
+        "scaffold"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "transformation",
+        "decomposition",
+        "decomposing",
+        "scaffold"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-scaffold-analysis"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-shape-similarity",
+      "category": "science",
+      "description": "Performs 3D shape-based similarity searching using ROCS (OpenEye), USRCAT (ultra-fast), Open3DAlign (RDKit), ESPSim (electrostatic), and ShaEP with explicit handling of Tanimoto-Combo (shape + color), shape vs ECFP4 comp",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-shape\\-similarity",
+        "chemoinformatics",
+        "complementarity",
+        "electrostatic",
+        "bioisosteric",
+        "shape",
+        "similarity"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "complementarity",
+        "electrostatic",
+        "bioisosteric",
+        "shape",
+        "similarity"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-shape-similarity"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-similarity-searching",
+      "category": "science",
+      "description": "Performs molecular similarity searching using Tanimoto, Tversky, Dice, and cosine coefficients on bit/count fingerprints with explicit choice rules for symmetric vs asymmetric measures, scaffold-hopping vs lead-optimizat",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-similarity\\-searching",
+        "chemoinformatics",
+        "bulktanimoto",
+        "coefficients",
+        "fingerprints",
+        "similarity",
+        "searching"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "bulktanimoto",
+        "coefficients",
+        "fingerprints",
+        "similarity",
+        "searching"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-similarity-searching"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-substructure-search",
+      "category": "science",
+      "description": "Searches molecular libraries for substructure matches using SMARTS patterns with explicit handling of recursive SMARTS, ring membership, aromaticity dialect, vector binding, atom map indices, and reactive/PAINS/REOS/Bren",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-substructure\\-search",
+        "chemoinformatics",
+        "pharmacophore",
+        "interference",
+        "substructure",
+        "search"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "pharmacophore",
+        "interference",
+        "substructure",
+        "search"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-substructure-search"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-chemoinformatics-virtual-screening",
+      "category": "science",
+      "description": "Performs structure-based virtual screening using AutoDock Vina, SMINA, GNINA (CNN scoring), and DiffDock-L hybrid workflows with explicit choice rules across rigid vs flexible docking, cross-docking vs self-docking, bind",
+      "patterns": [
+        "o4s\\-bio\\-chemoinformatics\\-virtual\\-screening",
+        "chemoinformatics",
+        "preparation",
+        "ultralarge",
+        "candidate",
+        "virtual",
+        "screening"
+      ],
+      "keywords": [
+        "chemoinformatics",
+        "preparation",
+        "ultralarge",
+        "candidate",
+        "virtual",
+        "screening"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-chemoinformatics-virtual-screening"
+      ]
+    },
+    {
+      "id": "skill-o4s-bio-crispr-screens-drugz-chemogenomic",
+      "category": "science",
+      "description": "Analyzes CRISPR drug-modifier (chemogenomic) screens with drugZ (Colic et al. 2019 Genome Med), a bidirectional Z-score method that identifies synthetic-lethal sensitizing genes and resistance-conferring suppressor genes",
+      "patterns": [
+        "o4s\\-bio\\-crispr\\-screens\\-drugz\\-chemogenomic",
+        "troubleshooting",
+        "bidirectional",
+        "chemogenomic",
+        "comparisons",
+        "crispr",
+        "screens",
+        "drugz"
+      ],
+      "keywords": [
+        "troubleshooting",
+        "bidirectional",
+        "chemogenomic",
+        "comparisons",
+        "crispr",
+        "screens",
+        "drugz"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-bio-crispr-screens-drugz-chemogenomic"
+      ]
+    },
+    {
+      "id": "skill-o4s-catalyst-sar-screening",
+      "category": "science",
+      "description": "HARD-LOCKED Catalyst-Design-Agent FAIRChem UMA (uma-s-1p1, oc20) SAC SAR screening for dissolution potential / adsorption / overpotential. Always call run_pipeline with the user's metals/metrics into a fresh workdir and ",
+      "patterns": [
+        "o4s\\-catalyst\\-sar\\-screening",
+        "metal_center_dissolution_",
+        "overpotential",
+        "deliverables",
+        "run_pipeline",
+        "catalyst",
+        "sar",
+        "screening"
+      ],
+      "keywords": [
+        "metal_center_dissolution_",
+        "overpotential",
+        "deliverables",
+        "run_pipeline",
+        "catalyst",
+        "sar",
+        "screening"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-catalyst-sar-screening"
+      ]
+    },
+    {
+      "id": "skill-o4s-evidence-walkthrough",
+      "category": "science",
+      "description": "Run the reference end-to-end research pass — fixed database query, local analysis, versioned artifacts with lineage, then an exported evidence package that verifies in a clean environment. Use as the first-run demonstrat",
+      "patterns": [
+        "o4s\\-evidence\\-walkthrough",
+        "demonstration",
+        "environment",
+        "walkthrough",
+        "artifacts",
+        "evidence"
+      ],
+      "keywords": [
+        "demonstration",
+        "environment",
+        "walkthrough",
+        "artifacts",
+        "evidence"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-evidence-walkthrough"
+      ]
+    },
+    {
+      "id": "skill-o4s-mineral-spectra-analysis",
+      "category": "science",
+      "description": "Raman mineral mixture spectra analysis pipeline for unknown mixed-mineral spectra; preprocess noisy spectra once, iteratively match residual peaks against a reference spectral library, unmix components with NNLS, diagnos",
+      "patterns": [
+        "o4s\\-mineral\\-spectra\\-analysis",
+        "iteratively",
+        "reliability",
+        "components",
+        "optionally",
+        "mineral",
+        "spectra"
+      ],
+      "keywords": [
+        "iteratively",
+        "reliability",
+        "components",
+        "optionally",
+        "mineral",
+        "spectra"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-mineral-spectra-analysis"
+      ]
+    },
+    {
+      "id": "skill-o4s-paper-narrative",
+      "category": "science",
+      "description": "Judge and reshape the STORY a paper's figures tell. Input is the work itself — manuscript (or abstract) + figure deck — no hand-written brief. `derive_paper_brief(abstract, captions)` extracts pitch/vision/per-figure-cla",
+      "patterns": [
+        "o4s\\-paper\\-narrative",
+        "boldest_defensible_fig1",
+        "derive_paper_brief",
+        "missing_panels",
+        "figure_moves",
+        "paper",
+        "narrative"
+      ],
+      "keywords": [
+        "boldest_defensible_fig1",
+        "derive_paper_brief",
+        "missing_panels",
+        "figure_moves",
+        "paper",
+        "narrative"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-paper-narrative"
+      ]
+    },
+    {
+      "id": "skill-o4s-target-druggability-screening",
+      "category": "science",
+      "description": "Evidence-attributed target and ligand screening. Retrieves STRING interaction records and BindingDB assay measurements, optionally calculates molecular descriptors with RDKit, and saves a dossier with source snapshots an",
+      "patterns": [
+        "o4s\\-target\\-druggability\\-screening",
+        "druggability",
+        "measurements",
+        "descriptors",
+        "interaction",
+        "target",
+        "screening"
+      ],
+      "keywords": [
+        "druggability",
+        "measurements",
+        "descriptors",
+        "interaction",
+        "target",
+        "screening"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "o4s-target-druggability-screening"
+      ]
+    },
+    {
+      "id": "skill-output-skill",
+      "category": "general",
+      "description": "Overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits cleanly. Apply to any task requiring exhaustive, unabridged output.",
+      "patterns": [
+        "output\\-skill",
+        "placeholder",
+        "exhaustive",
+        "truncation",
+        "unabridged",
+        "output"
+      ],
+      "keywords": [
+        "placeholder",
+        "exhaustive",
+        "truncation",
+        "unabridged",
+        "output"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "output-skill"
+      ]
+    },
+    {
+      "id": "skill-run-unsandboxed",
+      "category": "general",
+      "description": "Windows 上不要用沙盒跑命令，直接本机执行",
+      "patterns": [
+        "run\\-unsandboxed",
+        "unsandboxed",
+        "上不要用沙盒跑命令",
+        "windows",
+        "直接本机执行",
+        "run"
+      ],
+      "keywords": [
+        "unsandboxed",
+        "上不要用沙盒跑命令",
+        "windows",
+        "直接本机执行",
+        "run"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "run-unsandboxed"
+      ]
+    },
+    {
+      "id": "skill-slide-image-to-editable-pptx",
+      "category": "general",
+      "description": "Convert PPT slide screenshots / style-reference images into a high-fidelity editable PPTX. The output visually matches the source image, but text and simple shapes are PPT-native (editable), while complex visuals are cle",
+      "patterns": [
+        "slide\\-image\\-to\\-editable\\-pptx",
+        "replaceable",
+        "screenshots",
+        "powerpoint",
+        "generated",
+        "slide",
+        "image",
+        "to",
+        "editable",
+        "pptx"
+      ],
+      "keywords": [
+        "replaceable",
+        "screenshots",
+        "powerpoint",
+        "generated",
+        "slide",
+        "image",
+        "to",
+        "editable",
+        "pptx"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "slide-image-to-editable-pptx"
+      ]
+    },
+    {
+      "id": "skill-taste-skill-v1",
+      "category": "design",
+      "description": "The original v1 taste-skill, preserved for projects depending on its exact behavior. The current default is `design-taste-frontend` (v2 experimental), which is a substantial rewrite. Use this v1 install name only if you ",
+      "patterns": [
+        "taste\\-skill\\-v1",
+        "compatibility",
+        "experimental",
+        "substantial",
+        "depending",
+        "taste",
+        "v1"
+      ],
+      "keywords": [
+        "compatibility",
+        "experimental",
+        "substantial",
+        "depending",
+        "taste",
+        "v1"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "taste-skill-v1"
+      ]
+    },
+    {
+      "id": "skill-ugc-irony-preprocess",
+      "category": "general",
+      "description": "Preprocess user-generated reviews into utterance JSONL and tag sarcasm, irony, hyperbole, and bots before writing conclusions. Use when the user mentions 反话, 讽刺, 反话校正, 预处理语料, 话轮, 给分口碑, 频道评价, or feeding corpus to another ",
+      "patterns": [
+        "ugc\\-irony\\-preprocess",
+        "conclusions",
+        "preprocess",
+        "generated",
+        "hyperbole",
+        "ugc",
+        "irony"
+      ],
+      "keywords": [
+        "conclusions",
+        "preprocess",
+        "generated",
+        "hyperbole",
+        "ugc",
+        "irony"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "ugc-irony-preprocess"
+      ]
+    },
+    {
+      "id": "skill-world-threads-entry",
+      "category": "general",
+      "description": "Use when working with TopicLab / 他山世界 / OpenClaw world threads, world.tashan.chat, openclaw bootstrap or skill URLs, heartbeat, notifications, topic replies, skill installation through TopicLab, points progress, or any r",
+      "patterns": [
+        "world\\-threads\\-entry",
+        "notifications",
+        "installation",
+        "bootstrap",
+        "heartbeat",
+        "world",
+        "threads"
+      ],
+      "keywords": [
+        "notifications",
+        "installation",
+        "bootstrap",
+        "heartbeat",
+        "world",
+        "threads"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "world-threads-entry"
+      ]
+    },
+    {
+      "id": "deepseek-file",
+      "category": "communication",
+      "description": "DeepSeek 网页会话上传附件/文件冒烟/取回 RESPONSE",
+      "patterns": [
+        "(deepseek).{0,12}(文件|附件|上传|会话|冒烟)",
+        "(网页会话|上传附件).{0,12}(deepseek|文件)?"
+      ],
+      "keywords": [
+        "DeepSeek",
+        "网页会话",
+        "上传附件",
+        "file smoke"
+      ],
+      "excludes": [
+        "API 文档"
+      ],
+      "examples": [
+        "把这个文件发给 DeepSeek 网页会话",
+        "跑一次 DeepSeek 文件冒烟"
+      ],
+      "skills": [
+        "deepseek-file-smoke"
+      ]
+    },
+    {
+      "id": "reaction-to-cdxml",
+      "category": "science",
+      "description": "反应图片转 ChemDraw CDXML",
+      "patterns": [
+        "(反应图|反应图片|反应式).{0,12}(cdxml|chemdraw|转|画)",
+        "(图片|截图).{0,8}(转|生成|画).{0,8}(cdxml|chemdraw)"
+      ],
+      "keywords": [
+        "反应图",
+        "CDXML",
+        "CDX",
+        "ChemDraw",
+        "图片转结构"
+      ],
+      "excludes": [],
+      "examples": [
+        "把这张反应图转成 CDXML",
+        "用 ChemDraw 重画这个反应"
+      ],
+      "skills": [
+        "reaction-image-to-cdxml",
+        "chemdraw"
+      ]
+    },
+    {
+      "id": "clab-egress",
+      "category": "meta",
+      "description": "测 CLab 出口带宽与 SSH 隧道上限，判断下载慢在本机/节点/服务端哪一环；CLab 当代理跳板前的可行性评估",
+      "patterns": [
+        "(CLab|clab).{0,15}(出口|带宽|测速|速度|节点|代理|跳板|隧道|socks|回传)",
+        "(测|评估|看看|判断).{0,12}(CLab|clab).{0,12}(速度|带宽|能不能|行不行|值不值)",
+        "(CLab|clab|云主机).{0,10}(能|可以|能不能).{0,8}(翻墙|当节点|当代理|当跳板)"
+      ],
+      "keywords": [
+        "CLab",
+        "clab",
+        "出口",
+        "带宽",
+        "测速",
+        "节点",
+        "跳板",
+        "代理",
+        "隧道",
+        "socks",
+        "回传"
+      ],
+      "excludes": [],
+      "examples": [
+        "CLab 能不能当节点用",
+        "测一下 CLab 的出网速度",
+        "下载慢到底是哪一环的问题"
+      ],
+      "skills": [
+        "clab-egress-probe"
+      ]
+    },
+    {
+      "id": "blender-render",
+      "category": "engineering",
+      "description": "Blender GPU 渲染显存安全与 0x119/0x141 崩溃",
+      "patterns": [
+        "(blender|eevee|workbench|eevee_next).{0,24}(崩溃|黑屏|重启|显存|0x119|0x141|shadow_pool|GPU)",
+        "(0x119|0x141|VIDEO_SCHEDULER_INTERNAL_ERROR|DRIVER_REPORTED_INVALID_FENCE_ID)"
+      ],
+      "keywords": [
+        "Blender",
+        "EEVEE",
+        "shadow_pool_size",
+        "UMA",
+        "0x119",
+        "0x141"
+      ],
+      "excludes": [],
+      "examples": [
+        "Blender 渲染又黑屏重启了",
+        "0x119 VIDEO_SCHEDULER_INTERNAL_ERROR 怎么修"
+      ],
+      "skills": [
+        "blender-gpu-safe-render"
+      ]
+    },
+    {
+      "id": "cif-to-3dprint",
+      "category": "science",
+      "description": "把晶体 CIF 结构转成可 3D 打印的 STL/OBJ：球棍模型、SBU 提取、芳环薄板、元素材质",
+      "patterns": [
+        "cif2stl",
+        "cif.*(转|生成).*(stl|obj|打印)"
+      ],
+      "keywords": [
+        "cif",
+        "3d打印",
+        "sbu"
+      ],
+      "excludes": [],
+      "examples": [
+        "把这个 cif 转成 stl",
+        "把 MOF-5 做成能打印的球棍模型"
+      ],
+      "skills": [
+        "cif-to-3dprint"
+      ]
+    },
+    {
+      "id": "blender-mol-render",
+      "category": "science",
+      "description": "用 Blender 无头渲染分子/晶体 OBJ：正交线稿风或 Eevee 实拍风，并拼成审阅图",
+      "patterns": [
+        "blender.*渲染",
+        "(渲染|出图).*(obj|分子|晶体|sbu)"
+      ],
+      "keywords": [
+        "blender",
+        "无头渲染",
+        "正交视图"
+      ],
+      "excludes": [],
+      "examples": [
+        "把这个 obj 渲染成图片",
+        "六份结构拼成一张审阅图"
+      ],
+      "skills": [
+        "blender-mol-render"
+      ]
+    },
+    {
+      "id": "architecture-viz",
+      "category": "engineering",
+      "description": "把代码仓库的宏观结构或运行时逻辑画成一页 PNG。两种图型：分层结构树、运行时管线。用户要架构图、结构图、pipeline 图，或问这个程序怎么跑、能不能可视化结构时使用。",
+      "patterns": [
+        "架构图|结构图|pipeline ?图|运行逻辑|程序怎么跑|可视化.*(结构|流程)"
+      ],
+      "keywords": [
+        "架构图",
+        "pipeline",
+        "结构图"
+      ],
+      "excludes": [],
+      "examples": [
+        "把这个项目的架构画出来",
+        "画一张这个程序的运行逻辑图"
+      ],
+      "skills": [
+        "architecture-viz"
+      ]
+    },
+    {
+      "id": "bohrium",
+      "category": "science",
+      "description": "通过本机 Bohrium（玻尔）CLI 提交和查看云端算例、查镜像机型、调用 BioMaster 等科研 agent。用户提到玻尔、Bohrium、bohr、云端算例、批量作业时使用。",
+      "patterns": [
+        "玻尔|bohrium|bohr |BioMaster|批量作业|云端算例"
+      ],
+      "keywords": [
+        "玻尔",
+        "bohrium",
+        "算例"
+      ],
+      "excludes": [],
+      "examples": [
+        "帮我在玻尔上看一下作业跑到哪了",
+        "用玻尔的 BioMaster 分析这个靶点"
+      ],
+      "skills": [
+        "bohrium"
+      ]
+    },
+    {
+      "id": "cif-structure-pipeline",
+      "category": "science",
+      "description": "CIF 晶体结构工作台（cifkit）：从 CoRE MOF/COD 检索并下载典型 RCSR 拓扑（如 sod/ZIF-8）的 CIF；补碳上氢、处理无序占位与过近原子；做超胞、沿 (hkl) 切 slab、设置并实测真空层；导出 VASP POSCAR/CIF/XYZ/LAMMPS/QE/CP2K 等计算化学格式；最后做结构校验与 manifest 溯源。用户提到 CIF、MOF、RCSR/拓扑、晶体/晶胞、超胞 Supercell、切表面 slab、真空层 vacuum、补氢、导出 POSCAR/VASP 时使用。",
+      "patterns": [
+        "(下载|获取|抓取|拉取|检索|查找|fetch|download).{0,24}(cif|mof|zif|rcsr|sod|晶体|晶胞|结构|拓扑)",
+        "(cif|mof|zif).{0,16}(下载|获取|检索|fetch|download)",
+        "补(?:上|充|齐|全)?[^，。；;]{0,6}氢|加(?:上|入)?[^，。；;]{0,4}氢|add.{0,16}hydrogen|hydrogenat",
+        "超胞|super[ ]?cell|supercell|[0-9]+[ ]*[x×*][ ]*[0-9]+[ ]*[x×*][ ]*[0-9]+",
+        "(切(?:出|成|开|割)?|cut|cleave)[^，。；;]{0,16}(表面|slab|surface|晶面)",
+        "[(（][0-9][ ]?[0-9][ ]?[0-9][)）][^，。；;]{0,12}(面|slab|surface|表面|切)",
+        "真空层|真空|vacuum",
+        "(导出|输出|export|convert|转成|转为)[^，。；;]{0,20}(vasp|poscar|cif|xyz|lammps|qe|cp2k|格式|format)",
+        "(rcsr|拓扑|topology|net)[ ]*(?:为|是|:|：|=)?[ ]*[a-z]{3}(?![a-z])",
+        "(slab|表面|surface)[^，。；;]{0,12}(真空|vacuum|厚度|thickness|层厚)"
+      ],
+      "keywords": [
+        "cif",
+        "mof",
+        "zif",
+        "rcsr",
+        "sod",
+        "拓扑",
+        "晶体",
+        "晶胞",
+        "超胞",
+        "supercell",
+        "slab",
+        "表面",
+        "真空层",
+        "真空",
+        "vacuum",
+        "补氢",
+        "补充氢",
+        "加氢",
+        "氢原子",
+        "hydrogen",
+        "切面",
+        "poscar",
+        "vasp",
+        "materials project",
+        "mp数据库",
+        "mp-",
+        "aflow",
+        "aflowlib",
+        "cod",
+        "crystallography open database",
+        "晶体数据库",
+        "结构数据库"
+      ],
+      "excludes": [
+        "^(?=.*(导出|转成|转换|convert|export))(?=.*(poscar|vasp|cif|xyz|lammps|qe|cp2k|格式|format))(?![^。！？]*?(补氢|加氢|超胞|supercell|切|表面|slab|真空|vacuum|下载|检索|fetch|download|mp-|aflow|cod|core-mof|coRE))"
+      ],
+      "examples": [
+        "帮我下载典型的RCSR为sod的mof，需要碳上补充氢，创建一个2x2x1的超胞（Supercell），沿(111)面切出表面，并加上15Å的真空层，导出为计算化学软件使用的格式。",
+        "帮我下载典型的RCSR为sod的MOF，补氢后做2x2x1超胞，沿(111)面切表面，加15Å真空层，导出VASP",
+        "把这个CIF结构补上缺失的氢原子",
+        "把晶体沿(111)面切成slab，加20Å真空层",
+        "把这个结构的CIF导出成POSCAR/VASP格式",
+        "从CoRE MOF下载一个sod拓扑的典型结构，要raw的CIF",
+        "download a sod topology MOF CIF, add hydrogens, build a 2x2x1 supercell, cut a (111) surface with 15 A vacuum, export POSCAR",
+        "从 Materials Project 下载 mp-149 的 CIF 然后导出 POSCAR",
+        "从 AFLOW 下载一个 GaN 的晶体结构，补氢后导出 VASP",
+        "从 COD 取 7111973 的 CIF，加 15Å 真空"
+      ],
+      "skills": [],
+      "note": "cif-workbench / cif-fetch / cif-repair / cif-geometry / cif-export 五条技能在各自 manifest.intents 里声明本意图，靠 entry_affinity 按原话证据排序：综合任务排第一的是 cif-workbench，只补氢/只切面/只导出时对应单步 skill 会自动排到前面。"
+    },
+    {
+      "id": "condopt-router",
+      "category": "general",
+      "description": "条件优化算法路由器 + 实验闭环驱动：先问必要参数并给建议范围，再按问题特征选算法（bayes/tpe/parego/qehvi/qnehvi/cqehvi/constrained/mfbo/sobol/lhs/grid），生成待测条件表并回收实测结果。",
+      "patterns": [
+        "条件优化",
+        "反应条件",
+        "实验条件",
+        "工艺参数",
+        "贝叶斯优化",
+        "下一批实验",
+        "下一轮实验",
+        "怎么取点",
+        "设计.*实验",
+        "优化.*收率",
+        "提高.*收率",
+        "不能超过",
+        "温度上限",
+        "约束.*条件"
+      ],
+      "keywords": [
+        "条件优化",
+        "反应条件",
+        "实验条件",
+        "贝叶斯优化",
+        "取样",
+        "收率",
+        "工艺参数",
+        "约束"
+      ],
+      "excludes": [
+        "论文",
+        "综述",
+        "文献"
+      ],
+      "examples": [
+        "帮我用贝叶斯优化找反应的最优温度",
+        "下一批实验条件该怎么取点？",
+        "溶剂和配比怎么设计下一轮实验",
+        "用更少的实验找到最高收率条件"
+      ],
+      "skills": [
+        "condopt-router"
+      ]
+    },
+    {
+      "id": "cif-advanced-usecases",
+      "category": "science",
+      "description": "CIF 工作台进阶应用：点群典例教学图、布拉维点阵对称性分析、纯金属批量晶格+表面能输入、Fe-C 相图计算套件",
+      "patterns": [
+        "(点群|空间群|Fd\\s*-?\\s*3\\s*m|fd\\s*-?\\s*3\\s*m|教学图|典例).{0,24}(png|图|例子|典例)",
+        "(布拉维|bravais|cF|tI|点阵).{0,30}(对称|等效|退化|关系)",
+        "(纯金属|金属).{0,20}(晶格|表面能|最密面|slab|POSCAR)",
+        "(铁碳|Fe\\s*-?\\s*C|渗碳体|cementite|相图).{0,30}(化合物|套件|计算|关系|hull)"
+      ],
+      "keywords": [
+        "点群",
+        "空间群",
+        "Fd-3m",
+        "布拉维",
+        "点阵",
+        "表面能",
+        "纯金属",
+        "铁碳",
+        "渗碳体",
+        "相图",
+        "convex hull"
+      ],
+      "excludes": [],
+      "examples": [
+        "我需要向学生们讲解Fd3m点群的性质，帮我找一些典例，排成png",
+        "对比cF与tI的关系，探究14种布拉维点阵的对称性等效与退化",
+        "帮我逐一导出100种纯金属的晶格模拟数据，以及最密面的表面能模拟需要用到的文件",
+        "铁碳化合物有哪些种，跟相图的关系是什么？帮我打包一个用于探究这个问题的计算套件。"
+      ],
+      "skills": [
+        "cif-usecases"
+      ]
+    },
+    {
+      "id": "cif-convert",
+      "category": "science",
+      "description": "把结构/CIF 转成任意下游格式或计算软件输入包（cif to anything）：VASP POSCAR、CIF、XYZ、EXTXYZ、JSON、PDB、SDF、MOL、LAMMPS data、Quantum ESPRESSO、CP2K、GROMACS、Gaussian、ORCA、ABACUS、DFTB+、SIESTA、NWChem、FHI-aims、CASTEP、ABINIT、CRYSTAL、XSF、CFG 等，以及结构+输入模板+README 的输入包。用户说转成/导出/生成某软件的输入或格式时使用。",
+      "patterns": [
+        "(转成|转为|转换|convert|导出|export|输出).{0,24}(lammps|qe|cp2k|gromacs|gaussian|orca|abacus|dftb|siesta|nwchem|aims|castep|abinit|poscar|cif|xyz|extxyz|pdb|sdf|json|结构文件|格式|输入文件)",
+        "(生成|写|make|write|做).{0,16}(输入文件|输入包|input deck|poscar|cp2k|qe|cp2k 输入)",
+        "(lammps|qe|cp2k|gromacs|gaussian|orca|abacus|dftb|siesta|nwchem|fhi-aims|castep|abinit).{0,24}(输入|data|inp|gjf|文件|格式|bundle)",
+        "(批量|batch).{0,16}(转|导出|convert|转换)"
+      ],
+      "keywords": [
+        "转换",
+        "convert",
+        "导出",
+        "POSCAR",
+        "LAMMPS",
+        "QE",
+        "CP2K",
+        "GROMACS",
+        "Gaussian",
+        "ORCA",
+        "ABACUS",
+        "DFTB",
+        "SIESTA",
+        "NWChem",
+        "输入文件",
+        "输入包",
+        "bundle"
+      ],
+      "excludes": [],
+      "examples": [
+        "把这个 CIF 转成 LAMMPS data",
+        "帮我生成 CP2K 和 Quantum ESPRESSO 的输入文件",
+        "导出一个 Gaussian gjf 和一个 ORCA 输入",
+        "把整个目录的 CIF 批量转成 extxyz 和 SDF",
+        "把这个结构的CIF导出成POSCAR/VASP格式",
+        "把这个MOF结构导出成VASP格式",
+        "把 CIF 导出成计算化学软件使用的格式"
+      ],
+      "skills": [
+        "cif-export"
+      ]
+    },
+    {
+      "id": "cif-data",
+      "category": "science",
+      "description": "CIF/结构 → ML-ready 数据管线：批量提取结构特征（组成、晶格、对称性、配位数、RDF、环、拓扑、H 数、金属分数）导出 CSV/JSONL；从 runs/ 或 library/ 构建 dataset（结构+特征+标签+manifest+sha256）。用户说结构特征/特征表/CSV/RDF/配位数/描述符/数据集/dataset/ML 数据时使用。",
+      "patterns": [
+        "(特征|features|描述符|descriptor|RDF|配位数|coordination).{0,24}(CSV|表|导出|提取|计算|数据)",
+        "(数据集|dataset|机器学习|ML|训练集).{0,24}(构建|生成|CSV|jsonl|特征|导出|做)",
+        "(批量|batch).{0,16}(统计|特征|数据集|dataset)",
+        "(结构|CIF|cif).{0,16}(特征表|数据集|dataset)"
+      ],
+      "keywords": [
+        "特征",
+        "features",
+        "CSV",
+        "JSONL",
+        "数据集",
+        "dataset",
+        "机器学习",
+        "ML",
+        "RDF",
+        "配位数",
+        "descriptor",
+        "结构描述符"
+      ],
+      "excludes": [],
+      "examples": [
+        "批量提取这些 CIF 的结构特征导出 CSV",
+        "计算这些结构的 RDF 和配位数，做成特征表",
+        "从 runs 目录构建一个用于机器学习的数据集"
+      ],
+      "skills": [
+        "cif-data"
+      ]
+    },
+    {
+      "id": "bohrium-competition-package",
+      "category": "science",
+      "description": "科学竞赛总入口：按任务书解题、下载提交、输出校验，以及四类定向科学任务。",
+      "patterns": [
+        "bohrium-competition-package",
+        "(科学骑士|科学挑战|Agentic Science Challenge|Playground).{0,20}(赛题|比赛|竞赛|skill|技能|下载|提交|查分|求解)",
+        "bohrium_competetion_package"
+      ],
+      "keywords": [
+        "科学竞赛",
+        "科学骑士",
+        "Playground 赛题",
+        "竞赛技能包"
+      ],
+      "excludes": [],
+      "examples": [
+        "参加 Playground、科学骑士或 Agentic Science Challenge",
+        "需要选择本包的竞赛子技能"
+      ],
+      "skills": [
+        "bohrium-competition-package"
+      ]
+    },
+    {
+      "id": "bohrium-playground-contest-ops",
+      "category": "science",
+      "description": "Playground CLI 下载、认证、提交、trace、查分与失败重试。",
+      "patterns": [
+        "playground.{0,12}(task|download|submit|trace|status|cli)",
+        "(赛题|竞赛).{0,8}(下载|提交|查分)",
+        "(赛题|竞赛).{0,12}(下载|提交|查分|轨迹)"
+      ],
+      "keywords": [
+        "Playground CLI",
+        "赛题下载",
+        "提交查分",
+        "trace.jsonl"
+      ],
+      "excludes": [],
+      "examples": [
+        "需要用 Playground CLI 下载、提交或查询赛题"
+      ],
+      "skills": [
+        "bohrium-playground-contest-ops"
+      ]
+    },
+    {
+      "id": "bohrium-scientific-output-guard",
+      "category": "science",
+      "description": "科学竞赛的文件、CSV/JSON 输出契约、ID 对齐和有限值检查。",
+      "patterns": [
+        "(输出|产物|结果).{0,10}(契约|schema|校验|检查)",
+        "(赛题|竞赛).{0,10}(自检|格式)"
+      ],
+      "keywords": [
+        "输出契约",
+        "CSV schema",
+        "有限值检查",
+        "ID 对齐"
+      ],
+      "excludes": [],
+      "examples": [
+        "提交前需要检查输出契约、CSV schema 或结果有限性"
+      ],
+      "skills": [
+        "bohrium-scientific-output-guard"
+      ]
+    },
+    {
+      "id": "bohrium-deterministic-scientific-opt",
+      "category": "science",
+      "description": "固定随机种子的确定性 Nelder-Mead 与多起点数值优化。",
+      "patterns": [
+        "(确定性|可复现).{0,10}(优化|搜索)",
+        "(多起点|Nelder.Mead|边界约束).{0,8}(优化|求解)?"
+      ],
+      "keywords": [
+        "确定性优化",
+        "多起点优化",
+        "Nelder-Mead"
+      ],
+      "excludes": [],
+      "examples": [
+        "科学计算需要确定性优化、多起点局部搜索或结果复现"
+      ],
+      "skills": [
+        "bohrium-deterministic-scientific-opt"
+      ]
+    },
+    {
+      "id": "bohrium-scientific-data-qc",
+      "category": "science",
+      "description": "科学竞赛数据的 shape、缺失、异常、范围和按组切分 QC。",
+      "patterns": [
+        "(科学|实验|竞赛).{0,8}(数据).{0,8}(qc|检查|质控)",
+        "(按组|group.aware).{0,8}(划分|切分)"
+      ],
+      "keywords": [
+        "科学数据 QC",
+        "数据质控",
+        "按组切分"
+      ],
+      "excludes": [],
+      "examples": [
+        "读入 CSV/NPY/NPZ 科学数据并需要 QC 或 group-aware 划分"
+      ],
+      "skills": [
+        "bohrium-scientific-data-qc"
+      ]
+    },
+    {
+      "id": "bohrium-thermal-design-optimize",
+      "category": "science",
+      "description": "三角翼换热优化的参数化设计、约束处理、多目标与物理合理性工作流。",
+      "patterns": [
+        "(三角翼|换热|热设计|热工水力).{0,12}(优化|赛题|设计)"
+      ],
+      "keywords": [
+        "三角翼换热优化",
+        "热设计",
+        "换热优化"
+      ],
+      "excludes": [],
+      "examples": [
+        "处理三角翼换热、热设计、换热器几何或热工水力优化赛题"
+      ],
+      "skills": [
+        "bohrium-thermal-design-optimize"
+      ]
+    },
+    {
+      "id": "bohrium-multisample-cnv",
+      "category": "science",
+      "description": "多样本 CNV 检测的覆盖矩阵归一化、分段、事件级评估与合成验证。",
+      "patterns": [
+        "(多样本|multiple.sample).{0,8}(cnv|拷贝数)",
+        "(cnv|拷贝数变异).{0,12}(检测|分段|赛题)"
+      ],
+      "keywords": [
+        "多样本 CNV",
+        "CNV 检测",
+        "拷贝数变异"
+      ],
+      "excludes": [],
+      "examples": [
+        "处理多样本 CNV、拷贝数变异、覆盖深度或断点检测赛题"
+      ],
+      "skills": [
+        "bohrium-multisample-cnv"
+      ]
+    },
+    {
+      "id": "bohrium-quantum-tomography-entanglement",
+      "category": "science",
+      "description": "Higgs/量子态层析、密度矩阵重建、纠缠量和 Bell 观测量工作流。",
+      "patterns": [
+        "(higgs|希格斯).{0,12}(量子|纠缠|重建)",
+        "(量子态|密度矩阵).{0,10}(层析|重建|纠缠)"
+      ],
+      "keywords": [
+        "Higgs 量子纠缠",
+        "量子态层析",
+        "密度矩阵重建"
+      ],
+      "excludes": [],
+      "examples": [
+        "处理 Higgs 量子纠缠重建、量子态层析、密度矩阵或 Bell 观测量赛题"
+      ],
+      "skills": [
+        "bohrium-quantum-tomography-entanglement"
+      ]
+    },
+    {
+      "id": "bohrium-xanes-bidirectional-map",
+      "category": "science",
+      "description": "XANES 正向结构到光谱与逆向光谱到结构的映射、验证及分组评估。",
+      "patterns": [
+        "xanes.{0,15}(映射|回归|光谱|赛题)",
+        "(吸收光谱|光谱).{0,8}(双向|逆向|结构).{0,8}(映射|预测|反演)"
+      ],
+      "keywords": [
+        "XANES",
+        "双向光谱映射",
+        "光谱反演"
+      ],
+      "excludes": [],
+      "examples": [
+        "处理 XANES、吸收光谱、双向光谱映射或结构光谱回归赛题"
+      ],
+      "skills": [
+        "bohrium-xanes-bidirectional-map"
+      ]
+    },
+    {
+      "id": "cloud-gpu-bohrium",
+      "category": "cloud-compute",
+      "description": "用 Bohrium（光子计费）的 Batch-Job 管线提交/轮询/取回云端 GPU 作业：先离线 dry-run 出 payload 与目录价敞口，确认成本后才提交，并有一份什么时候不该花光子的实测边界。",
+      "patterns": [
+        "云端\\s*GPU|批量作业|batch\\s*job|光子.*GPU|提交.*作业"
+      ],
+      "keywords": [
+        "云端GPU",
+        "Bohrium",
+        "批量作业",
+        "光子",
+        "dry-run"
+      ],
+      "excludes": [],
+      "examples": [
+        "帮我提交一个云端 GPU 作业",
+        "这个作业要花多少光子，先让我看看再提交"
+      ],
+      "skills": [
+        "cloud-gpu-bohrium"
+      ]
+    },
+    {
+      "id": "course-video-to-notes",
+      "category": "general",
+      "description": "把网课视频的播放流变成可核查的文字资料：HLS 抓流解密 → 云端分块转写 → LLM 逐行校对 → 课外拓展知识点提炼 → 两轮联网勘误 → 合成总汇。用户要'抓课堂视频/做字幕稿/整理课程录音/提炼知识点/给讲稿做勘误'时使用。",
+      "patterns": [
+        "抓[包流取].*(视频|课程|课堂|音频|录音)",
+        "课程(视频|录音|录像|音频)|课堂(实录|录音|录像)",
+        "转[写录].*(稿|字幕)|字幕稿|转写稿",
+        "(视频|音频|录音|录像).*(转文字|转成文字|整理成文字)",
+        "知识点(提炼|整理|归纳|总结)",
+        "(讲稿|稿子|课堂记录|录音|记录).*(勘误|校对|核对|校准)"
+      ],
+      "keywords": [
+        "抓流",
+        "转写",
+        "字幕",
+        "知识点",
+        "勘误",
+        "课堂实录",
+        "课程录像",
+        "音视频转文字"
+      ],
+      "excludes": [],
+      "examples": [
+        "我想把教学网的课抓下来做成文字",
+        "把课堂录音整理成知识点，顺便联网核对一下",
+        "把课程视频转成字幕稿"
+      ],
+      "skills": [
+        "course-video-to-notes"
+      ]
+    },
+    {
+      "id": "find-skill",
+      "category": "meta",
+      "description": "在 agent-library（aglib）里按需求查找/推荐 skill，或问这个任务该用哪个技能",
+      "patterns": [
+        "(在|从)?.{0,4}(aglib|agent-library|技能库|skill 库).{0,8}(找|查|搜|有|推荐)",
+        "(找|有|推荐).{0,4}(什么|哪个|哪些).{0,4}(skill|技能)",
+        "(skill|技能).{0,4}(路由|检索|推荐|选择)"
+      ],
+      "keywords": [
+        "aglib",
+        "agent-library",
+        "找技能",
+        "skill 检索",
+        "路由"
+      ],
+      "excludes": [
+        "创建 skill",
+        "评估 skill"
+      ],
+      "examples": [
+        "aglib 里有没有处理 PDF 的 skill",
+        "这个任务该用哪个技能"
+      ],
+      "skills": [
+        "agentlib-router"
+      ]
+    },
+    {
+      "id": "user-profile",
+      "category": "personal",
+      "description": "建立/查看/更新/删除用户画像与长期偏好：记住我的偏好、以后默认这样、别再这样",
+      "patterns": [
+        "(记住|记录|更新|查看|删掉|删除).{0,6}(我的|用户)?(偏好|画像|习惯|资料)",
+        "(以后默认|按我之前|别再这样|不要记录|你记了什么|不像我|太官方)"
+      ],
+      "keywords": [
+        "用户画像",
+        "偏好",
+        "习惯",
+        "记忆",
+        "profile"
+      ],
+      "excludes": [
+        "端口号"
+      ],
+      "examples": [
+        "记住我的偏好，以后默认这样",
+        "看看你记了我的什么，把太官方那条删掉"
+      ],
+      "skills": [
+        "cognitive-profile"
+      ]
+    },
+    {
+      "id": "office-suite",
+      "category": "documents",
+      "description": "Office 文档通用入口：不确定该用哪个格式 skill 时的调度（docx/xlsx/pptx/pdf 通用问题）",
+      "patterns": [
+        "^(office|办公).{0,4}(文档|文件|套件|全家桶)",
+        "(office|word|excel|ppt).{0,4}(通用|流程|该用哪个|怎么开始|能做什么)"
+      ],
+      "keywords": [
+        "office",
+        "办公套件",
+        "文档"
+      ],
+      "excludes": [
+        "\\.docx|\\.xlsx|\\.pptx"
+      ],
+      "examples": [
+        "处理 Office 文件该从哪开始",
+        "office 文档都能做什么"
+      ],
+      "skills": [
+        "office"
+      ]
+    },
+    {
+      "id": "render-document",
+      "category": "documents",
+      "description": "把文档渲染成图片做视觉检查：排版/布局/对齐/文字溢出",
+      "patterns": [
+        "(渲染|导出成图|截图).{0,6}(文档|页面|ppt|幻灯片|pdf|docx)?",
+        "(检查|查看|看看|看下).{0,12}(排版|布局|版式|对齐|溢出|重叠)"
+      ],
+      "keywords": [
+        "渲染",
+        "排版",
+        "布局",
+        "render",
+        "layout",
+        "视觉检查"
+      ],
+      "excludes": [],
+      "examples": [
+        "把这份文档渲染成图片看看排版",
+        "检查这个 PPT 有没有文字溢出"
+      ],
+      "skills": [
+        "office-render"
+      ]
+    },
+    {
+      "id": "research-memory",
+      "category": "research",
+      "description": "科研记忆巩固与数字分身：整理/回顾 USER.md、SOUL.md、MEMORY.md 等记忆文件",
+      "patterns": [
+        "(科研|研究)?.{0,4}(记忆|memory).{0,4}(整理|巩固|回顾|做梦|清点)",
+        "(整理|巩固|回顾|清点|做梦).{0,8}(科研|研究)?.{0,4}(记忆|memory)",
+        "(USER|SOUL|MEMORY)\\.md",
+        "(数字分身|科研分身|他山)"
+      ],
+      "keywords": [
+        "记忆",
+        "memory",
+        "数字分身",
+        "科研陪伴",
+        "记忆巩固"
+      ],
+      "excludes": [],
+      "examples": [
+        "整理一下你的科研记忆文件",
+        "做一次记忆巩固"
+      ],
+      "skills": [
+        "research-dream"
+      ]
+    },
+    {
+      "id": "skill-loop-optimize-loop",
+      "category": "research-loop",
+      "description": "在硬性正确性约束下迭代优化产物并压低成本：重构保测试全绿、SQL 调优结果不变、复杂度/耗时下降",
+      "patterns": [
+        "loop\\-optimize\\-loop",
+        "(测试|全绿|绿灯).{0,8}(前提|下).{0,4}(重构|优化|迭代)",
+        "(重构|优化|迭代).{0,10}(测试|全绿|绿灯|正确性|结果不变)",
+        "(圈复杂度|复杂度|耗时|成本).{0,4}(降|砍|减|优化)"
+      ],
+      "keywords": [
+        "优化循环",
+        "evaluator-optimizer",
+        "重构",
+        "SQL 调优",
+        "复杂度"
+      ],
+      "excludes": [],
+      "examples": [
+        "帮我把这个模块的圈复杂度降下来，测试必须一直保持绿",
+        "这条 SQL 太慢了，返回结果不能变，帮我一轮一轮迭代到最快"
+      ],
+      "skills": [
+        "loop-optimize-loop"
+      ]
+    },
+    {
+      "id": "skill-loop-plan-loop",
+      "category": "research-loop",
+      "description": "把开发需求先细化成可执行计划再写代码：任务拆解、PR 级 tasks、依赖排序（prompt → plan → execute 的计划阶段）",
+      "patterns": [
+        "loop\\-plan\\-loop",
+        "(先|细化|拆成|制定|写成).{0,8}(计划|plan|任务拆解).{0,8}(写代码|编码|实现|执行)",
+        "(开发|需求).{0,6}(拆成|细化成|变成).{0,6}(计划|plan|tasks)"
+      ],
+      "keywords": [
+        "开发计划",
+        "任务拆解",
+        "planning",
+        "plan.md",
+        "tasks.json"
+      ],
+      "excludes": [],
+      "examples": [
+        "先别写代码，帮我把这个需求拆成一份能照着执行的开发计划",
+        "我要重构这个模块，先给我一份带任务顺序和依赖关系的 plan"
+      ],
+      "skills": [
+        "loop-plan-loop"
+      ]
+    },
+    {
+      "id": "reviva-skill-manager",
+      "category": "meta",
+      "description": "安装/导入/更新/卸载 Reviva 或 Agent 的 Skill 包（触发语须含 skill/技能）",
+      "patterns": [
+        "(安装|导入|更新|卸载|删除|创建).{0,6}(skill|技能)",
+        "skill.{0,6}(安装|导入|更新|仓库|包)"
+      ],
+      "keywords": [
+        "skill 安装",
+        "安装 skill",
+        "导入 skill",
+        "skill 包",
+        "GitHub skill",
+        "创建 skill"
+      ],
+      "excludes": [
+        "D 盘|D:\\\\App|winget|scoop|便携版|安装路径"
+      ],
+      "examples": [
+        "安装这个 skill",
+        "导入 GitHub 上的 skill 仓库"
+      ],
+      "skills": [
+        "skill-installer"
+      ]
+    },
+    {
+      "id": "skill-ai-animation-skill",
+      "category": "general",
+      "description": "将科普、技术或教学内容转换为 PPT 风格 HTML 演示动画，也可基于动画模板重构流程图和平面 UI 演示页面。",
+      "patterns": [
+        "ai\\-animation\\-skill",
+        "将科普",
+        "技术或教学内容转换为",
+        "风格"
+      ],
+      "keywords": [
+        "将科普",
+        "技术或教学内容转换为",
+        "风格",
+        "HTML",
+        "演示动画",
+        "也可基于动画模板重构流程图和平面"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "ai-animation-skill"
+      ]
+    },
+    {
+      "id": "skill-bili-note",
+      "category": "general",
+      "description": "把 MindSpace 已解析的 Bilibili 视频，或 B站图文、动态和评论，整理为可检索、可引用的 Markdown 学习笔记；视频内容只通过 media_read 读取。",
+      "patterns": [
+        "bili\\-note",
+        "MindSpace",
+        "已解析的",
+        "Bilibili"
+      ],
+      "keywords": [
+        "MindSpace",
+        "已解析的",
+        "Bilibili",
+        "视频",
+        "站图文",
+        "动态和评论"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "bili-note"
+      ]
+    },
+    {
+      "id": "skill-cet-skill",
+      "category": "general",
+      "description": "CET Skill 是一个面向大学英语四、六级备考的 Skill。它基于 Codex 对 2015–2025 年 CET-4 / CET-6 真题材料的逐份审计与结构化分析，提炼写作、翻译、阅读、听力四大模块的题型结构、主题趋势、难度差异、",
+      "patterns": [
+        "cet\\-skill",
+        "是一个面向大学英语四",
+        "六级备考的",
+        "它基于"
+      ],
+      "keywords": [
+        "是一个面向大学英语四",
+        "六级备考的",
+        "它基于",
+        "Codex",
+        "CET-4",
+        "CET-6"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "cet-skill"
+      ]
+    },
+    {
+      "id": "skill-civil-service-essay-grader",
+      "category": "general",
+      "description": "批改公务员考试申论小题、公文和大作文，检查材料采分点、审题、结构、格式与表达，支持模拟评分、逐段修改和二次批改。",
+      "patterns": [
+        "civil\\-service\\-essay\\-grader",
+        "批改公务员考试申论小题",
+        "公文和大作文",
+        "检查材料采分点"
+      ],
+      "keywords": [
+        "批改公务员考试申论小题",
+        "公文和大作文",
+        "检查材料采分点",
+        "审题",
+        "结构",
+        "格式与表达"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "civil-service-essay-grader"
+      ]
+    },
+    {
+      "id": "skill-civil-service-question-practice",
+      "category": "general",
+      "description": "面向国考、省考和事业单位的专项刷题能力，支持用户题库、知识库、联网公开真题与AI同类题混合选题，提供逐题练习、限时训练、即时批改、错题重做和刷题复盘。",
+      "patterns": [
+        "civil\\-service\\-question\\-practice",
+        "面向国考",
+        "省考和事业单位的专项刷题能力",
+        "支持用户题库"
+      ],
+      "keywords": [
+        "面向国考",
+        "省考和事业单位的专项刷题能力",
+        "支持用户题库",
+        "知识库",
+        "联网公开真题与",
+        "同类题混合选题"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "civil-service-question-practice"
+      ]
+    },
+    {
+      "id": "skill-classroom-activity-skill",
+      "category": "general",
+      "description": "为教师设计服务教学目标的课堂导入、探究任务、小组讨论、提问链、实验活动、互动游戏、课堂检测、公开课互动和出门条。",
+      "patterns": [
+        "classroom\\-activity\\-skill",
+        "为教师设计服务教学目标的课堂导入",
+        "探究任务",
+        "小组讨论"
+      ],
+      "keywords": [
+        "为教师设计服务教学目标的课堂导入",
+        "探究任务",
+        "小组讨论",
+        "提问链",
+        "实验活动",
+        "互动游戏"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "classroom-activity-skill"
+      ]
+    },
+    {
+      "id": "skill-classroom-management-differentiation-skill",
+      "category": "general",
+      "description": "为教师设计课堂管理、分组、过渡、注意力维持、学情差异、分层教学、培优补差、特殊支持、课堂风险预案和线上/线下课堂执行方案。",
+      "patterns": [
+        "classroom\\-management\\-differentiation\\-skill",
+        "为教师设计课堂管理",
+        "分组",
+        "过渡"
+      ],
+      "keywords": [
+        "为教师设计课堂管理",
+        "分组",
+        "过渡",
+        "注意力维持",
+        "学情差异",
+        "分层教学"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "classroom-management-differentiation-skill"
+      ]
+    },
+    {
+      "id": "skill-computer-network-learning",
+      "category": "general",
+      "description": "面向计算机网络课程的系统学习、章节梳理、概念讲解、协议对比、学习路线和复习闭环设计，覆盖 OSI/TCP-IP、物理层、数据链路层、网络层、传输层、应用层、网络安全基础和常见实验。",
+      "patterns": [
+        "computer\\-network\\-learning",
+        "面向计算机网络课程的系统学习",
+        "章节梳理",
+        "概念讲解"
+      ],
+      "keywords": [
+        "面向计算机网络课程的系统学习",
+        "章节梳理",
+        "概念讲解",
+        "协议对比",
+        "学习路线和复习闭环设计",
+        "覆盖"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "computer-network-learning"
+      ]
+    },
+    {
+      "id": "skill-computer-organization-visualization",
+      "category": "general",
+      "description": "面向计算机组成原理学习、期末和 408 复习的可视化技能，生成数据表示、Cache、主存、指令执行、CPU 数据通路、流水线、总线和 I/O 的单文件 HTML 讲解页或技术图。",
+      "patterns": [
+        "computer\\-organization\\-visualization",
+        "面向计算机组成原理学习",
+        "期末和",
+        "复习的可视化技能"
+      ],
+      "keywords": [
+        "面向计算机组成原理学习",
+        "期末和",
+        "复习的可视化技能",
+        "生成数据表示",
+        "Cache",
+        "主存"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "computer-organization-visualization"
+      ]
+    },
+    {
+      "id": "skill-concept-explainer",
+      "category": "general",
+      "description": "ELI5-style explanations with analogies and multiple examples. Explains concepts at different levels (ELI5, high school, ",
+      "patterns": [
+        "concept\\-explainer",
+        "ELI5-style",
+        "explanations",
+        "analogies"
+      ],
+      "keywords": [
+        "ELI5-style",
+        "explanations",
+        "analogies",
+        "multiple",
+        "examples.",
+        "Explains"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "concept-explainer"
+      ]
+    },
+    {
+      "id": "skill-concept-visualization-generator",
+      "category": "general",
+      "description": "Design and generate concept-first learning artifacts: concept cards, visual explanations, diagrams, interactive HTML dem",
+      "patterns": [
+        "concept\\-visualization\\-generator",
+        "Design",
+        "generate",
+        "concept-first"
+      ],
+      "keywords": [
+        "Design",
+        "generate",
+        "concept-first",
+        "learning",
+        "artifacts",
+        "concept"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "concept-visualization-generator"
+      ]
+    },
+    {
+      "id": "skill-cs-course-learning",
+      "category": "general",
+      "description": "计算机专业核心课程统一学习技能，覆盖数据结构、计算机组成原理、操作系统、计算机网络、408/考研和课程期末复习。支持章节梳理、概念讲解、题型训练、错因诊断、学习计划、资料整理和复习产物设计。",
+      "patterns": [
+        "cs\\-course\\-learning",
+        "计算机专业核心课程统一学习技能",
+        "覆盖数据结构",
+        "计算机组成原理"
+      ],
+      "keywords": [
+        "计算机专业核心课程统一学习技能",
+        "覆盖数据结构",
+        "计算机组成原理",
+        "操作系统",
+        "计算机网络",
+        "考研和课程期末复习"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "cs-course-learning"
+      ]
+    },
+    {
+      "id": "skill-data-structure-visualization",
+      "category": "general",
+      "description": "面向数据结构与算法学习、期末和 408 复习的可视化技能，生成树、图、查找、排序、递归、复杂度和算法手算过程的单文件 HTML 交互讲解页或技术图。",
+      "patterns": [
+        "data\\-structure\\-visualization",
+        "面向数据结构与算法学习",
+        "期末和",
+        "复习的可视化技能"
+      ],
+      "keywords": [
+        "面向数据结构与算法学习",
+        "期末和",
+        "复习的可视化技能",
+        "生成树",
+        "查找",
+        "排序"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "data-structure-visualization"
+      ]
+    },
+    {
+      "id": "skill-deep-research",
+      "category": "general",
+      "description": "深度研究员专属核心技能，用于学习教育、教师备课、资料综述、行业研究、竞品分析、政策解读和办公调研等长任务，生成带来源、结构化分析和可交付报告的研究产物。",
+      "patterns": [
+        "deep\\-research",
+        "深度研究员专属核心技能",
+        "用于学习教育",
+        "教师备课"
+      ],
+      "keywords": [
+        "深度研究员专属核心技能",
+        "用于学习教育",
+        "教师备课",
+        "资料综述",
+        "行业研究",
+        "竞品分析"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "deep-research"
+      ]
+    },
+    {
+      "id": "skill-edu-analytic-geometry",
+      "category": "general",
+      "description": "把解析几何题解成自包含的交互教学网页，包含题面、KaTeX 分步解析、动态控制台和 2D Canvas 圆锥曲线画板。适用于椭圆、双曲线、抛物线、弦长、数量积范围、定点定值、轨迹、离心率等题型。",
+      "patterns": [
+        "edu\\-analytic\\-geometry",
+        "把解析几何题解成自包含的交互教学网页",
+        "包含题面",
+        "KaTeX"
+      ],
+      "keywords": [
+        "把解析几何题解成自包含的交互教学网页",
+        "包含题面",
+        "KaTeX",
+        "分步解析",
+        "动态控制台和",
+        "Canvas"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "edu-analytic-geometry"
+      ]
+    },
+    {
+      "id": "skill-edu-chem-reaction",
+      "category": "general",
+      "description": "将教材范围内的化学反应生成包含 Three.js 分子动画、方程式、断键成键和原子守恒说明的单文件 HTML。适用于燃烧、电解、氧化还原和基础有机反应机理的可视化讲解。",
+      "patterns": [
+        "edu\\-chem\\-reaction",
+        "将教材范围内的化学反应生成包含",
+        "Three.js",
+        "分子动画"
+      ],
+      "keywords": [
+        "将教材范围内的化学反应生成包含",
+        "Three.js",
+        "分子动画",
+        "方程式",
+        "断键成键和原子守恒说明的单文件",
+        "HTML"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "edu-chem-reaction"
+      ]
+    },
+    {
+      "id": "skill-edu-solid-geometry",
+      "category": "general",
+      "description": "把立体几何题解成自包含的交互教学网页，包含题面、MathJax 分步解析和 Three.js 可交互 3D 模型。适用于线面角、二面角、异面直线夹角、点到平面距离、体积等题型。",
+      "patterns": [
+        "edu\\-solid\\-geometry",
+        "把立体几何题解成自包含的交互教学网页",
+        "包含题面",
+        "MathJax"
+      ],
+      "keywords": [
+        "把立体几何题解成自包含的交互教学网页",
+        "包含题面",
+        "MathJax",
+        "分步解析和",
+        "Three.js",
+        "可交互"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "edu-solid-geometry"
+      ]
+    },
+    {
+      "id": "skill-error-analysis",
+      "category": "general",
+      "description": "Analyze incorrect answers from text, documents, or images; identify root causes of mistakes; classify error types into u",
+      "patterns": [
+        "error\\-analysis",
+        "Analyze",
+        "incorrect",
+        "answers"
+      ],
+      "keywords": [
+        "Analyze",
+        "incorrect",
+        "answers",
+        "text",
+        "documents",
+        "images"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "error-analysis"
+      ]
+    },
+    {
+      "id": "skill-exam-prep",
+      "category": "general",
+      "description": "Generate high-density sprint review materials for last-minute exam preparation, including cheat sheets, formula cards, e",
+      "patterns": [
+        "exam\\-prep",
+        "Generate",
+        "high-density",
+        "sprint"
+      ],
+      "keywords": [
+        "Generate",
+        "high-density",
+        "sprint",
+        "review",
+        "materials",
+        "last-minute"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "exam-prep"
+      ]
+    },
+    {
+      "id": "skill-exam-simulator",
+      "category": "general",
+      "description": "Create realistic mock exams from user-provided materials, syllabi, exam scopes, or searched public information. Supports",
+      "patterns": [
+        "exam\\-simulator",
+        "Create",
+        "realistic",
+        "mock"
+      ],
+      "keywords": [
+        "Create",
+        "realistic",
+        "mock",
+        "exams",
+        "user-provided",
+        "materials"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "exam-simulator"
+      ]
+    },
+    {
+      "id": "skill-exam2knowledge",
+      "category": "general",
+      "description": "Reverse-engineers exam questions into high-frequency test points and reusable solving patterns. Use for past papers, pra",
+      "patterns": [
+        "exam2knowledge",
+        "Reverse-engineers",
+        "exam",
+        "questions"
+      ],
+      "keywords": [
+        "Reverse-engineers",
+        "exam",
+        "questions",
+        "high-frequency",
+        "test",
+        "points"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "exam2knowledge"
+      ]
+    },
+    {
+      "id": "skill-feynman-learning-coach",
+      "category": "general",
+      "description": "Guide users through the Feynman Technique by asking them to explain a concept in simple language, diagnosing gaps, corre",
+      "patterns": [
+        "feynman\\-learning\\-coach",
+        "Guide",
+        "users",
+        "through"
+      ],
+      "keywords": [
+        "Guide",
+        "users",
+        "through",
+        "Feynman",
+        "Technique",
+        "asking"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "feynman-learning-coach"
+      ]
+    },
+    {
+      "id": "skill-flashcard-generator",
+      "category": "general",
+      "description": "Generate educational flashcards from topics, documents, notes, or study materials. Produces structured JSON data and can",
+      "patterns": [
+        "flashcard\\-generator",
+        "Generate",
+        "educational",
+        "flashcards"
+      ],
+      "keywords": [
+        "Generate",
+        "educational",
+        "flashcards",
+        "topics",
+        "documents",
+        "notes"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "flashcard-generator"
+      ]
+    },
+    {
+      "id": "skill-geometry-assistant",
+      "category": "general",
+      "description": "将高中立体几何题转换为可交互的单文件 Three.js HTML，支持已知条件高亮、辅助构造、截面、线面角、二面角和分步证明展示。",
+      "patterns": [
+        "geometry\\-assistant",
+        "将高中立体几何题转换为可交互的单文件",
+        "Three.js",
+        "HTML"
+      ],
+      "keywords": [
+        "将高中立体几何题转换为可交互的单文件",
+        "Three.js",
+        "HTML",
+        "支持已知条件高亮",
+        "辅助构造",
+        "截面"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "geometry-assistant"
+      ]
+    },
+    {
+      "id": "skill-html-ppt-skill",
+      "category": "general",
+      "description": "基于主题、布局、动画和完整 deck 模板生成专业静态 HTML 演示文稿，支持键盘导航、演讲者模式、逐字稿和多种场景模板。",
+      "patterns": [
+        "html\\-ppt\\-skill",
+        "基于主题",
+        "布局",
+        "动画和完整"
+      ],
+      "keywords": [
+        "基于主题",
+        "布局",
+        "动画和完整",
+        "deck",
+        "模板生成专业静态",
+        "HTML"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "html-ppt-skill"
+      ]
+    },
+    {
+      "id": "skill-huasheng13-skill",
+      "category": "general",
+      "description": "公务员考试行测与申论学习助手，覆盖题型方法、资料分析速算、考试策略、套题复盘和个性化备考，并按年份、地区、卷型与专业科目适配具体考情。",
+      "patterns": [
+        "huasheng13\\-skill",
+        "公务员考试行测与申论学习助手",
+        "覆盖题型方法",
+        "资料分析速算"
+      ],
+      "keywords": [
+        "公务员考试行测与申论学习助手",
+        "覆盖题型方法",
+        "资料分析速算",
+        "考试策略",
+        "套题复盘和个性化备考",
+        "并按年份"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "huasheng13-skill"
+      ]
+    },
+    {
+      "id": "skill-k12-chemistry-learning",
+      "category": "general",
+      "description": "按题目条件完成 K12 化学方程式、现象、守恒计算、实验边界、错因反馈、多题考点归纳与宏微观可视化。",
+      "patterns": [
+        "k12\\-chemistry\\-learning",
+        "按题目条件完成",
+        "化学方程式",
+        "现象"
+      ],
+      "keywords": [
+        "按题目条件完成",
+        "化学方程式",
+        "现象",
+        "守恒计算",
+        "实验边界",
+        "错因反馈"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "k12-chemistry-learning"
+      ]
+    },
+    {
+      "id": "skill-k12-english-learning",
+      "category": "general",
+      "description": "按语境处理 K12 英语词汇、语法、听读证据、写作修改、翻译反馈与按需结构可视化。",
+      "patterns": [
+        "k12\\-english\\-learning",
+        "按语境处理",
+        "英语词汇",
+        "语法"
+      ],
+      "keywords": [
+        "按语境处理",
+        "英语词汇",
+        "语法",
+        "听读证据",
+        "写作修改",
+        "翻译反馈与按需结构可视化"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "k12-english-learning"
+      ]
+    },
+    {
+      "id": "skill-k12-math-learning",
+      "category": "general",
+      "description": "按当前题目和学习目标完成 K12 数学讲解、条件检查、变式训练、错因反馈、多题考点归纳与按需图表可视化。",
+      "patterns": [
+        "k12\\-math\\-learning",
+        "按当前题目和学习目标完成",
+        "数学讲解",
+        "条件检查"
+      ],
+      "keywords": [
+        "按当前题目和学习目标完成",
+        "数学讲解",
+        "条件检查",
+        "变式训练",
+        "错因反馈",
+        "多题考点归纳与按需图表可视化"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "k12-math-learning"
+      ]
+    },
+    {
+      "id": "skill-k12-physics-learning",
+      "category": "general",
+      "description": "按题目条件完成 K12 物理建模、单位校验、实验理解、错因反馈、多题考点归纳与按需示意图。",
+      "patterns": [
+        "k12\\-physics\\-learning",
+        "按题目条件完成",
+        "物理建模",
+        "单位校验"
+      ],
+      "keywords": [
+        "按题目条件完成",
+        "物理建模",
+        "单位校验",
+        "实验理解",
+        "错因反馈",
+        "多题考点归纳与按需示意图"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "k12-physics-learning"
+      ]
+    },
+    {
+      "id": "skill-knowledge-organize",
+      "category": "general",
+      "description": "Organize study materials into structured knowledge outlines, key-point lists, chapter summaries, one-page review sheets,",
+      "patterns": [
+        "knowledge\\-organize",
+        "Organize",
+        "study",
+        "materials"
+      ],
+      "keywords": [
+        "Organize",
+        "study",
+        "materials",
+        "structured",
+        "knowledge",
+        "outlines"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "knowledge-organize"
+      ]
+    },
+    {
+      "id": "skill-lab-report-writer",
+      "category": "general",
+      "description": "面向高校和专业课实验的通用实验报告写作技能，支持有模板、无模板、已有资料整理、数据分析和 Office 文档生成。",
+      "patterns": [
+        "lab\\-report\\-writer",
+        "面向高校和专业课实验的通用实验报告写作技能",
+        "支持有模板",
+        "无模板"
+      ],
+      "keywords": [
+        "面向高校和专业课实验的通用实验报告写作技能",
+        "支持有模板",
+        "无模板",
+        "已有资料整理",
+        "数据分析和",
+        "Office"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "lab-report-writer"
+      ]
+    },
+    {
+      "id": "skill-learn-anything",
+      "category": "general",
+      "description": "面向「学习任何知识」的通用导师型 skill。用于用户想学习新主题、制定学习计划、整理学习笔记、做课后复盘、生成项目任务书、做掌握度检查，或希望基于自己资料与外部权威资料进行中文导师式陪学时。默认采用「导师 + 项目教练」模式，以项目驱动和",
+      "patterns": [
+        "learn\\-anything",
+        "面向",
+        "学习任何知识",
+        "的通用导师型"
+      ],
+      "keywords": [
+        "面向",
+        "学习任何知识",
+        "的通用导师型",
+        "用于用户想学习新主题",
+        "制定学习计划",
+        "整理学习笔记"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "learn-anything"
+      ]
+    },
+    {
+      "id": "skill-learning-visualization-skill",
+      "category": "general",
+      "description": "将知识点、流程、概念关系、算法原理或复习内容转换为单文件 HTML 可视化讲解页面，支持流程图、概念图、原理动画、对比图、时间线和 AI/ML 模型演示。",
+      "patterns": [
+        "learning\\-visualization\\-skill",
+        "将知识点",
+        "流程",
+        "概念关系"
+      ],
+      "keywords": [
+        "将知识点",
+        "流程",
+        "概念关系",
+        "算法原理或复习内容转换为单文件",
+        "HTML",
+        "可视化讲解页面"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "learning-visualization-skill"
+      ]
+    },
+    {
+      "id": "skill-lesson-plan-skill",
+      "category": "general",
+      "description": "为教师生成可直接备课使用的教案与教学设计，覆盖不同年级、学科、学情、公开课/赛课、说课稿、单元设计、文档输出和教学反思。",
+      "patterns": [
+        "lesson\\-plan\\-skill",
+        "为教师生成可直接备课使用的教案与教学设计",
+        "覆盖不同年级",
+        "学科"
+      ],
+      "keywords": [
+        "为教师生成可直接备课使用的教案与教学设计",
+        "覆盖不同年级",
+        "学科",
+        "学情",
+        "公开课",
+        "赛课"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "lesson-plan-skill"
+      ]
+    },
+    {
+      "id": "skill-manim-animation-maker",
+      "category": "general",
+      "description": "Use a Manim plus FFmpeg workflow to create educational explainer videos for math, physics, geometry, algorithms, and abs",
+      "patterns": [
+        "manim\\-animation\\-maker",
+        "Manim",
+        "plus",
+        "FFmpeg"
+      ],
+      "keywords": [
+        "Manim",
+        "plus",
+        "FFmpeg",
+        "workflow",
+        "create",
+        "educational"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "manim-animation-maker"
+      ]
+    },
+    {
+      "id": "skill-math-explainer",
+      "category": "general",
+      "description": "Generate math explanation videos (animated with Manim) and interactive web pages from a user's request. Use when the use",
+      "patterns": [
+        "math\\-explainer",
+        "Generate",
+        "math",
+        "explanation"
+      ],
+      "keywords": [
+        "Generate",
+        "math",
+        "explanation",
+        "videos",
+        "animated",
+        "Manim"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "math-explainer"
+      ]
+    },
+    {
+      "id": "skill-mistake-analyzer",
+      "category": "general",
+      "description": "Analyze incorrect answers from text, documents, or images; identify root causes of mistakes; classify error types; expla",
+      "patterns": [
+        "mistake\\-analyzer",
+        "Analyze",
+        "incorrect",
+        "answers"
+      ],
+      "keywords": [
+        "Analyze",
+        "incorrect",
+        "answers",
+        "text",
+        "documents",
+        "images"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "mistake-analyzer"
+      ]
+    },
+    {
+      "id": "skill-mock-exam",
+      "category": "general",
+      "description": "Create realistic mock exams from user-provided materials, syllabi, exam scopes, or searched public information. Supports",
+      "patterns": [
+        "mock\\-exam",
+        "Create",
+        "realistic",
+        "mock"
+      ],
+      "keywords": [
+        "Create",
+        "realistic",
+        "mock",
+        "exams",
+        "user-provided",
+        "materials"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "mock-exam"
+      ]
+    },
+    {
+      "id": "skill-network-exam-practice",
+      "category": "general",
+      "description": "面向计算机网络课程期末、408/考研基础和章节测验的题目生成、答题诊断、错因分析、考点归纳和冲刺复习。覆盖选择题、填空题、简答题、计算题、协议分析题和综合题。",
+      "patterns": [
+        "network\\-exam\\-practice",
+        "面向计算机网络课程期末",
+        "考研基础和章节测验的题目生成",
+        "答题诊断"
+      ],
+      "keywords": [
+        "面向计算机网络课程期末",
+        "考研基础和章节测验的题目生成",
+        "答题诊断",
+        "错因分析",
+        "考点归纳和冲刺复习",
+        "覆盖选择题"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "network-exam-practice"
+      ]
+    },
+    {
+      "id": "skill-network-packet-lab",
+      "category": "general",
+      "description": "设计和讲解计算机网络抓包实验，帮助用户理解 Wireshark/tcpdump 输出、协议字段、请求响应流程、故障定位和实验报告撰写。强调教学、复习和防御性分析，不提供攻击操作。",
+      "patterns": [
+        "network\\-packet\\-lab",
+        "设计和讲解计算机网络抓包实验",
+        "帮助用户理解",
+        "Wireshark"
+      ],
+      "keywords": [
+        "设计和讲解计算机网络抓包实验",
+        "帮助用户理解",
+        "Wireshark",
+        "tcpdump",
+        "输出",
+        "协议字段"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "network-packet-lab"
+      ]
+    },
+    {
+      "id": "skill-network-protocol-viz",
+      "category": "general",
+      "description": "生成用于学习、复习和教学的网络协议单文件 HTML 动画，覆盖 TCP/IP、IPv4、以太网帧、交换机、路由、DHCP、HTTPS/TLS、抓包和防火墙过滤等场景。",
+      "patterns": [
+        "network\\-protocol\\-viz",
+        "生成用于学习",
+        "复习和教学的网络协议单文件",
+        "HTML"
+      ],
+      "keywords": [
+        "生成用于学习",
+        "复习和教学的网络协议单文件",
+        "HTML",
+        "动画",
+        "覆盖",
+        "IPv4"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "network-protocol-viz"
+      ]
+    },
+    {
+      "id": "skill-note-skill",
+      "category": "general",
+      "description": "将技术内容、漏洞分析、知识总结或学习材料转换为手写笔记本风格的单文件 HTML 学习笔记。",
+      "patterns": [
+        "note\\-skill",
+        "将技术内容",
+        "漏洞分析",
+        "知识总结或学习材料转换为手写笔记本风格的单文件"
+      ],
+      "keywords": [
+        "将技术内容",
+        "漏洞分析",
+        "知识总结或学习材料转换为手写笔记本风格的单文件",
+        "HTML",
+        "学习笔记"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "note-skill"
+      ]
+    },
+    {
+      "id": "skill-officecli-skills",
+      "category": "general",
+      "description": "统一处理 Word、PPT、Excel 文件的 Office 技能，覆盖读取、创建、编辑、表格、图片、图表、批注、字段、表单和公式等常用 Office 场景。",
+      "patterns": [
+        "officecli\\-skills",
+        "统一处理",
+        "Word",
+        "Excel"
+      ],
+      "keywords": [
+        "统一处理",
+        "Word",
+        "Excel",
+        "文件的",
+        "Office",
+        "技能"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "officecli-skills"
+      ]
+    },
+    {
+      "id": "skill-operating-system-visualization",
+      "category": "general",
+      "description": "面向操作系统学习、期末和 408 复习的可视化技能，生成进程状态、调度算法、同步互斥、死锁、页表地址转换、页面置换、文件系统和磁盘调度的单文件 HTML 讲解页或技术图。",
+      "patterns": [
+        "operating\\-system\\-visualization",
+        "面向操作系统学习",
+        "期末和",
+        "复习的可视化技能"
+      ],
+      "keywords": [
+        "面向操作系统学习",
+        "期末和",
+        "复习的可视化技能",
+        "生成进程状态",
+        "调度算法",
+        "同步互斥"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "operating-system-visualization"
+      ]
+    },
+    {
+      "id": "skill-ppt-creation",
+      "category": "general",
+      "description": "Create polished presentations from notes, documents, research, or rough requirements. Plans slide structure, reduces tex",
+      "patterns": [
+        "ppt\\-creation",
+        "Create",
+        "polished",
+        "presentations"
+      ],
+      "keywords": [
+        "Create",
+        "polished",
+        "presentations",
+        "notes",
+        "documents",
+        "research"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "ppt-creation"
+      ]
+    },
+    {
+      "id": "skill-pptx-deck-skill",
+      "category": "general",
+      "description": "面向 OfficeCLI 原生 PPTX 的模板设计层，覆盖教育学习、办公汇报、研究总结和自适应创作场景，指导 Agent 使用 office_write 生成可编辑且视觉稳定的演示文稿。",
+      "patterns": [
+        "pptx\\-deck\\-skill",
+        "面向",
+        "OfficeCLI",
+        "原生"
+      ],
+      "keywords": [
+        "面向",
+        "OfficeCLI",
+        "原生",
+        "PPTX",
+        "的模板设计层",
+        "覆盖教育学习"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "pptx-deck-skill"
+      ]
+    },
+    {
+      "id": "skill-practice-quiz",
+      "category": "general",
+      "description": "Generate educational practice questions by chapter, question type, or difficulty level. Supports multiple choice, fill-i",
+      "patterns": [
+        "practice\\-quiz",
+        "Generate",
+        "educational",
+        "practice"
+      ],
+      "keywords": [
+        "Generate",
+        "educational",
+        "practice",
+        "questions",
+        "chapter",
+        "question"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "practice-quiz"
+      ]
+    },
+    {
+      "id": "skill-quiz-generator",
+      "category": "general",
+      "description": "Generate educational quizzes from topics, learning goals, or provided documents. Supports multiple question types, diffi",
+      "patterns": [
+        "quiz\\-generator",
+        "Generate",
+        "educational",
+        "quizzes"
+      ],
+      "keywords": [
+        "Generate",
+        "educational",
+        "quizzes",
+        "topics",
+        "learning",
+        "goals"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "quiz-generator"
+      ]
+    },
+    {
+      "id": "skill-research-brief-skill",
+      "category": "general",
+      "description": "为普通 Agent 提供轻量但可靠的资料研究、来源核验和简报合成能力，支持用户本地资料、知识库和可选联网搜索，按需输出 Markdown 简报和 HTML 展示页。",
+      "patterns": [
+        "research\\-brief\\-skill",
+        "为普通",
+        "Agent",
+        "提供轻量但可靠的资料研究"
+      ],
+      "keywords": [
+        "为普通",
+        "Agent",
+        "提供轻量但可靠的资料研究",
+        "来源核验和简报合成能力",
+        "支持用户本地资料",
+        "知识库和可选联网搜索"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "research-brief-skill"
+      ]
+    },
+    {
+      "id": "skill-review-plan",
+      "category": "general",
+      "description": "Generate structured study plans based on exam dates, subject difficulty, and mastery levels. Supports daily plans, sprin",
+      "patterns": [
+        "review\\-plan",
+        "Generate",
+        "structured",
+        "study"
+      ],
+      "keywords": [
+        "Generate",
+        "structured",
+        "study",
+        "plans",
+        "based",
+        "exam"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "review-plan"
+      ]
+    },
+    {
+      "id": "skill-socratic-tutor",
+      "category": "general",
+      "description": "Guide users through learning by asking questions, giving progressive hints, and helping them reason step by step instead",
+      "patterns": [
+        "socratic\\-tutor",
+        "Guide",
+        "users",
+        "through"
+      ],
+      "keywords": [
+        "Guide",
+        "users",
+        "through",
+        "learning",
+        "asking",
+        "questions"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "socratic-tutor"
+      ]
+    },
+    {
+      "id": "skill-study-companion-en",
+      "category": "general",
+      "description": "通用学习助手，用于学习、复习、备考、概念讲解、解题、作业辅导、错误分析、主动回忆、闪卡、学习计划、可视化、动画、模拟、编程练习、语言学习和学术写作。",
+      "patterns": [
+        "study\\-companion\\-en",
+        "通用学习助手",
+        "用于学习",
+        "复习"
+      ],
+      "keywords": [
+        "通用学习助手",
+        "用于学习",
+        "复习",
+        "备考",
+        "概念讲解",
+        "解题"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "study-companion-en"
+      ]
+    },
+    {
+      "id": "skill-teacher-skill",
+      "category": "general",
+      "description": "给定文档/书籍/课程资料后，像老师一样诊断学情、制定学习路线、逐单元教学并检查理解，支持模仿名师教学风格。当用户说\"教我\"\"帮我学\"\"帮我理解\"或上传资料要求学习时触发。",
+      "patterns": [
+        "teacher\\-skill",
+        "给定文档",
+        "书籍",
+        "课程资料后"
+      ],
+      "keywords": [
+        "给定文档",
+        "书籍",
+        "课程资料后",
+        "像老师一样诊断学情",
+        "制定学习路线",
+        "逐单元教学并检查理解"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "teacher-skill"
+      ]
+    },
+    {
+      "id": "skill-teaching-assessment-skill",
+      "category": "general",
+      "description": "为教师设计目标对齐的评价量规、课堂评价、作业批改标准、形成性评价、出门条、课堂观察表、学习诊断和教学反思。",
+      "patterns": [
+        "teaching\\-assessment\\-skill",
+        "为教师设计目标对齐的评价量规",
+        "课堂评价",
+        "作业批改标准"
+      ],
+      "keywords": [
+        "为教师设计目标对齐的评价量规",
+        "课堂评价",
+        "作业批改标准",
+        "形成性评价",
+        "出门条",
+        "课堂观察表"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "teaching-assessment-skill"
+      ]
+    },
+    {
+      "id": "skill-teaching-document-writing-skill",
+      "category": "general",
+      "description": "为教师撰写和改写说课稿、教研总结、听评课记录、教学反思、培训方案、家校沟通、工作计划、工作总结和教学案例等正式文档。",
+      "patterns": [
+        "teaching\\-document\\-writing\\-skill",
+        "为教师撰写和改写说课稿",
+        "教研总结",
+        "听评课记录"
+      ],
+      "keywords": [
+        "为教师撰写和改写说课稿",
+        "教研总结",
+        "听评课记录",
+        "教学反思",
+        "培训方案",
+        "家校沟通"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "teaching-document-writing-skill"
+      ]
+    },
+    {
+      "id": "skill-teaching-resource-research-skill",
+      "category": "general",
+      "description": "为教师联网检索和筛选课程标准、教材背景、公开资料、案例、时事素材、教学资源和引用依据，输出可用于备课、课件、学案和教研文档的来源清单与素材建议。",
+      "patterns": [
+        "teaching\\-resource\\-research\\-skill",
+        "为教师联网检索和筛选课程标准",
+        "教材背景",
+        "公开资料"
+      ],
+      "keywords": [
+        "为教师联网检索和筛选课程标准",
+        "教材背景",
+        "公开资料",
+        "案例",
+        "时事素材",
+        "教学资源和引用依据"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "teaching-resource-research-skill"
+      ]
+    },
+    {
+      "id": "skill-technical-diagram-skill",
+      "category": "general",
+      "description": "基于 dynamic-archify 的专业技术图表能力，可生成架构图、工作流图、时序图、数据流图、生命周期/状态机图，并输出带主题切换和导出功能的单文件 HTML。",
+      "patterns": [
+        "technical\\-diagram\\-skill",
+        "基于",
+        "dynamic-archify",
+        "的专业技术图表能力"
+      ],
+      "keywords": [
+        "基于",
+        "dynamic-archify",
+        "的专业技术图表能力",
+        "可生成架构图",
+        "工作流图",
+        "时序图"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "technical-diagram-skill"
+      ]
+    },
+    {
+      "id": "skill-web-access",
+      "category": "general",
+      "description": "通过Chrome/Edge CDP 代理进行搜索、网页访问、登录后操作、动态页面操作、截图和浏览器上下文检索；适合需要真实浏览器环境的联网任务。触发场景：用户要求搜索信息、查看网页内容、访问需要登录的网站、操作网页界面、抓取社交媒体内容（小",
+      "patterns": [
+        "web\\-access",
+        "通过",
+        "Chrome",
+        "Edge"
+      ],
+      "keywords": [
+        "通过",
+        "Chrome",
+        "Edge",
+        "代理进行搜索",
+        "网页访问",
+        "登录后操作"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "web-access"
+      ]
+    },
+    {
+      "id": "skill-worksheet-skill",
+      "category": "general",
+      "description": "为教师生成学案、导学案、任务单、课堂练习、课后作业、分层作业、错题再练、学生版/教师版答案解析和可打印文档。",
+      "patterns": [
+        "worksheet\\-skill",
+        "为教师生成学案",
+        "导学案",
+        "任务单"
+      ],
+      "keywords": [
+        "为教师生成学案",
+        "导学案",
+        "任务单",
+        "课堂练习",
+        "课后作业",
+        "分层作业"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "worksheet-skill"
+      ]
+    },
+    {
+      "id": "project-review-orchestrator",
+      "category": "general",
+      "description": "多项目证据评审的总控：识别项目与版本、调度专项审查和 GitHub 对比、聚合缺点并给最终门禁；不替专项伪造结论。",
+      "patterns": [
+        "全项目审查|多项目评审|项目总审查|评审总控"
+      ],
+      "keywords": [
+        "项目审查",
+        "证据门禁",
+        "版本冻结",
+        "多项目"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "project-review-orchestrator"
+      ]
+    },
+    {
+      "id": "github-reproduction-scout",
+      "category": "general",
+      "description": "按证据缺口拆分 subagents 在 GitHub 寻找官方参照、独立复现和可比方法，核验来源并去重；不把相似仓库当复现。",
+      "patterns": [
+        "GitHub.*复现",
+        "复现.*GitHub",
+        "参考实现检索",
+        "开源实现对比"
+      ],
+      "keywords": [
+        "GitHub",
+        "复现检索",
+        "参考实现",
+        "subagent"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "github-reproduction-scout"
+      ]
+    },
+    {
+      "id": "implementation-comparator",
+      "category": "general",
+      "description": "对齐版本、环境、输入和输出做 reference/candidate 事实比较，区分 MATCH、DIFF、INCOMPARABLE 和 UNVERIFIED。",
+      "patterns": [
+        "实现对比",
+        "复现对比",
+        "差分测试",
+        "等价合同",
+        "reference.*candidate"
+      ],
+      "keywords": [
+        "实现比较",
+        "等效性",
+        "差分测试",
+        "容差"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "implementation-comparator"
+      ]
+    },
+    {
+      "id": "defect-synthesizer",
+      "category": "general",
+      "description": "把实际项目审查证据去重为分级缺点，区分真实失败、环境阻塞和未验证，绑定文件行号、影响和改进。",
+      "patterns": [
+        "缺点.*总结",
+        "评审.*缺点",
+        "问题.*定级",
+        "缺陷综合"
+      ],
+      "keywords": [
+        "缺点总结",
+        "缺陷分级",
+        "证据审查",
+        "根因"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "defect-synthesizer"
+      ]
+    },
+    {
+      "id": "targeted-remediator",
+      "category": "general",
+      "description": "把已证实项目缺点转为最小修改、可执行验收和回归；获授权才修改，保留旧档，未运行不得称已解决。",
+      "patterns": [
+        "针对.*缺点.*改进",
+        "按评审.*修改",
+        "留旧档存新档",
+        "修复.*验收"
+      ],
+      "keywords": [
+        "针对性改进",
+        "修复验收",
+        "回归",
+        "旧档"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "targeted-remediator"
+      ]
+    },
+    {
+      "id": "concept-substance-reviewer",
+      "category": "general",
+      "description": "分别审查项目概念和实质：问题边界、假设证伪、claim 到代码实验的证据链；区分 demo、运行与科学主张。",
+      "patterns": [
+        "概念.*实质",
+        "问题定义.*审查",
+        "实现.*支撑",
+        "项目.*声称"
+      ],
+      "keywords": [
+        "概念审查",
+        "实质审查",
+        "证据链",
+        "问题定义"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "concept-substance-reviewer"
+      ]
+    },
+    {
+      "id": "equivalence-scholarship-reviewer",
+      "category": "general",
+      "description": "审查算法等效性、学术增量、消融噪声、有效性威胁与反证思维；不把名称相同或局部通过当等价和创新。",
+      "patterns": [
+        "等价性.*学术",
+        "学术意义",
+        "算法等价",
+        "研究思维",
+        "有效性威胁"
+      ],
+      "keywords": [
+        "等效性",
+        "学术意义",
+        "创新审查",
+        "消融",
+        "反证"
+      ],
+      "excludes": [],
+      "examples": [],
+      "skills": [
+        "equivalence-scholarship-reviewer"
+      ]
+    },
+    {
+      "id": "scitopdf",
+      "category": "research",
+      "description": "用 upstream scitopdf 从 Sci-Hub 按 DOI 批量拉取文献 PDF，自动处理 ALTCHA 人机验证与 MSYS 工具链缺口，并给出可执行验收（exit code + JSON）",
+      "patterns": [
+        "scitopdf|sci-?hub",
+        "10\\.\\d+/\\S+",
+        "doi\\.org/10\\.",
+        "(拉|下载|获取|抓)(文献|论文|pdf|PDF)",
+        "(文献|论文)(PDF|pdf|下载|拉取)"
+      ],
+      "keywords": [
+        "scitopdf",
+        "sci-hub",
+        "DOI",
+        "doi",
+        "文献",
+        "论文",
+        "PDF",
+        "拉取"
+      ],
+      "excludes": [],
+      "examples": [
+        "10.1002/chem.201802138 用scitopdf拉",
+        "用 scitopdf 把这几篇文献的 PDF 下下来",
+        "按 DOI 抓论文 PDF"
+      ],
+      "skills": [
+        "scitopdf"
+      ]
+    },
+    {
+      "id": "skill-evaluation",
+      "category": "meta",
+      "description": "评估/审查/验证一套 Agent Skill 是否合规、有用、可安装",
+      "patterns": [
+        "(审查|评估|评审|验证|检验|打分|体检).*skill",
+        "skill.*(审查|评估|评审|验证|检验|好坏|值不值得|能不能装|靠不靠谱)",
+        "这套 skill",
+        "skill 质量"
+      ],
+      "keywords": [
+        "skill 评估",
+        "skill 审查",
+        "skill 验证",
+        "能不能装",
+        "skill 好坏"
+      ],
+      "excludes": [],
+      "examples": [
+        "验证这套评审 skill 本身",
+        "帮我审一下这个 skill 值不值得装",
+        "检查这套 skill 的证据合同是否自洽"
+      ],
+      "skills": [
+        "skill-criticagent",
+        "project-review-orchestrator"
+      ]
+    }
+  ],
+  "categories": {
+    "science": [
+      "draw-chemistry",
+      "molecular-property",
+      "retrosynthesis",
+      "reaction-prediction",
+      "chemistry-data",
+      "reaction-to-cdxml",
+      "cif-to-3dprint",
+      "blender-mol-render",
+      "bohrium",
+      "cif-structure-pipeline",
+      "cif-advanced-usecases",
+      "bohrium-competition-package",
+      "bohrium-playground-contest-ops",
+      "bohrium-scientific-output-guard",
+      "bohrium-deterministic-scientific-opt",
+      "bohrium-scientific-data-qc",
+      "bohrium-thermal-design-optimize",
+      "bohrium-multisample-cnv",
+      "bohrium-quantum-tomography-entanglement",
+      "bohrium-xanes-bidirectional-map"
+    ],
+    "research": [
+      "literature-search",
+      "paper-writing",
+      "prepare-defense",
+      "make-figure",
+      "experiment-design",
+      "research-memory",
+      "scitopdf"
+    ],
+    "engineering": [
+      "code-review",
+      "code-graph",
+      "debug-bug",
+      "app-development",
+      "git-workflow",
+      "architecture-viz"
+    ],
+    "documents": [
+      "document-word",
+      "document-pdf",
+      "document-excel",
+      "make-presentation",
+      "office-suite",
+      "render-document"
+    ],
+    "data": [
+      "data-analysis",
+      "statistics"
+    ],
+    "design": [
+      "design-frontend",
+      "image-generation"
+    ],
+    "meta": [
+      "create-skill",
+      "build-mcp",
+      "install-app",
+      "skill-improvement",
+      "clab-egress",
+      "find-skill",
+      "reviva-skill-manager"
+    ],
+    "communication": [
+      "send-email",
+      "web-research",
+      "ui-automation"
+    ],
+    "personal": [
+      "personal-potential",
+      "user-profile"
+    ],
+    "thinking": [
+      "concept-analysis"
+    ],
+    "general": [
+      "condopt-router",
+      "course-video-to-notes",
+      "project-review-orchestrator",
+      "github-reproduction-scout",
+      "implementation-comparator",
+      "defect-synthesizer",
+      "targeted-remediator",
+      "concept-substance-reviewer",
+      "equivalence-scholarship-reviewer"
+    ],
+    "cloud-compute": [
+      "cloud-gpu-bohrium"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "concept-substance-reviewer",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "用户要正经评价项目概念、实质、实现是否支撑声称或研究问题是否成立时使用"
+  ],
+  "whenNot": ["只做文献检索、不评审具体项目时", "只需要语法格式化或代码风格检查时"],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "concept-substance-reviewer"
+  ],
+  "keywords": [
+    "概念审查",
+    "实质审查",
+    "证据链",
+    "问题定义"
+  ],
+  "examples": ["这个项目概念和实质到底怎么样", "demo 通过能否证明科学正确", "审查 claim 是否有代码实验支撑"],
+  "notes": {}
+}

@@ -1,0 +1,125 @@
+{
+  "schema_version": "3.0",
+  "project": {
+    "name": "seven-skill-workflow-coverage",
+    "type": "concept",
+    "snapshot": "v3.0 meta-review",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "七 skill 审查框架本身"
+    ],
+    "exclusions": [
+      "具体项目代码"
+    ],
+    "readonly": true,
+    "coverage_note": "Meta-review: 用七 skill 审七 skill 在代码优化、项目方向、文献、产出、规划等工作环节的适合度与缺失"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "代码优化/重构类项目缺乏结构化审查维度",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "concept-substance-reviewer/SKILL.md",
+          "observation": "能审 claim→代码证据链，但无法结构化审性能回归、代码复杂度、重构正确性；equivalence-scholarship 能审算法等效但不审代码质量"
+        },
+        {
+          "locator": "implementation-comparator/SKILL.md",
+          "observation": "MATCH/DIFF/INCOMPARABLE 只比较功能输出，不比较运行时性能、内存占用、代码异味"
+        }
+      ],
+      "remediation": {
+        "action": "扩展 implementation-comparator 增加 performance_evidence 字段，或在 defect-synthesizer 增加代码质量严重度分类",
+        "acceptance": "能用七 skill 结构化审查'重构后性能下降 20%'这类问题",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "项目方向/战略决策缺乏专门审查维度",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "concept-substance-reviewer/SKILL.md",
+          "observation": "能审问题定义和 Goals/Non-Goals，但无法审'是否应该从 A 方向转向 B 方向'这类战略决策；protocol.md 没有市场/需求/竞品分析维度"
+        },
+        {
+          "locator": "equivalence-scholarship-reviewer/SKILL.md",
+          "observation": "能审学术新颖性，但不审商业可行性、技术路线选择、资源分配优先级"
+        }
+      ],
+      "remediation": {
+        "action": "新增 strategic-reviewer skill 或在 concept-substance-reviewer 增加 strategy_evidence 顶层字段",
+        "acceptance": "能用七 skill 审查'放弃 TPE 转向 GP-BO'这类方向决策的证据链",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "文献引用充分性无法结构化审查",
+      "status": "UNVERIFIED",
+      "execution": "NOT_RUN",
+      "severity": "medium",
+      "evidence": [],
+      "remediation": {
+        "action": "扩展 github-reproduction-scout 为 general-reproduction-scout，覆盖学术论文/技术报告/专利检索",
+        "acceptance": "能用七 skill 自动检查'是否遗漏近三年 top-3 相关论文'",
+        "verification": "NOT_RUN"
+      },
+      "na_reason": "当前 github-reproduction-scout 只查 GitHub 仓库，不查 arXiv/Google Scholar/专利库"
+    },
+    {
+      "id": "DEF-004",
+      "statement": "产出（论文/报告/代码）质量缺乏统一度量",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "defect-synthesizer/SKILL.md",
+          "observation": "能汇总缺点，但无法度量'论文写作质量''代码可维护性''报告可读性'；severity 只有 blocker/high/medium/low 四级，无定量指标"
+        },
+        {
+          "locator": "report.schema.json",
+          "observation": "gate 只有 ACCEPT/CONDITIONAL/REJECT/INCOMPLETE，无质量分数或成熟度评分"
+        }
+      ],
+      "remediation": {
+        "action": "在 gate 之外增加 quality_metrics 顶层字段，或扩展 severity 为连续分数",
+        "acceptance": "能用七 skill 输出'项目成熟度 65/100'或'论文质量 B+'",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "项目规划/里程碑缺乏审查维度",
+      "status": "UNVERIFIED",
+      "execution": "NOT_RUN",
+      "severity": "low",
+      "evidence": [],
+      "remediation": {
+        "action": "新增 planning-reviewer skill 或在 concept-substance-reviewer 增加 milestone_tracking",
+        "acceptance": "能用七 skill 审查'Q1 目标是否完成、延期原因是否合理'",
+        "verification": "NOT_RUN"
+      },
+      "na_reason": "当前七 skill 聚焦'已完成的项目'审查，不审'计划中的项目'"
+    }
+  ],
+  "github_sources": [],
+  "comparisons": [
+    {
+      "result": "INCOMPARABLE",
+      "contract": "工作环节覆盖度",
+      "execution": "NOT_RUN",
+      "reason": "七 skill 设计目标是审查'已有项目'，不是审查'项目全生命周期各环节'；无法与项目管理工具（Jira/Notion/Linear）直接对比"
+    }
+  ],
+  "gate": "REJECT"
+}

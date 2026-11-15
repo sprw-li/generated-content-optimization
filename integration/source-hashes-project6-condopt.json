@@ -1,0 +1,19 @@
+{
+  "algorithm": "sha256(concat(path + bytes) over sorted files)",
+  "inputs": [
+    "D:\\Dev\\Project6-skill-Opt_of_Cpndition"
+  ],
+  "entries": [
+    {
+      "input": "D:\\Dev\\Project6-skill-Opt_of_Cpndition",
+      "status": "hashed"
+    }
+  ],
+  "before": "fe49d13a3d72a9f8dd1b2dd3dde2a93969003796e1fba5b09bc5605c54ce4363",
+  "after": "fe49d13a3d72a9f8dd1b2dd3dde2a93969003796e1fba5b09bc5605c54ce4363",
+  "stable": true,
+  "mode": "two-invocation",
+  "before_at": "2026-11-15T13:32:11Z",
+  "after_at": "2026-11-15T13:32:34Z",
+  "note": "two separate invocations bracket the review (--stamp before ... --stamp after)"
+}

@@ -1,0 +1,184 @@
+{
+  "schema_version": "3.6",
+  "project": {
+    "name": "dsh-council",
+    "type": "engineering",
+    "snapshot": "historical review, referenced commit a99a724 (package 0.2.0); current worktree is NOT this snapshot",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "scope": {
+    "inputs": [
+      "reports/snapshots/dsh-council-a99a724"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "历史快照复核：源码评审引用已固定到 git a99a724（0.2.0）；此快照不含后来出现的 .github/workflows/verify.yml，也不等价于未提交的完整旧工作树。当前项目已演进到 0.2.26 且有未提交改动；旧审查不可当作当前版本验收。",
+    "resolve_root": "reports/snapshots/dsh-council-a99a724",
+    "source_hashes": {
+      "algorithm": "sha256(concat(path + bytes) over sorted files)",
+      "inputs": [
+        "reports/snapshots/dsh-council-a99a724"
+      ],
+      "before": "3de90e19a1e59a959568681f60cf775b12ec24619fc17976495598453f7de124",
+      "after": "3de90e19a1e59a959568681f60cf775b12ec24619fc17976495598453f7de124",
+      "stable": true,
+      "mode": "two-invocation",
+      "before_at": "2026-11-15T13:52:49Z",
+      "after_at": "2026-11-15T13:54:26Z"
+    }
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "最后一次修改没有完成验收，归档无结果",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "session archive seq 5144-5206",
+          "observation": "最后一次验证启动后归档结束，无结果；这是会话语义证据，本包未包含原始归档",
+          "semantic_only": true,
+          "anchor_note": "所引事实来自历史会话，不是本快照的文件内容；本包未包含原始会话归档，所以不能表述为已独立复算"
+        }
+      ],
+      "remediation": {
+        "action": "从会话 seq 5206 检查点恢复，运行 `package.json` 声明的语法与 Host/Client 验证后再收口，并校正 `README.md:11-29`",
+        "acceptance": "node dev/verify-host.mjs",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "文档与实现漂移（投递机制、默认值、版本）",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "index.js:1091-1108",
+          "observation": "此处实现静默回投 `agent.inject()`，与旧 README:25 的 send(next-turn)/inbox 叙述不一致"
+        }
+      ],
+      "remediation": {
+        "action": "让 `README.md:25` 由单一事实源生成，并用文档测试校验 `index.js:1103-1120` 的投递机制与 `client.js:287-293` 的默认值",
+        "acceptance": "node dev/verify-host.mjs",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "源码、npm 与发布包等价性未分别验证",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "package.json:3",
+          "observation": "历史提交对应 `version` 为 0.2.0；后续发版差异需单独验证"
+        }
+      ],
+      "remediation": {
+        "action": "在 `package.json:3` 与 README 之间建立版本对照检查，分别验证源码存在/npm 已发布/远端同步",
+        "acceptance": "node dev/verify-host.mjs",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "自动化验证与可靠性主张不等价",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "dev/verify-host.mjs:1-11",
+          "observation": "文件头明示 Host-half harness 针对 pure helpers，并直接导入工具函数，不代表真实 DSH runtime 验证"
+        },
+        {
+          "locator": "session archived CI analysis, not an a99a724 file",
+          "observation": "CI 文件不在 a99a724 中，关于 workflow 的叙述是会话语义证据，无法由该提交独立复核",
+          "semantic_only": true,
+          "anchor_note": "已显式声明缺少 .github/workflows/verify.yml 的历史现场；不伪造该文件或把当前文件反填成旧证据"
+        }
+      ],
+      "remediation": {
+        "action": "在 `.github/workflows/verify.yml:8-20` 同时运行 Host 检查，并在 `dev/verify-host.mjs:37-100` 增加状态机并发用例",
+        "acceptance": "node dev/verify-host.mjs",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "附件审查只是抽样，安全主要是边界过滤",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "index.js:91-99",
+          "observation": "该快照的资源边界常量 `CODE_WALK_ENTRIES = 2000` 仍有限制，但不是旧审查所述 24 文件"
+        },
+        {
+          "locator": "index.js:427-504",
+          "observation": "此处涉及附件/本地目录解析实现；旧审查的边界过滤风险需结合原文上下文判定",
+          "semantic_only": true,
+          "anchor_note": "本证据用于确认源码片段位置，旧审查关于特定窗口与 attachRoots 默认值的语义解释应由人工复核而非机器锚定"
+        }
+      ],
+      "remediation": {
+        "action": "在 `index.js:429-433` 默认限定工作区并增加内容级秘密扫描与 reparse-point 测试",
+        "acceptance": "node dev/verify-host.mjs",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [],
+  "literature_sources": [],
+  "comparisons": [],
+  "quality_metrics": {
+    "code_maintainability": "B",
+    "documentation_completeness": 0.8,
+    "test_coverage_percent": 70,
+    "reproducibility_score": "C",
+    "overall_maturity": 60
+  },
+  "milestone_tracking": [
+    {
+      "name": "Host/Client implementation",
+      "status": "completed",
+      "target_date": "2026-11-10",
+      "actual_date": "2026-11-10"
+    },
+    {
+      "name": "Final verification",
+      "status": "delayed",
+      "target_date": "2026-11-11",
+      "delay_reason": "Archive ended without result; not completed in session"
+    }
+  ],
+  "strategy_evidence": {
+    "decisions": [
+      {
+        "decision": "Use side panel instead of input box for model selection",
+        "rationale": "Side panel allows richer context display and easier state management",
+        "alternatives_considered": [
+          "Inline multi-select in input box",
+          "Modal dialog"
+        ],
+        "rejection_reasons": [
+          "Inline multi-select limited by input box height",
+          "Modal dialog interrupts workflow"
+        ]
+      }
+    ]
+  },
+  "gate": "REJECT"
+}

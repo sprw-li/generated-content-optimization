@@ -1,0 +1,59 @@
+{
+  "schema_version": "3.2",
+  "project": {
+    "name": "evidence-locator-probe",
+    "type": "engineering",
+    "snapshot": "probe",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "nonexistent"
+    ],
+    "exclusions": [],
+    "readonly": true,
+    "coverage_note": "probe for locator resolution"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "probe: locator points at a file that does not exist",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "D:/definitely/not/a/real/file.py:99999-100000",
+          "observation": "fabricated observation with no verifiable source"
+        }
+      ],
+      "remediation": {
+        "action": "probe",
+        "acceptance": "probe",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "probe: absence claim without search protocol",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "searched nothing",
+          "observation": "no such test exists anywhere (grep miss treated as absence)"
+        }
+      ],
+      "remediation": {
+        "action": "probe",
+        "acceptance": "probe",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [],
+  "literature_sources": [],
+  "comparisons": [],
+  "gate": "REJECT"
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "defect-synthesizer",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "用户要求评判总结项目缺点、合并多路评审发现、按严重度列问题时使用"
+  ],
+  "whenNot": ["没有项目证据、只想列通用风险时", "需要直接修改项目而不是汇总发现时"],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "defect-synthesizer"
+  ],
+  "keywords": [
+    "缺点总结",
+    "缺陷分级",
+    "证据审查",
+    "根因"
+  ],
+  "examples": ["汇总五个项目的实质缺点并定级", "pytest 权限错误不要算项目失败", "每条问题给路径行号和改进"],
+  "notes": {}
+}

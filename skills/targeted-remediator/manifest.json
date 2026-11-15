@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "targeted-remediator",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "用户要求针对评审缺点实施改进、留旧档存新档并验证修复时使用"
+  ],
+  "whenNot": ["用户只要求只读评审时", "没有已定位 finding、想自由重构时"],
+  "requires": [
+    "filesystem-read",
+    "filesystem-write"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "targeted-remediator"
+  ],
+  "keywords": [
+    "针对性改进",
+    "修复验收",
+    "回归",
+    "旧档"
+  ],
+  "examples": ["按这些 finding 修项目并跑验收", "自己改自己，留旧档存新档", "未运行验收不要写已解决"],
+  "notes": {}
+}

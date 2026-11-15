@@ -1,0 +1,51 @@
+{
+  "algorithm": "sha256(concat(path + bytes) over sorted files)",
+  "inputs": [
+    "D:/agent-library/catalog/project-review-orchestrator",
+    "D:/agent-library/catalog/github-reproduction-scout",
+    "D:/agent-library/catalog/implementation-comparator",
+    "D:/agent-library/catalog/defect-synthesizer",
+    "D:/agent-library/catalog/targeted-remediator",
+    "D:/agent-library/catalog/concept-substance-reviewer",
+    "D:/agent-library/catalog/equivalence-scholarship-reviewer",
+    "D:/agent-library/catalog/skill-criticagent"
+  ],
+  "entries": [
+    {
+      "input": "D:/agent-library/catalog/project-review-orchestrator",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/github-reproduction-scout",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/implementation-comparator",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/defect-synthesizer",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/targeted-remediator",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/concept-substance-reviewer",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/equivalence-scholarship-reviewer",
+      "status": "hashed"
+    },
+    {
+      "input": "D:/agent-library/catalog/skill-criticagent",
+      "status": "hashed"
+    }
+  ],
+  "before": "5f9110f701a0d0cc53afcfdf05efd284cb1a6cb0d61897511a4668bec80aa7f4",
+  "after": "5f9110f701a0d0cc53afcfdf05efd284cb1a6cb0d61897511a4668bec80aa7f4",
+  "stable": true,
+  "note": "before/after computed in one run; run this script again with --verify after the review to detect drift"
+}

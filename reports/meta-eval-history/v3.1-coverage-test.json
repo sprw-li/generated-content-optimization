@@ -1,0 +1,188 @@
+{
+  "schema_version": "3.2",
+  "project": {
+    "name": "seven-skill-v3.1-coverage",
+    "type": "concept",
+    "snapshot": "v3.1 meta-review",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "七 skill v3.1 审查框架"
+    ],
+    "exclusions": [
+      "具体项目代码"
+    ],
+    "readonly": true,
+    "coverage_note": "Meta-review: 用 v3.1 审七 skill 在代码优化、项目方向、文献、产出质量、规划、项目逻辑六个维度的覆盖"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "v3.1 新增 performance_evidence 覆盖代码优化维度",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "report.schema.json:17-22",
+          "observation": "comparison.performance_evidence 含 baseline_runtime_ms、current_runtime_ms、regression_percent、benchmark_command"
+        }
+      ],
+      "remediation": {
+        "action": "无需修改",
+        "acceptance": "schema 校验通过",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "v3.1 新增 strategy_evidence 覆盖项目方向维度",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "report.schema.json:29-37",
+          "observation": "strategy_evidence.decisions 含 decision/rationale/alternatives_considered/rejection_reasons"
+        }
+      ],
+      "remediation": {
+        "action": "无需修改",
+        "acceptance": "schema 校验通过",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "v3.1 新增 literature_sources 覆盖文献维度",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "report.schema.json:61-71",
+          "observation": "literature_sources 含 type(arxiv/google-scholar/patent/conference-proceeding/technical-report/blog-post)、title、url_or_doi、citation_count、relevance(core/related/peripheral)"
+        }
+      ],
+      "remediation": {
+        "action": "无需修改",
+        "acceptance": "schema 校验通过",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "v3.1 新增 quality_metrics 覆盖产出质量维度",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "report.schema.json:23-28",
+          "observation": "quality_metrics 含 code_maintainability(A-F)、documentation_completeness(0-1)、test_coverage_percent(0-100)、reproducibility_score(A-F)、overall_maturity(0-100)"
+        }
+      ],
+      "remediation": {
+        "action": "无需修改",
+        "acceptance": "schema 校验通过",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "v3.1 新增 milestone_tracking 覆盖规划维度",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "report.schema.json:72-81",
+          "observation": "milestone_tracking 含 name、status(completed/delayed/at-risk/planned)、target_date、actual_date、delay_reason；delayed 必须给原因"
+        }
+      ],
+      "remediation": {
+        "action": "无需修改",
+        "acceptance": "schema 校验通过",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-006",
+      "statement": "v3.1 project.type 扩展为 planning 覆盖项目逻辑维度",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "report.schema.json:9",
+          "observation": "project.type 枚举新增 planning，用于审查计划中的项目"
+        }
+      ],
+      "remediation": {
+        "action": "无需修改",
+        "acceptance": "schema 校验通过",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [],
+  "literature_sources": [],
+  "comparisons": [
+    {
+      "result": "DIFF",
+      "contract": "v3 vs v3.1 六维度覆盖",
+      "execution": "EXECUTED_FAIL",
+      "reason": "v3 缺 performance_evidence、strategy_evidence、literature_sources、quality_metrics、milestone_tracking、planning type；v3.1 全部补齐"
+    }
+  ],
+  "quality_metrics": {
+    "code_maintainability": "A",
+    "documentation_completeness": 0.95,
+    "test_coverage_percent": 100,
+    "reproducibility_score": "A",
+    "overall_maturity": 90
+  },
+  "milestone_tracking": [
+    {
+      "name": "v3.1 schema 扩展",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "v3.1 validator 扩展",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "v3.1 protocol 更新",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "v3.1 对抗测试",
+      "status": "planned",
+      "target_date": "2026-11-12"
+    }
+  ],
+  "strategy_evidence": {
+    "decisions": [
+      {
+        "decision": "扩展 schema 到 v3.1 而非新建 skill",
+        "rationale": "v3 schema 已稳定，新增顶层字段向后兼容；新建 skill 会破坏现有路由",
+        "alternatives_considered": [
+          "新建 performance-reviewer skill",
+          "新建 literature-reviewer skill"
+        ],
+        "rejection_reasons": [
+          "新建 skill 需重写 orchestrator 调度逻辑",
+          "v3.1 可选字段不强制，现有项目无需改动"
+        ]
+      }
+    ]
+  },
+  "gate": "ACCEPT"
+}

@@ -1,0 +1,18 @@
+{
+  "with_skill": {
+    "passed": 3,
+    "total": 3
+  },
+  "without_skill": {
+    "passed": 0,
+    "total": 3
+  },
+  "skill_uplift": {
+    "pass_rate_delta": 1.0
+  },
+  "assertion_audit": {
+    "non_discriminating_count": 0,
+    "always_failing_count": 0
+  }
+}
+

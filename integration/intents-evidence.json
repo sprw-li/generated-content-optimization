@@ -1,0 +1,63 @@
+{
+  "note": "提交相关 intent 摘录；非完整 intents.json",
+  "intents": [
+    {
+      "id": "create-skill",
+      "description": "创建/改进/评估 agent skill",
+      "patterns": [
+        "(创建|写|做|改进|评估|评审).{0,8}(skill|技能)",
+        "skill creator",
+        "skill 怎么写"
+      ],
+      "keywords": [
+        "skill",
+        "技能",
+        "SKILL.md"
+      ],
+      "excludes": [
+        "skill 用法",
+        "agent-library-skill-create",
+        "create_skill\\.py"
+      ],
+      "skills": [
+        "agent-library-skill-create",
+        "skill-creator",
+        "self-learning"
+      ],
+      "category": "meta",
+      "examples": [
+        "创建一个 skill",
+        "评估这个技能",
+        "怎么写 SKILL.md"
+      ]
+    },
+    {
+      "id": "skill-evaluation",
+      "category": "meta",
+      "description": "评估/审查/验证一套 Agent Skill 是否合规、有用、可安装",
+      "patterns": [
+        "(审查|评估|评审|验证|检验|打分|体检).*skill",
+        "skill.*(审查|评估|评审|验证|检验|好坏|值不值得|能不能装|靠不靠谱)",
+        "这套 skill",
+        "skill 质量"
+      ],
+      "keywords": [
+        "skill 评估",
+        "skill 审查",
+        "skill 验证",
+        "能不能装",
+        "skill 好坏"
+      ],
+      "excludes": [],
+      "examples": [
+        "验证这套评审 skill 本身",
+        "帮我审一下这个 skill 值不值得装",
+        "检查这套 skill 的证据合同是否自洽"
+      ],
+      "skills": [
+        "skill-criticagent",
+        "project-review-orchestrator"
+      ]
+    }
+  ]
+}

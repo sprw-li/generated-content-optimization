@@ -1,0 +1,19 @@
+{
+  "algorithm": "sha256(concat(path + bytes) over sorted files)",
+  "inputs": [
+    "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.6\\snapshots\\dsh-council-a99a724"
+  ],
+  "entries": [
+    {
+      "input": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.6\\snapshots\\dsh-council-a99a724",
+      "status": "hashed"
+    }
+  ],
+  "before": "3de90e19a1e59a959568681f60cf775b12ec24619fc17976495598453f7de124",
+  "after": "3de90e19a1e59a959568681f60cf775b12ec24619fc17976495598453f7de124",
+  "stable": true,
+  "mode": "two-invocation",
+  "before_at": "2026-11-15T13:52:49Z",
+  "after_at": "2026-11-15T13:54:26Z",
+  "note": "two separate invocations bracket the review (--stamp before ... --stamp after)"
+}

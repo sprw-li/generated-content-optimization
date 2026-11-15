@@ -1,0 +1,19 @@
+{
+  "algorithm": "sha256(concat(path + bytes) over sorted files)",
+  "inputs": [
+    "D:\\Dev\\Project8-Quant_Std&Res"
+  ],
+  "entries": [
+    {
+      "input": "D:\\Dev\\Project8-Quant_Std&Res",
+      "status": "hashed"
+    }
+  ],
+  "before": "58e3531b50768f55fb8162474b06073d40364acc2837760ac9f971b50a80cb89",
+  "after": "58e3531b50768f55fb8162474b06073d40364acc2837760ac9f971b50a80cb89",
+  "stable": true,
+  "mode": "two-invocation",
+  "before_at": "2026-11-15T13:32:15Z",
+  "after_at": "2026-11-15T13:32:40Z",
+  "note": "two separate invocations bracket the review (--stamp before ... --stamp after)"
+}

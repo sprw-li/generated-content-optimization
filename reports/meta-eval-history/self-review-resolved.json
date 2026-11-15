@@ -1,0 +1,357 @@
+{
+  "schema_version": "3.2",
+  "project": {
+    "name": "seven-review-skills",
+    "type": "mixed",
+    "snapshot": "v3.1; review-skill-system/v3.1 + catalog 七个 skill; hash c40f10181bcb972b",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "review-skill-system/v3.1/shared/report.schema.json",
+      "review-skill-system/v3.1/shared/validate_report.py",
+      "review-skill-system/v3.1/shared/protocol.md",
+      "catalog 七个 skill 的 SKILL.md/manifest.json",
+      "GitHub 同类框架正文"
+    ],
+    "exclusions": [
+      "被审查的五项目源码",
+      "未取得正文的 GitHub 页面"
+    ],
+    "readonly": true,
+    "coverage_note": "用七 skill 审查自身；GitHub 参照仅一处取得 raw 正文，其余为搜索摘要；未做行为对比，故行为维度无法评估",
+    "resolve_root": "."
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "证据定位只校验非空字符串，不解析文件是否存在、行号是否有效、内容是否匹配观察",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "review-skill-system/v3.1/probe/locator-resolution-probe.json",
+          "observation": "探针报告含 locator=D:/definitely/not/a/real/file.py:99999-100000 与伪造 observation，validator 返回 exit=0 PASS"
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py:62-64",
+          "observation": "仅检查 item.get('locator') 与 item.get('observation') 非空，无路径解析"
+        }
+      ],
+      "remediation": {
+        "action": "为带 file:line 形态的 locator 增加可选解析层：文件存在性、行号范围、可选内容匹配；不可解析时降级为 UNVERIFIED 而非 PASS",
+        "acceptance": "同一探针报告必须 exit=1，并指出 locator 未解析",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "缺证据的评级没有\"拒绝\"出路，absence 声明没有检索协议",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "要求 \"a rating with no file:line, or no explicit 'searched X, Y, Z — found nothing,' is a guess\"，且 \"rejecting it removes it\" 与降级保留相区分"
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/report.schema.json:26-37",
+          "observation": "finding 只有 PASS/FAIL/UNVERIFIED/N/A，无 rejected 状态，无 searched_scope 字段承载\"查了哪些、未找到\""
+        }
+      ],
+      "remediation": {
+        "action": "新增可选字段 evidence.searched_scope（用于 absence 类结论）与 finding 级 rejected 出路，使无证据评级被移除而非降级保留",
+        "acceptance": "absence 类 PASS/FAIL 无 searched_scope 时校验失败；无证据评级可显式 rejected 且不计入统计",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "本套 skill 完全没有行为维度：无 with/without 对比，无触发测试，只能审静态产物",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "skills/skill-criticagent/SKILL.md:34-80",
+          "observation": "同类 skill 要求 evals.json 行为对比、fresh subagent 隔离基线污染、file_assertions/tool_assertions、source hash 前后不变"
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/report.schema.json",
+          "observation": "全 schema 无行为对比、无触发准确率、无 run manifest 字段"
+        }
+      ],
+      "remediation": {
+        "action": "增加可选 behavior_evidence 顶层字段（with/without 计数、触发准确率、执行证据路径）或明确声明本套 skill 只做静态审查并写入 scope.coverage_note",
+        "acceptance": "报告能表达\"行为未测\"且 gate 不因此误判 ACCEPT",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "readonly 为自报布尔值，审查后无源文件不可变性校验",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py:37",
+          "observation": "只检查 scope.readonly 是否 bool，无审查前后 hash 对比"
+        },
+        {
+          "locator": "skills/skill-criticagent/SKILL.md:66-69",
+          "observation": "同类要求 \"Before and after the run, hash every source input and SKILL.md; source hashes must remain unchanged\""
+        }
+      ],
+      "remediation": {
+        "action": "增加可选 scope.source_hashes_stable 与前后指纹字段，或在只读审查流程中脚本化前后 hash 对比",
+        "acceptance": "声称 readonly 且改动源文件时校验失败",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "remediation 的 action/acceptance 为自由文本，未要求点名文件、守卫或测试",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "要求 \"Every gap carries a fix that names a file, a guard, or a test\"，并把它写成 prohibition 而非 \"consider improving X\""
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py:65-67",
+          "observation": "只校验 verification 枚举，不校验 action/acceptance 是否点名具体文件或测试"
+        }
+      ],
+      "remediation": {
+        "action": "要求非 info 级 finding 的 remediation 至少含一个可解析的 file:line 或测试/命令引用",
+        "acceptance": "纯描述性 action 的 high finding 校验失败",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-006",
+      "statement": "PASS 不区分\"散文声称\"与\"代码或测试中强制\"",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "定义 PRESENT 为 implemented *and* enforced in code or a test, not prose，并要求 file:line"
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py:57",
+          "observation": "PASS 只需 evidence 非空数组，prose 与代码强制同权"
+        }
+      ],
+      "remediation": {
+        "action": "为 PASS 增加可选 enforcement 级别（code/test/prose），prose 级不得支撑 ACCEPT",
+        "acceptance": "仅 prose 证据的 PASS 无法使 gate=ACCEPT",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-007",
+      "statement": "无 in-flight 修复分桶，已由未合并改动关闭的缺口会被重复计数",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "low",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "要求 \"In-flight fixes are a separate bucket with their own heading, verified against the diff and excluded from the counts\""
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/report.schema.json",
+          "observation": "无 in_flight 分桶字段"
+        }
+      ],
+      "remediation": {
+        "action": "增加可选 in_flight_fixes 顶层数组，按 diff 核验并从统计中排除",
+        "acceptance": "被未合并改动关闭的缺口可单列且不计入阻断数",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-008",
+      "statement": "含 skill 一词的验证类短语被 create-skill intent 劫持，本套 skill 无法被路由命中",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "router.py route --agent dsh \"验证这套评审 skill 本身\"",
+          "observation": "intent=create-skill，第一候选 agent-library-skill-create；本套 project-review-orchestrator 未进入候选"
+        },
+        {
+          "locator": "router.py route --agent dsh \"检查这套 skill 的证据合同是否自洽\"",
+          "observation": "intent=(none)，第一候选 implementation-comparator score=133，说明无 skill 关键词时可命中"
+        }
+      ],
+      "remediation": {
+        "action": "为七 skill 补充 intent 与 examples 覆盖\"审查/验证某套 skill 或框架\"话术，避免 create-skill 独占",
+        "acceptance": "上述四条探针中至少三条第一候选为六项审查 skill 之一",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-009",
+      "statement": "环境阻塞与逻辑失败分离符合同类最佳实践",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "skills/skill-criticagent/SKILL.md:79-80",
+          "observation": "同类要求 provider/permission/timeout/transport failures 不得计为 skill 质量失败"
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py:59-61",
+          "observation": "本套 ENVIRONMENT_BLOCKED 与 EXECUTED_FAIL 互斥，且 ENVIRONMENT_BLOCKED 不能配 FAIL"
+        }
+      ],
+      "remediation": {
+        "action": "",
+        "acceptance": "",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-010",
+      "statement": "只有 N/A 或存在 UNVERIFIED 时禁止 ACCEPT，门禁一致性可执行",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py:147",
+          "observation": "\"ACCEPT requires at least one executed PASS finding\" 等三条门禁规则"
+        },
+        {
+          "locator": "review-skill-system/v3.1/shared/validate_report.py --self-test",
+          "observation": "11 项 unittest OK"
+        }
+      ],
+      "remediation": {
+        "action": "",
+        "acceptance": "",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [
+    {
+      "level": "comparable-method",
+      "url": "https://github.com/conorbronsdon/repo-audit/blob/main/checklists/modules/evidence-grading.md",
+      "version": "main @ 2026-11-12",
+      "retrieved": "2026-11-12",
+      "read_status": "text-read"
+    },
+    {
+      "level": "topic-only",
+      "url": "https://github.com/conorbronsdon/eval-integrity",
+      "version": "referenced-by-repo-audit, 未直接读取",
+      "retrieved": "2026-11-12",
+      "read_status": "summary-only"
+    },
+    {
+      "level": "comparable-method",
+      "url": "https://github.com/tencentcloudbase/cloudbase-ai-toolkit/blob/bbe45cc29d8680f01815a0805514365f35d8cdbd/skills/skill-authoring/references/evaluation.md",
+      "version": "bbe45cc29d868",
+      "retrieved": "2026-11-12",
+      "read_status": "summary-only"
+    },
+    {
+      "level": "topic-only",
+      "url": "https://sysartifacts.github.io/eurosys2022/badges",
+      "version": "EuroSys 2022 badges",
+      "retrieved": "2026-11-12",
+      "read_status": "summary-only"
+    }
+  ],
+  "literature_sources": [],
+  "comparisons": [
+    {
+      "result": "DIFF",
+      "contract": "证据门槛：评级是否必须带可解析 file:line 且无证据即拒绝",
+      "execution": "EXECUTED_FAIL",
+      "reason": "repo-audit 要求可解析 file:line 且无证据评级被移除；本套只校验 locator 非空，伪造路径探针 exit=0"
+    },
+    {
+      "result": "DIFF",
+      "contract": "行为与触发证据：是否要求 with/without 对比与执行证据",
+      "execution": "EXECUTED_FAIL",
+      "reason": "skill-criticagent 要求 file_assertions/tool_assertions 与源 hash 前后不变；本套无行为维度，仅静态审查"
+    },
+    {
+      "result": "MATCH",
+      "contract": "环境/传输失败不得计为对象质量失败",
+      "execution": "EXECUTED_PASS",
+      "reason": "两侧规则一致，本套以 ENVIRONMENT_BLOCKED 与 FAIL 互斥实现"
+    },
+    {
+      "result": "INCOMPARABLE",
+      "contract": "整体框架评分",
+      "execution": "NOT_RUN",
+      "reason": "repo-audit 面向代码仓库合规审计，skill-criticagent 面向 skill 安装决策，本套面向多维证据评审；目标不同，不设总分对比"
+    }
+  ],
+  "quality_metrics": {
+    "code_maintainability": "A",
+    "documentation_completeness": 0.9,
+    "test_coverage_percent": 100,
+    "reproducibility_score": "A",
+    "overall_maturity": 70
+  },
+  "milestone_tracking": [
+    {
+      "name": "v3.1 schema/validator/protocol",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "自审与 GitHub 对照",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "证据定位解析修复",
+      "status": "planned",
+      "target_date": "2026-11-12"
+    }
+  ],
+  "strategy_evidence": {
+    "decisions": [
+      {
+        "decision": "自审使用本套 skill 而非另起流程",
+        "rationale": "用户要求按 skill 本身验证；dogfooding 同时检验合同可执行性与承接能力",
+        "alternatives_considered": [
+          "用 skill-criticagent 审查本套",
+          "不做结构化自审直接叙述"
+        ],
+        "rejection_reasons": [
+          "skill-criticagent 面向安装决策，不覆盖科研/文献/规划维度",
+          "无结构化记录无法被 validator 复核"
+        ]
+      },
+      {
+        "decision": "把 GitHub 参照按 text-read / summary-only 分级而非一律引用",
+        "rationale": "本机直连 GitHub 受限，只有断言取得 raw 正文才可作为可比证据",
+        "alternatives_considered": [
+          "统一标 comparable-method"
+        ],
+        "rejection_reasons": [
+          "会把搜索摘要冒充已核对正文，违反本套自身规则"
+        ]
+      }
+    ]
+  },
+  "gate": "REJECT"
+}

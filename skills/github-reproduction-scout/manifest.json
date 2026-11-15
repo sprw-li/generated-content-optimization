@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "github-reproduction-scout",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "实际项目评审需要 GitHub 复现检索、参考实现对照或多路开源调研时使用"
+  ],
+  "whenNot": ["只做通用网页搜索、不需要 GitHub 复现或参照时", "没有实际项目或待验证问题时"],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "github-reproduction-scout"
+  ],
+  "keywords": [
+    "GitHub",
+    "复现检索",
+    "参考实现",
+    "subagent"
+  ],
+  "examples": ["开 subagents 在 GitHub 上找复现", "找这个算法的官方参照和独立实现", "网络不通也要区分摘要与正文证据"],
+  "notes": {}
+}

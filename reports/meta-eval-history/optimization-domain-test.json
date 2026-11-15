@@ -1,0 +1,91 @@
+{
+  "schema_version": "3.0",
+  "project": {
+    "name": "synthetic-optimization-project",
+    "type": "experiment",
+    "snapshot": "hypothetical BO library v0.2",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "src/bayes_opt.py",
+      "tests/test_convergence.py",
+      "benchmarks/branin_results.json"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "Optimization project: needs convergence, baseline, hyperparameter sensitivity"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "No convergence curve or regret bound provided",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "blocker",
+      "evidence": [
+        {
+          "locator": "benchmarks/README.md:45",
+          "observation": "Only final best-value reported; no intermediate trajectory"
+        }
+      ],
+      "remediation": {
+        "action": "Add convergence plot and cumulative regret curve",
+        "acceptance": "Run benchmark and save convergence.png",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "Random baseline not included",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "benchmarks/comparison_table.csv",
+          "observation": "Only compares against Optuna and HEBO; no random/LHS baseline"
+        }
+      ],
+      "remediation": {
+        "action": "Add random search baseline with same seeds",
+        "acceptance": "Rerun benchmark with random optimizer",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "Hyperparameter sensitivity not tested",
+      "status": "UNVERIFIED",
+      "execution": "NOT_RUN",
+      "severity": "medium",
+      "evidence": [],
+      "remediation": {
+        "action": "Run grid over GP kernel lengthscale and acquisition function",
+        "acceptance": "Generate sensitivity heatmap",
+        "verification": "NOT_RUN"
+      },
+      "na_reason": "Not yet attempted"
+    }
+  ],
+  "github_sources": [
+    {
+      "level": "official-reference",
+      "url": "https://github.com/pytorch/botorch",
+      "version": "v0.9.0",
+      "retrieved": "2026-11-12",
+      "read_status": "code-read"
+    }
+  ],
+  "comparisons": [
+    {
+      "result": "DIFF",
+      "contract": "final best-value on Branin",
+      "execution": "EXECUTED_FAIL",
+      "reason": "Project reports -0.39 vs BoTorch -0.3978; within noise but not statistically tested"
+    }
+  ],
+  "gate": "REJECT"
+}

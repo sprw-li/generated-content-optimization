@@ -1,0 +1,31 @@
+{
+  "runs": [
+    {
+      "prompt": "用中文写一份简短说明（300 字以内），回答一套项目评审框架的状态机：(1) 审查项状态有哪些取值；(2) 执行状态有哪些取值；(3) 总门禁有哪些取值；(4) 只有 N/A 项时能否 ACCEPT，为什么？请给出准确的英文枚举名。",
+      "with_skill": {
+        "output_file": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-state-with.md"
+      },
+      "without_skill": {
+        "output_file": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-state-without.md"
+      }
+    },
+    {
+      "prompt": "场景：你对一个项目跑全量测试，pytest 返回 exit=1，但错误信息全是 PermissionError（沙箱拒绝写系统临时目录和项目缓存目录），没有出现任何业务断言失败。问题：在一个项目评审框架里，这种情况应该被记为哪种执行状态？能不能据此判定项目功能失败？为什么？请给出准确的英文状态名。（250 字以内）",
+      "with_skill": {
+        "output_file": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-env-with.md"
+      },
+      "without_skill": {
+        "output_file": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-env-without.md"
+      }
+    },
+    {
+      "prompt": "场景：某评审报告有 2 条 PASS finding（均已实际执行），1 条 FAIL finding（severity=high，已实际执行，但修复尚未验证），还有 1 条 UNVERIFIED finding（因环境阻塞）。问题：总门禁应该是什么？请写出准确的英文 gate 名并解释理由。（250 字以内）",
+      "with_skill": {
+        "output_file": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-gate-with.md"
+      },
+      "without_skill": {
+        "output_file": "D:\\Documents\\deepseek-harness\\default-workspace\\review-skill-system\\v3.3\\integration\\out-gate-without.md"
+      }
+    }
+  ]
+}

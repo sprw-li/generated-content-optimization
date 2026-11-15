@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "implementation-comparator",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "需要比较本地实现与 GitHub 参照、原版与复现、算法输出或等价合同时使用"
+  ],
+  "whenNot": ["对象、输入和版本完全未确定时", "只做主题相似性介绍、不需要执行比较时"],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "implementation-comparator"
+  ],
+  "keywords": [
+    "实现比较",
+    "等效性",
+    "差分测试",
+    "容差"
+  ],
+  "examples": ["比较本地 qNEHVI 和 BoTorch 是否等价", "固定输入和环境做差分测试", "条件没对齐就标 INCOMPARABLE"],
+  "notes": {}
+}

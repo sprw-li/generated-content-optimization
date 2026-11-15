@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "skill-criticagent",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "Evaluate Agent Skills (SKILL.md directories) and answer \"is this skill any good / safe to install\" — spec compliance with security scanning, with/without behavior comparison, and description trigger testing, ending in a clear install / fix-first / reject verdict. Use this skill whenever the user asks to evaluate, audit, test, review, or score an Agent Skill or a skill collection, wants to know whether a skill actually helps or is safe, or wants to check if a skill's description triggers correctly, even if they just ask \"is this skill any good\"."
+  ],
+  "whenNot": [
+    "要新建或改写 skill 正文时（走 agent-library-skill-create / skill-creator）",
+    "对象是代码、论文、理论或计划而非 Agent Skill 时（走七项证据评审 skill）",
+    "只做普通网页检索、不需要安装裁决时"
+  ],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "examples": [
+    "帮我看看这个 skill 写得行不行，值不值得装",
+    "这个从网上下的 skill 安全吗？帮我审一遍再决定要不要用",
+    "测一下我这个 skill 的 description 能不能在该触发的时候触发"
+  ],
+  "intents": [
+    "skill-evaluation"
+  ],
+  "keywords": [
+    "skill 评估",
+    "skill 审计",
+    "安全扫描",
+    "evals",
+    "SKILL.md",
+    "触发测试"
+  ],
+  "notes": {
+    "suite_member": "证据评审套件第八名成员：skill 领域行为与安装决策专家",
+    "interface": "references/suite-interface.md 定义 behavior_evidence 映射与门禁耦合"
+  }
+}

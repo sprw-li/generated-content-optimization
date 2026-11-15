@@ -1,0 +1,11 @@
+finding: DEF-002
+statement: 无 rejected 出路、无 searched_scope：absence 结论与无证据评级无结构化承载
+command: py -3 review-skill-system/v3.6/shared/validate_report.py --self-test
+workdir: D:\Documents\deepseek-harness\default-workspace
+exit_code: 0
+----- output -----
+................................................................
+----------------------------------------------------------------------
+Ran 64 tests in 0.222s
+
+OK

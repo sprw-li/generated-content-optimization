@@ -1,0 +1,11 @@
+finding: DEF-001
+statement: 证据定位不解析——伪造 file:line 曾被判 PASS
+command: py -3 review-skill-system/v3.6/shared/validate_report.py --self-test
+workdir: D:\Documents\deepseek-harness\default-workspace
+exit_code: 0
+----- output -----
+................................................................
+----------------------------------------------------------------------
+Ran 64 tests in 0.242s
+
+OK

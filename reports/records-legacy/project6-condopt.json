@@ -1,0 +1,44 @@
+{
+  "schema_version": "3.0",
+  "scope": {
+    "inputs": [
+      "src/condopt/algorithms/qnehvi.py",
+      "focused benchmark",
+      "tests"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "Earlier read-only project review; not a clean-environment reproduction"
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project6-condopt",
+    "type": "mixed",
+    "snapshot": "filesystem snapshot without git metadata",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "qNEHVI baseline is not sampled from model posterior at X_baseline",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "src/condopt/algorithms/qnehvi.py:146-155",
+          "observation": "historical signed observations plus noise; structural probe baseline posterior=False"
+        }
+      ],
+      "remediation": {
+        "action": "Apply the project-specific review recommendation",
+        "acceptance": "Run the project-specific acceptance in a writable pinned environment",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

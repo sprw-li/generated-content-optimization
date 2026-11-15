@@ -1,0 +1,19 @@
+{
+  "algorithm": "sha256(concat(path + bytes) over sorted files)",
+  "inputs": [
+    "D:\\Dev\\Project7-CS"
+  ],
+  "entries": [
+    {
+      "input": "D:\\Dev\\Project7-CS",
+      "status": "hashed"
+    }
+  ],
+  "before": "c7af9fb5ec3dcaf6dcb46cb9bff8ebd1ca66e17b8253119cae6ada54ec67b9e0",
+  "after": "c7af9fb5ec3dcaf6dcb46cb9bff8ebd1ca66e17b8253119cae6ada54ec67b9e0",
+  "stable": true,
+  "mode": "two-invocation",
+  "before_at": "2026-11-15T13:32:15Z",
+  "after_at": "2026-11-15T13:32:39Z",
+  "note": "two separate invocations bracket the review (--stamp before ... --stamp after)"
+}

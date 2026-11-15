@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "equivalence-scholarship-reviewer",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "用户要求评判项目等效性、学术意义、创新性、实验严谨性或理论思维时使用"
+  ],
+  "whenNot": ["只做普通文本润色时", "没有项目材料却要求证明创新或等效时"],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "equivalence-scholarship-reviewer"
+  ],
+  "keywords": [
+    "等效性",
+    "学术意义",
+    "创新审查",
+    "消融",
+    "反证"
+  ],
+  "examples": ["评判这个项目的等效性和学术意义", "TPE 名称相同是否算法等价", "三 seeds 能否宣称性能提升"],
+  "notes": {}
+}

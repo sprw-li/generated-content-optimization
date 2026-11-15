@@ -1,0 +1,57 @@
+[blocked] semantic_only 洗白全部引用
+        why tried: 若每条 evidence 都声明 semantic_only + 任意 anchor_note，锚定检查是否被整体系数绕过
+        reason: (no detail)
+
+[blocked] 省略 resolve_root 逃避全部文件级检查
+        why tried: council 指出：不写 resolve_root，则文件存在性/行号/锚定检查全部静默失效
+        reason: (no detail)
+
+[blocked] URL 冒充 file:line 满足 enforcement
+        why tried: council 指出：enforcement=code/test 只查冒号数字，URL 可满足且跳过全部检查
+        reason: (no detail)
+
+[blocked] CONDITIONAL 掩盖未解决 medium FAIL
+        why tried: council 指出：unresolved 只筛 blocker/high，medium FAIL 可用 CONDITIONAL 掩盖
+        reason: (no detail)
+
+[blocked] REJECTED 收纳高危缺陷
+        why tried: council 指出：把 high FAIL 改写成 REJECTED 即可从 blocker 统计中消失
+        reason: (no detail)
+
+[blocked] RESOLVED 自报无产物
+        why tried: council 指出：RESOLVED 只查字段存在，不要求磁盘上有真实运行产物
+        reason: (no detail)
+
+[blocked] source_hashes 单次自证
+        why tried: council 指出：before/after 同一进程背靠背计算，stable 恒真，不证明审查期间无写入
+        reason: (no detail)
+
+[blocked] source_hashes 不覆盖 scope.inputs
+        why tried: council 指出：指纹可对任意输入计算，不必覆盖报告声称读过的输入
+        reason: (no detail)
+
+[blocked] novelty 用无关引用满足
+        why tried: claim_class=novelty 只要求存在任一外部来源，无关引用是否也算
+        reason: (no detail)
+
+[blocked] behavior 计数与执行证据不符
+        why tried: verdict=install 时是否核对 execution_evidence 指向的文件真的存在
+        reason: (no detail)
+
+[blocked] case_tags 用同义异名冒充多样
+        why tried: tags 只要字符串不同即可通过，不检查是否真的不同场景
+        reason: (no detail)
+
+[blocked] na_reason 用长而复读的文字凑数
+        why tried: 30 字符门槛是否可用无信息文字满足
+        reason: (no detail)
+
+[blocked] rejected 用不含搜索动作的长理由
+        why tried: rejected_reason 是否只查长度与关键词，可被『检索』二字满足
+        reason: (no detail)
+
+[blocked] anchoring 只共享一个常见词即可
+        why tried: shared token 门槛=1，观察与所引行共享一个通用词即算锚定
+        reason: (no detail)
+
+probes: 14  holes leaked: 0

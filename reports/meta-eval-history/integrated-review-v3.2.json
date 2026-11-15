@@ -1,0 +1,343 @@
+{
+  "schema_version": "3.2",
+  "project": {
+    "name": "eight-member-evidence-review-suite",
+    "type": "mixed",
+    "snapshot": "v3.2; 七项评审 skill + skill-criticagent; 含真实 with/without 与触发评分",
+    "evidence_scope": "single-project"
+  },
+  "scope": {
+    "inputs": [
+      "catalog 七项评审 skill",
+      "catalog/skill-criticagent",
+      "review-skill-system/v3.2",
+      "GitHub repo-audit evidence-grading.md"
+    ],
+    "exclusions": [
+      "被审查的五项目源码",
+      "未取得正文的 GitHub 页面"
+    ],
+    "readonly": true,
+    "coverage_note": "八成员套件自审；行为维度用真实 with/without 单用例与 8 条触发查询；n=1 行为用例偏薄，已在 verdict_reason 说明",
+    "resolve_root": "."
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "证据定位不解析——伪造 file:line 曾被判 PASS",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "reports/probes/locator-resolution-probe-fixed.json",
+          "observation": "同一伪造定位在开启 resolve_root 后返回 exit=1：evidence locator not resolved"
+        }
+      ],
+      "remediation": {
+        "action": "新增 scope.resolve_root 与 resolve_locator，解析 file:line 与裸路径",
+        "acceptance": "伪造定位探针必须 exit=1",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 catalog/project-review-orchestrator/scripts/validate_report.py probe/locator-resolution-probe-fixed.json",
+          "exit_code": 0,
+          "observed": "探针返回 INVALID/exit=1；自审报告开启解析后 10 条 findings 全部定位通过"
+        }
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "无 rejected 出路、无 searched_scope：absence 结论与无证据评级无结构化承载",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "repo-audit 要求无证据评级被移除而非降级，且 absence 必须写 searched X,Y,Z found nothing"
+        },
+        {
+          "locator": "skills/project-review-orchestrator/schemas/report.schema.json",
+          "observation": "finding 仍只有 PASS/FAIL/UNVERIFIED/N/A，无 rejected 状态与 searched_scope 字段"
+        }
+      ],
+      "remediation": {
+        "action": "新增 finding 级 rejected 出路与 evidence.searched_scope",
+        "acceptance": "absence 类结论无 searched_scope 时校验失败；无证据评级可显式 rejected 且不计入统计",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "缺行为维度——无法回答 skill 是否真的有用",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "high",
+      "evidence": [
+        {
+          "locator": "integration/behavior-result.json",
+          "observation": "criticagent grade_runs.py：with_skill 1/1、without_skill 0/1、uplift +1.0、exit=0"
+        }
+      ],
+      "remediation": {
+        "action": "整合 skill-criticagent 为第八名成员，新增 behavior_evidence 与门禁耦合",
+        "acceptance": "install 需执行证据、源 hash 稳定、基线隔离且 with>without",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.2/integration/run_behavior_integration.py",
+          "exit_code": 0,
+          "observed": "with_skill 1/1 vs without_skill 0/1；source_hashes_stable=True"
+        }
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "路由劫持——含 skill 的验证类短语被 create-skill intent 独占",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "integration/router-decisions.json",
+          "observation": "新增 skill-evaluation intent 后，4 条触发话术首候选均为 project-review-orchestrator，4 条近邻正确未触发"
+        }
+      ],
+      "remediation": {
+        "action": "新增 skill-evaluation intent，将 skill-criticagent 移出 create-skill，并修复 5 个被逗号截断的正则",
+        "acceptance": "验证类话术至少 3/4 命中评审 skill",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 review-skill-system/v3.2/integration/run_trigger_integration.py",
+          "exit_code": 0,
+          "observed": "criticagent grade_triggers.py 8/8 accuracy=1.0"
+        }
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "自建断言有 5 条非判别性（两种模式都通过）",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "integration/behavior-result.json",
+          "observation": "assertion_audit.non_discriminating_count=5：contains PASS/FAIL/N/A/ACCEPT/REJECT 在基线与带 skill 下均通过"
+        }
+      ],
+      "remediation": {
+        "action": "把非判别性断言替换为更精确的枚举全名匹配（如 regex 要求整词），并扩充行为用例数",
+        "acceptance": "assertion_audit.non_discriminating_count 降至 0 且用例数 ≥3",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-006",
+      "statement": "readonly 自报，无审查前后源文件 hash 对比",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "skills/project-review-orchestrator/scripts/validate_report.py",
+          "observation": "只校验 scope.readonly 为布尔，无前后指纹比对；本次行为集成脚本自行实现了 digest 前后对比"
+        }
+      ],
+      "remediation": {
+        "action": "将前后 hash 对比纳入只读审查标准流程",
+        "acceptance": "声称 readonly 且源文件被改动时校验失败",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-007",
+      "statement": "remediation 为自由文本，未强制点名文件、守卫或测试",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "https://raw.githubusercontent.com/conorbronsdon/repo-audit/main/checklists/modules/evidence-grading.md",
+          "observation": "repo-audit 要求 every gap carries a fix that names a file, a guard, or a test"
+        }
+      ],
+      "remediation": {
+        "action": "要求非 info 级 finding 的 remediation 至少含一个可解析 file:line 或命令引用",
+        "acceptance": "纯描述性 action 的 high finding 校验失败",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-008",
+      "statement": "7 个 skill 中 6 个的路由正则被参数解析按逗号截断（首轮只修了 5 个）",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "medium",
+      "evidence": [
+        {
+          "locator": "integration/intents.json",
+          "observation": "修复前 github-reproduction-scout 的 patterns 为 ['GitHub.{0','12}复现|...'] 等断裂字符串"
+        },
+        {
+          "locator": "integration/intents.json",
+          "observation": "首轮修复后仍有 2 条不配对 pattern（equivalence-scholarship-reviewer），补修后 remaining broken=0"
+        }
+      ],
+      "remediation": {
+        "action": "改用 .* 替代 .{0,N} 重写全部 6 条 pattern",
+        "acceptance": "intents.json 中无花括号不配对或片段式 pattern",
+        "verification": "RESOLVED",
+        "acceptance_result": {
+          "command": "py -3 -c 检查 intents.json 全部 pattern 的花括号配对与片段形态",
+          "exit_code": 0,
+          "observed": "remaining broken: 0；router eval 仍 96/96 intent top1"
+        }
+      }
+    },
+    {
+      "id": "DEF-009",
+      "statement": "状态机与门禁一致性、环境失败分离达到同类水平",
+      "status": "PASS",
+      "execution": "EXECUTED_PASS",
+      "severity": "info",
+      "evidence": [
+        {
+          "locator": "skills/project-review-orchestrator/scripts/validate_report.py",
+          "observation": "26 项 unittest OK，含环境阻塞不可判 FAIL、只有 N/A 不可 ACCEPT、install 四条硬要求"
+        }
+      ],
+      "remediation": {
+        "action": "",
+        "acceptance": "",
+        "verification": "NOT_RUN"
+      }
+    }
+  ],
+  "github_sources": [
+    {
+      "level": "comparable-method",
+      "url": "https://github.com/conorbronsdon/repo-audit/blob/main/checklists/modules/evidence-grading.md",
+      "version": "main @ 2026-11-12",
+      "retrieved": "2026-11-12",
+      "read_status": "text-read"
+    },
+    {
+      "level": "topic-only",
+      "url": "https://github.com/conorbronsdon/eval-integrity",
+      "version": "referenced-by-repo-audit, 未直接读取",
+      "retrieved": "2026-11-12",
+      "read_status": "summary-only"
+    }
+  ],
+  "literature_sources": [],
+  "comparisons": [
+    {
+      "result": "MATCH",
+      "contract": "环境/传输失败不得计为对象质量失败",
+      "execution": "EXECUTED_PASS",
+      "reason": "与 skill-criticagent 规则一致，本套以 ENVIRONMENT_BLOCKED 与 FAIL 互斥实现"
+    },
+    {
+      "result": "DIFF",
+      "contract": "证据门槛：可解析 file:line 与无证据即拒绝",
+      "execution": "EXECUTED_FAIL",
+      "reason": "定位解析已补；rejected 出路与 searched_scope 仍缺"
+    },
+    {
+      "result": "MATCH",
+      "contract": "行为增量与触发证据可被第三方评分器消费",
+      "execution": "EXECUTED_PASS",
+      "reason": "criticagent 的 grade_runs.py 与 grade_triggers.py 均可直接对本套 skill 运行并给出结果"
+    }
+  ],
+  "quality_metrics": {
+    "code_maintainability": "A",
+    "documentation_completeness": 0.92,
+    "test_coverage_percent": 100,
+    "reproducibility_score": "A",
+    "overall_maturity": 78
+  },
+  "milestone_tracking": [
+    {
+      "name": "v3.2 行为证据字段与门禁耦合",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "criticagent 整合为第八名成员",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "路由修复与 skill-evaluation intent",
+      "status": "completed",
+      "target_date": "2026-11-12",
+      "actual_date": "2026-11-12"
+    },
+    {
+      "name": "非判别性断言清理与用例扩充",
+      "status": "planned",
+      "target_date": "2026-11-12",
+      "delay_reason": "需 ≥3 条行为用例，当前仅 1 条"
+    }
+  ],
+  "strategy_evidence": {
+    "decisions": [
+      {
+        "decision": "以引接方式整合 skill-criticagent，而非复制其正文",
+        "rationale": "它是成熟的独立 skill，含 vendored kernel 与 SHA-256 manifest；复制会引入漂移与维护双份",
+        "alternatives_considered": [
+          "新建 behavior-reviewer skill 复制其方法",
+          "只写文档说明不建接口"
+        ],
+        "rejection_reasons": [
+          "复制造成双份真源与漂移风险",
+          "只有文档无法让 validator 强制门禁"
+        ]
+      },
+      {
+        "decision": "新增 skill-evaluation intent 并把 criticagent 移出 create-skill",
+        "rationale": "创建与评估是不同意图，混用导致评估类请求被创建类独占",
+        "alternatives_considered": [
+          "只加关键词到 orchestrator",
+          "不改 intent 手动指定 skill"
+        ],
+        "rejection_reasons": [
+          "关键词无法覆盖接入 intent 的候选收敛",
+          "手动指定不可路由、不可评测"
+        ]
+      },
+      {
+        "decision": "行为用例先预声明断言再跑",
+        "rationale": "避免按输出调参导致断言失去判别力",
+        "alternatives_considered": [
+          "看输出后写断言"
+        ],
+        "rejection_reasons": [
+          "事后调参会让验收变成橡皮章"
+        ]
+      }
+    ]
+  },
+  "behavior_evidence": {
+    "cases_total": 1,
+    "with_skill_pass": 1,
+    "without_skill_pass": 0,
+    "trigger_correct": 8,
+    "trigger_total": 8,
+    "source_hashes_stable": true,
+    "baseline_isolated": true,
+    "execution_evidence": [
+      "review-skill-system/v3.2/integration/out-with-skill.md",
+      "review-skill-system/v3.2/integration/out-without-skill.md",
+      "review-skill-system/v3.2/integration/behavior-result.json",
+      "review-skill-system/v3.2/integration/router-decisions.json"
+    ],
+    "evaluator": "skill-criticagent grade_runs.py + grade_triggers.py",
+    "verdict": "fix-first",
+    "verdict_reason": "行为增量明确（1/1 vs 0/1）且触发 8/8，但行为用例仅 1 条、13 条断言中 5 条非判别性，尚不足以支撑完整 install 裁决；需先扩充用例并清理非判别性断言。"
+  },
+  "gate": "REJECT"
+}

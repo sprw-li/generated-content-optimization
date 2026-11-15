@@ -1,0 +1,79 @@
+{
+  "skill_name": "project-review-orchestrator",
+  "note": "v3.3: 3 pure-task cases. 已剔除 3 条非判别性断言（criticagent assertion_audit 判定两种模式均通过）：state-machine-recall 的 \\bUNVERIFIED\\b、environment-block-classification 的 不能|不得|不可|不应、gate-decision 的 not-contains 门禁应为 ACCEPT。",
+  "evals": [
+    {
+      "id": "state-machine-recall",
+      "prompt": "用中文写一份简短说明（300 字以内），回答一套项目评审框架的状态机：(1) 审查项状态有哪些取值；(2) 执行状态有哪些取值；(3) 总门禁有哪些取值；(4) 只有 N/A 项时能否 ACCEPT，为什么？请给出准确的英文枚举名。",
+      "expected_output": "准确复述三套状态枚举的英文原名，并说明只有 N/A 项时不能 ACCEPT。",
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "\\bEXECUTED_PASS\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bEXECUTED_FAIL\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bENVIRONMENT_BLOCKED\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bNOT_APPLICABLE\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bINCOMPLETE\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bCONDITIONAL\\b"
+        },
+        {
+          "type": "regex",
+          "value": "N/A[^。]{0,40}(不能|不得|不可|不算)[^。]{0,20}ACCEPT"
+        }
+      ]
+    },
+    {
+      "id": "environment-block-classification",
+      "prompt": "场景：你对一个项目跑全量测试，pytest 返回 exit=1，但错误信息全是 PermissionError（沙箱拒绝写系统临时目录和项目缓存目录），没有出现任何业务断言失败。问题：在一个项目评审框架里，这种情况应该被记为哪种执行状态？能不能据此判定项目功能失败？为什么？请给出准确的英文状态名。（250 字以内）",
+      "expected_output": "应记为 ENVIRONMENT_BLOCKED（而非 EXECUTED_FAIL），不得据此判定项目功能失败，门禁为 INCOMPLETE。",
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "\\bENVIRONMENT_BLOCKED\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bEXECUTED_FAIL\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bINCOMPLETE\\b"
+        }
+      ]
+    },
+    {
+      "id": "gate-decision",
+      "prompt": "场景：某评审报告有 2 条 PASS finding（均已实际执行），1 条 FAIL finding（severity=high，已实际执行，但修复尚未验证），还有 1 条 UNVERIFIED finding（因环境阻塞）。问题：总门禁应该是什么？请写出准确的英文 gate 名并解释理由。（250 字以内）",
+      "expected_output": "gate 应为 REJECT（未解决 high FAIL 强制 REJECT/INCOMPLETE），不得为 ACCEPT。",
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "\\bREJECT\\b"
+        },
+        {
+          "type": "regex",
+          "value": "\\bINCOMPLETE\\b"
+        },
+        {
+          "type": "regex",
+          "value": "high[^。]{0,60}(REJECT|INCOMPLETE)|(REJECT|INCOMPLETE)[^。]{0,60}high"
+        }
+      ]
+    }
+  ]
+}

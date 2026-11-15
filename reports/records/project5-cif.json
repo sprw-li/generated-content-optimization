@@ -1,0 +1,217 @@
+{
+  "schema_version": "3.6",
+  "scope": {
+    "inputs": [
+      "cifkit/geom/standardize.py",
+      "in-memory diamond supercell probe",
+      "tests"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "完整复审发现集（来自本会话的只读审查）；只读且未修改项目；证据行号对应审查时快照，若项目已变更需重跑定位校验",
+    "resolve_root": "D:\\Dev\\Project5-skill-cif",
+    "source_hashes": {
+      "algorithm": "sha256(concat(path + bytes) over sorted files)",
+      "inputs": [
+        "D:\\Dev\\Project5-skill-cif"
+      ],
+      "before": "fdebdb1acf74fd1d63f6810fcbc2fac97cf52ceedf2b87a32da32b35a6c09778",
+      "after": "fdebdb1acf74fd1d63f6810fcbc2fac97cf52ceedf2b87a32da32b35a6c09778",
+      "stable": true,
+      "mode": "two-invocation",
+      "before_at": "2026-11-15T13:32:08Z",
+      "after_at": "2026-11-15T13:32:30Z"
+    }
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project5-cif",
+    "type": "mixed",
+    "snapshot": "pre-existing dirty worktree; no clean HEAD claim",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "conventional 标准化把 primitive 的任意整数倍当成 conventional",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "cifkit/geom/standardize.py:149-176",
+          "observation": "无条件 early return；斜金刚石 2x supercell 被保留，spglib 报 R-3m 而正确 conventional 是 8 原子 Fd-3m"
+        }
+      ],
+      "remediation": {
+        "action": "在 `cifkit/geom/standardize.py:149-176` 用标准 conventional 转换替换整数倍早返回，并加斜超胞回归测试",
+        "acceptance": "py -3 -m pytest tests/test_geom.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "拓扑 `verified` 不是一般周期网同构证明",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "cifkit/topology.py:1348-1360",
+          "observation": "环截断后只凭 CN + 8 层 CS + linker/metal 比即返回 verified"
+        },
+        {
+          "locator": "docs/SOURCES.md:50-53",
+          "observation": "参考仅 6 个且每 net 一个，属自识别回归；所引行字面含 `build_index`、`n_entries`"
+        }
+      ],
+      "remediation": {
+        "action": "把 `cifkit/topology.py:1348-1360` 的 verified 降为 reference-signature-match，并用完整 genome/点符号交叉验证",
+        "acceptance": "py -3 -m pytest tests/test_topology_nets.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "CLI/pipeline 绕过 disorder group 处理",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "cifkit/cli.py:659-670",
+          "observation": "从文件解析 Structure 后调用 repair 未传 cif_text"
+        },
+        {
+          "locator": "cifkit/repair/disorder.py:314-316",
+          "observation": "records 因此为空，组选择逻辑 :547-585 被绕过；所引行字面含 `_match_records`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `cifkit/cli.py:659-670` 传入原始 cif_text，并在不可映射时 fail closed",
+        "acceptance": "py -3 -m pytest tests/test_repair.py -k disorder",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "自写 CIF parser 与坐标匹配可能丢失语义",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "cifkit/repair/disorder.py:85-170",
+          "observation": "逐行 shlex 并静默跳过不完整行"
+        },
+        {
+          "locator": "cifkit/repair/disorder.py:186-207",
+          "observation": "按元素+0.1A 就近匹配展开 Structure，可能混淆等价位点；所引行字面含 `_match_records`、`record_index`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `cifkit/repair/disorder.py:85-170` 改用严格 loop/token 解析并保留 label/occupancy/group",
+        "acceptance": "py -3 -m pytest tests/test_repair_carboxylate.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "verify_demo 的拓扑与校验项只读 manifest，不是独立复算",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "scripts/verify_demo.py:166-170",
+          "observation": "拓扑项只检查 step status/ok；所引行字面含 `chemically`、`completion`"
+        },
+        {
+          "locator": "scripts/verify_demo.py:230-241",
+          "observation": "VASP 仅比对原子数；所引行字面含 `final_atoms`、`exports`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `scripts/verify_demo.py:164-168` 改为从 raw/repaired/final 独立重算 net 与 Miller",
+        "acceptance": "py -3 scripts/verify_demo.py runs/demo_sod_zif8",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-006",
+      "statement": "通用 validator 弱于 repair validator",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "cifkit/validate/checks.py:429-469",
+          "observation": "H>0 即判 hydrogen PASS，C 只要求内部至少 3 邻接；所引行字面含 `_carbon_valence`、`hydrogenated`"
+        },
+        {
+          "locator": "cifkit/validate/checks.py:471-491",
+          "observation": "无氧化态时 charge not assessed 仍 PASS"
+        }
+      ],
+      "remediation": {
+        "action": "在 `cifkit/validate/checks.py:429-469` 增加键级/过价/片段电荷检查",
+        "acceptance": "py -3 -m pytest tests/test_validate.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-007",
+      "statement": "文档格式数量与能力描述存在历史混杂",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "low",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "README.md:179",
+          "observation": "仍写 661 测试与旧分布；所引行字面含 `test_metals_zip_full`、`skipped`"
+        },
+        {
+          "locator": "README.md:229",
+          "observation": "与已实现 SBU 收缩的 docs/SOURCES.md:188-201 冲突",
+          "semantic_only": true,
+          "anchor_note": "最佳窗口仅共享 2 个 token（低于 3 的强匹配门槛）；该观察是对文件整体性质的描述，显式标注为语义引用，不作为字面锚定证据"
+        }
+      ],
+      "remediation": {
+        "action": "让 `README.md:179` 由 capability registry 与当前测试收集生成",
+        "acceptance": "py -3 -m pytest --collect-only -q",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-008",
+      "statement": "斜胞下最小镜像不保证",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "low",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "cifkit/repair/hydrogen.py:613-618",
+          "observation": "逐分量 round 在强斜胞不保证最小镜像，与 :561-578 的 27 像口径不一致；所引行字面含 `pairwise`、`between`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `cifkit/repair/hydrogen.py:613-618` 统一使用同一 image 偏移或 ASE find_mic",
+        "acceptance": "py -3 -m pytest tests/test_repair.py -k mic",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+finding: DEF-006
+statement: readonly 自报，无审查前后源文件 hash 对比
+command: py -3 review-skill-system/v3.6/shared/validate_report.py --self-test
+workdir: D:\Documents\deepseek-harness\default-workspace
+exit_code: 0
+----- output -----
+................................................................
+----------------------------------------------------------------------
+Ran 64 tests in 0.185s
+
+OK

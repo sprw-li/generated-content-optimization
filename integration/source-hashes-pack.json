@@ -1,0 +1,52 @@
+{
+  "algorithm": "sha256(concat(path + bytes) over sorted files)",
+  "inputs": [
+    "D:\\Desktop\\opt\\skills\\project-review-orchestrator",
+    "D:\\Desktop\\opt\\skills\\github-reproduction-scout",
+    "D:\\Desktop\\opt\\skills\\implementation-comparator",
+    "D:\\Desktop\\opt\\skills\\defect-synthesizer",
+    "D:\\Desktop\\opt\\skills\\targeted-remediator",
+    "D:\\Desktop\\opt\\skills\\concept-substance-reviewer",
+    "D:\\Desktop\\opt\\skills\\equivalence-scholarship-reviewer",
+    "D:\\Desktop\\opt\\skills\\skill-criticagent"
+  ],
+  "entries": [
+    {
+      "input": "D:\\Desktop\\opt\\skills\\project-review-orchestrator",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\github-reproduction-scout",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\implementation-comparator",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\defect-synthesizer",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\targeted-remediator",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\concept-substance-reviewer",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\equivalence-scholarship-reviewer",
+      "status": "hashed"
+    },
+    {
+      "input": "D:\\Desktop\\opt\\skills\\skill-criticagent",
+      "status": "hashed"
+    }
+  ],
+  "before": "d5eb66343353a6c960a8fc2fa3c3b1bf2775e70d771fd2ee8ec6a46e4e6cba5f",
+  "after": "d5eb66343353a6c960a8fc2fa3c3b1bf2775e70d771fd2ee8ec6a46e4e6cba5f",
+  "stable": true,
+  "mode": "single-run",
+  "note": "SINGLE-RUN: before/after computed back-to-back in one process. This does NOT prove the review was read-only; use --stamp before/--stamp after for a real time gap."
+}

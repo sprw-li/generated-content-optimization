@@ -1,0 +1,58 @@
+[
+  {
+    "query": "全项目审查这几个目录，分别给证据和改进顺序",
+    "should_trigger": true,
+    "decisions": [
+      "project-review-orchestrator"
+    ]
+  },
+  {
+    "query": "把这个会话作为独立项目评审",
+    "should_trigger": true,
+    "decisions": [
+      "project-review-orchestrator"
+    ]
+  },
+  {
+    "query": "只读审查项目，不要自动修改",
+    "should_trigger": true,
+    "decisions": [
+      "project-review-orchestrator"
+    ]
+  },
+  {
+    "query": "对五个项目做多项目评审并给总门禁",
+    "should_trigger": true,
+    "decisions": [
+      "project-review-orchestrator"
+    ]
+  },
+  {
+    "query": "帮我看看这个 skill 写得行不行，值不值得装",
+    "should_trigger": false,
+    "decisions": [
+      "skill-criticagent"
+    ]
+  },
+  {
+    "query": "验证这套评审 skill 本身",
+    "should_trigger": false,
+    "decisions": [
+      "skill-criticagent"
+    ]
+  },
+  {
+    "query": "比较本地 qNEHVI 和 BoTorch 是否等价",
+    "should_trigger": false,
+    "decisions": [
+      "implementation-comparator"
+    ]
+  },
+  {
+    "query": "三 seeds 能否宣称性能提升",
+    "should_trigger": false,
+    "decisions": [
+      "equivalence-scholarship-reviewer"
+    ]
+  }
+]

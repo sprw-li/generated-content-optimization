@@ -1,0 +1,22 @@
+finding: DEF-004
+statement: 路由劫持——含 skill 的验证类短语被 create-skill intent 独占
+command: py -3 review-skill-system/v3.6/self_review_probes.py
+workdir: D:\Documents\deepseek-harness\default-workspace
+exit_code: 0
+----- output -----
+[blocked] probe 1 of 14
+[blocked] probe 2 of 14
+[blocked] probe 3 of 14
+[blocked] probe 4 of 14
+[blocked] probe 5 of 14
+[blocked] probe 6 of 14
+[blocked] probe 7 of 14
+[blocked] probe 8 of 14
+[blocked] probe 9 of 14
+[blocked] probe 10 of 14
+[blocked] probe 11 of 14
+[blocked] probe 12 of 14
+[blocked] probe 13 of 14
+[blocked] probe 14 of 14
+probes: 14  holes leaked: 0
+full report: D:\Documents\deepseek-harness\default-workspace\review-skill-system\v3.6\integration\adversarial-probe-report.txt

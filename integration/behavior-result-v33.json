@@ -1,0 +1,213 @@
+{
+  "runs": [
+    {
+      "case_id": "state-machine-recall",
+      "mode": "with_skill",
+      "passed": true,
+      "checks": [
+        {
+          "channel": "text",
+          "assertion": "regex: \\bEXECUTED_PASS\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bEXECUTED_FAIL\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bENVIRONMENT_BLOCKED\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bNOT_APPLICABLE\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bINCOMPLETE\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bCONDITIONAL\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: N/A[^。]{0,40}(不能|不得|不可|不算)[^。]{0,20}ACCEPT",
+          "passed": true
+        }
+      ],
+      "output": "# 项目评审框架状态机（依据 SKILL.md + protocol.md v3.2）\n\n**1. 审查项状态**：`PASS` / `FAIL` / `UNVERIFIED` / `N/A`\n\n**2. 执行状态**：`EXECUTED_PASS` / `EXECUTED_FAIL` / `ENVIRONMENT_BLOCKED` / `NOT_RUN` / `NOT_APPLICABLE`\n\n**3. 总门禁**：`ACCEPT` / `CONDITIONAL` / `REJECT` / `INCOMPLETE`\n\n**4. 只有 N/A 项时不能 ACCEPT。** 协议要求 ACCEPT 至少有一个「实际执行」的 PASS finding，只有 N/A 不算实质检查。另：findings 或 comparisons 含 `UNVERIFIED` 禁止 ACCEPT；存在未解决 blocker/high FAIL 禁止 ACCEPT 与 CONDITIONAL；必要检查未完成时门禁为 INCOMPLETE。\n",
+      "output_files": [],
+      "tool_calls": []
+    },
+    {
+      "case_id": "state-machine-recall",
+      "mode": "without_skill",
+      "passed": false,
+      "checks": [
+        {
+          "channel": "text",
+          "assertion": "regex: \\bEXECUTED_PASS\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bEXECUTED_FAIL\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bENVIRONMENT_BLOCKED\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bNOT_APPLICABLE\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bINCOMPLETE\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bCONDITIONAL\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: N/A[^。]{0,40}(不能|不得|不可|不算)[^。]{0,20}ACCEPT",
+          "passed": false
+        }
+      ],
+      "output": "# 评审框架状态机（凭通用理解作答，未读取任何本地文件）\n\n**审查项状态（Item Status）**：`PASS`、`FAIL`、`N/A`（常见扩展：`PENDING`、`UNVERIFIED`）。\n\n**执行状态（Execution Status）**：`COMPLETED`、`PARTIAL`、`BLOCKED`、`FAILED`。\n\n**总门禁（Overall Gate）**：`ACCEPT`、`REJECT`、`NEEDS_REVIEW`。\n\n**只有 N/A 项时能否 ACCEPT：不能。** `N/A` 只表示\"不适用\"，不构成任何通过证据；全部为 `N/A` 即有效覆盖率为零，此时 `ACCEPT` 属于空真通过（vacuous pass），会把未验证风险直接放行。正确结果应为 `NEEDS_REVIEW`（完全无可判项时也可 `REJECT`），须补充至少一个可核验的 `PASS` 项后才可进入 `ACCEPT`。\n\n> 注：以上枚举名为通用约定，未与任何本地规范或 skill 文档核对。\n",
+      "output_files": [],
+      "tool_calls": []
+    },
+    {
+      "case_id": "environment-block-classification",
+      "mode": "with_skill",
+      "passed": true,
+      "checks": [
+        {
+          "channel": "text",
+          "assertion": "regex: \\bENVIRONMENT_BLOCKED\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bEXECUTED_FAIL\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bINCOMPLETE\\b",
+          "passed": true
+        }
+      ],
+      "output": "# 权限错误下的执行状态判定（依据 SKILL.md + protocol.md v3.2）\n\n**执行状态：`ENVIRONMENT_BLOCKED`**（五值之一：`EXECUTED_PASS` / `EXECUTED_FAIL` / `ENVIRONMENT_BLOCKED` / `NOT_RUN` / `NOT_APPLICABLE`）。相应审查项记 `UNVERIFIED`（未完成或被环境阻塞），总门禁为 `INCOMPLETE`。\n\n**不能据此判定项目功能失败。** 理由：\n\n1. protocol.md：「环境权限/依赖失败不是项目逻辑失败；必要检查未完成时门禁 INCOMPLETE」。PermissionError 全部来自沙箱拒绝写系统临时目录与项目缓存目录，属环境限制，非项目逻辑缺陷。\n2. SKILL.md 禁止条款明列「把权限错误当逻辑失败」。要判 `EXECUTED_FAIL`，须有实际执行的业务断言失败；本次零业务断言失败，故无 FAIL 证据。\n3. 证据规则：`exit 0` 不是充分证据，`exit 1` 也不是项目失败证据——退出码须结合计数、结构化输出判读。测试根本没跑起来（收集/写缓存阶段即被拒），既未证明通过，也未证明失败。\n4. 正确处置：解除沙箱写权限或指定可写 tmp/缓存目录后重跑，取得真实断言结果再定 `EXECUTED_PASS`/`EXECUTED_FAIL`；在此之前不得 ACCEPT，也不得据此 REJECT 项目功能。\n",
+      "output_files": [],
+      "tool_calls": []
+    },
+    {
+      "case_id": "environment-block-classification",
+      "mode": "without_skill",
+      "passed": false,
+      "checks": [
+        {
+          "channel": "text",
+          "assertion": "regex: \\bENVIRONMENT_BLOCKED\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bEXECUTED_FAIL\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bINCOMPLETE\\b",
+          "passed": false
+        }
+      ],
+      "output": "状态名：**ERROR**（环境/执行错误，可细分 `environment_error`，须与 `FAILED` 严格区分）。\n\n不能据此判定项目功能失败。所有报错均为 PermissionError（沙箱拒绝写系统临时目录与项目缓存），说明测试未进入业务断言阶段，属执行前置条件缺失（harness/infra 故障），不携带任何代码正确性信号。该次 run 应记为 invalid / inconclusive，不计入通过率与缺陷统计；待临时目录、缓存目录可写后重跑，仅当重跑中出现业务断言失败才记 `FAILED`。\n",
+      "output_files": [],
+      "tool_calls": []
+    },
+    {
+      "case_id": "gate-decision",
+      "mode": "with_skill",
+      "passed": true,
+      "checks": [
+        {
+          "channel": "text",
+          "assertion": "regex: \\bREJECT\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bINCOMPLETE\\b",
+          "passed": true
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: high[^。]{0,60}(REJECT|INCOMPLETE)|(REJECT|INCOMPLETE)[^。]{0,60}high",
+          "passed": true
+        }
+      ],
+      "output": "# Total Gate\n\n**REJECT**\n\n## Rationale\n\nThe gate is derived from finding states, not from the PASS count.\n\n1. **2 PASS, actually executed** satisfy only the floor rule that ACCEPT needs at least one actually-executed PASS finding. That is a necessary condition, never a sufficient one; PASSes do not cancel a blocking defect.\n2. **1 FAIL, severity=high, actually executed** is an observed project-logic defect, not a permission or dependency artifact, and it is still unresolved: the fix has not been verified, so it cannot be counted as closed. An unverified remediation remains an open blocker. The protocol forbids both ACCEPT and CONDITIONAL while an unresolved blocker/high FAIL exists, so only REJECT and INCOMPLETE survive as candidates.\n3. **1 UNVERIFIED, environment-blocked** is not a logic failure and must not be reclassified as FAIL or used to justify rejection; it forbids ACCEPT, which is already excluded, and it is recorded as residual unverified scope.\n\nINCOMPLETE would mean the decisive check could not be run and the evidence cannot decide the outcome. Here the evidence is sufficient and negative: a high-severity defect was actually reproduced. An environment block on a separate, non-decisive item cannot soften a confirmed failure. Hence **REJECT**.\n",
+      "output_files": [],
+      "tool_calls": []
+    },
+    {
+      "case_id": "gate-decision",
+      "mode": "without_skill",
+      "passed": false,
+      "checks": [
+        {
+          "channel": "text",
+          "assertion": "regex: \\bREJECT\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: \\bINCOMPLETE\\b",
+          "passed": false
+        },
+        {
+          "channel": "text",
+          "assertion": "regex: high[^。]{0,60}(REJECT|INCOMPLETE)|(REJECT|INCOMPLETE)[^。]{0,60}high",
+          "passed": false
+        }
+      ],
+      "output": "# Overall Gate: `FAIL`\n\n**Gate name: FAIL**\n\n## Why\n\nThe gate is dominated by the single high-severity FAIL. That finding was actually executed, and its remediation is not yet verified, so the failure must be treated as still open: an unverified fix cannot downgrade a high-severity failure, and passing findings elsewhere cannot offset it.\n\nThe 2 PASS findings are legitimate positive evidence, but only within their own scope; they neither close the FAIL nor lift the aggregate to PASS.\n\nThe UNVERIFIED finding (environment-blocked) is not a PASS — absence of evidence is not a pass. On its own it would force `BLOCKED` (adjudication impossible), but it cannot outrank a confirmed high-severity FAIL. Precedence is therefore: FAIL > BLOCKED > PASS. Note what is *not* claimed: `BLOCKED` would understate a defect that is real and unremediated, and `PASS` would count unevidenced items as clean.\n\n## Exit path\n\nRe-run the blocked check once the environment is available, and verify the high-severity fix. If the fix verifies and the blocked item now passes, the gate recomputes to `PASS`; if the FAIL reproduces, it remains `FAIL`.\n",
+      "output_files": [],
+      "tool_calls": []
+    }
+  ],
+  "summary": {
+    "with_skill": {
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "without_skill": {
+      "passed": 0,
+      "total": 3,
+      "pass_rate": 0.0
+    },
+    "skill_uplift": {
+      "pass_rate_delta": 1.0
+    },
+    "assertion_audit": {
+      "non_discriminating": [],
+      "always_failing": []
+    }
+  }
+}

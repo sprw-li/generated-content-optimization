@@ -1,0 +1,181 @@
+{
+  "schema_version": "3.6",
+  "scope": {
+    "inputs": [
+      "docs/protocol-v1-candidate.md",
+      "scripts/analyze_claims.py",
+      "src/relaybench/claim_analysis.py"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "完整复审发现集（来自本会话的只读审查）；只读且未修改项目；证据行号对应审查时快照，若项目已变更需重跑定位校验",
+    "resolve_root": "D:\\Dev\\Project7-CS",
+    "source_hashes": {
+      "algorithm": "sha256(concat(path + bytes) over sorted files)",
+      "inputs": [
+        "D:\\Dev\\Project7-CS"
+      ],
+      "before": "c7af9fb5ec3dcaf6dcb46cb9bff8ebd1ca66e17b8253119cae6ada54ec67b9e0",
+      "after": "c7af9fb5ec3dcaf6dcb46cb9bff8ebd1ca66e17b8253119cae6ada54ec67b9e0",
+      "stable": true,
+      "mode": "two-invocation",
+      "before_at": "2026-11-15T13:32:15Z",
+      "after_at": "2026-11-15T13:32:39Z"
+    }
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project7-relaybench",
+    "type": "experiment",
+    "snapshot": "reviewed pilot-v2 draft snapshot",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "主分析入口不产出协议承诺的 H1/H3 主对比",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "scripts/analyze_claims.py:399-426",
+          "observation": "把所有 round2 混成不分 path/history 的总 recall"
+        },
+        {
+          "locator": "scripts/analyze_claims.py:466-470",
+          "observation": "只算转移矩阵与 corruption_vs_loss，不调用 cross_language_contrast",
+          "semantic_only": true,
+          "anchor_note": "最佳窗口仅共享 1 个 token（低于 3 的强匹配门槛）；该观察是对文件整体性质的描述，显式标注为语义引用，不作为字面锚定证据"
+        }
+      ],
+      "remediation": {
+        "action": "在 `scripts/analyze_claims.py:399-426` 调用 contrasts.cross_language_contrast 并实现 H3 路径差与 Holm 校正",
+        "acceptance": "py -3 -m pytest tests/test_claim_analysis.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "H2 的问题与实现测的不是同一对象",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/relaybench/claim_analysis.py:190-218",
+          "observation": "transition 只看 core support"
+        },
+        {
+          "locator": "src/relaybench/claim_analysis.py:379-385",
+          "observation": "loss/corruption 仅 entailed->unaddressed/contradicted"
+        }
+      ],
+      "remediation": {
+        "action": "在 `src/relaybench/claim_analysis.py:190-218` 增加 qualifier-state transition 矩阵",
+        "acceptance": "py -3 -m pytest tests/test_claim_analysis.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "生成器仍是旧 fixture prompt，V1 未冻结",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/relaybench/relay.py:81-109",
+          "observation": "保留 220 中文字/160 英文词、Position 与 Source IDs"
+        },
+        {
+          "locator": "src/relaybench/cli.py:255",
+          "observation": "仅一句通用 system prompt",
+          "semantic_only": true,
+          "anchor_note": "最佳窗口仅共享 2 个 token（低于 3 的强匹配门槛）；该观察是对文件整体性质的描述，显式标注为语义引用，不作为字面锚定证据"
+        }
+      ],
+      "remediation": {
+        "action": "在 `src/relaybench/relay.py:81-109` 实现无 Position 的 V1 prompt 并写入不可变 prompt_version",
+        "acceptance": "py -3 -m pytest tests/test_relay.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "缺失数据下仍可能返回 estimable",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/relaybench/claim_analysis.py:713-766",
+          "observation": "跳过缺失 cell 后仍纳入 bootstrap；所引行字面含 `core_preserved_qualifier_degraded_and_indeterminate`、`core_preserved_qualifier_indeterminate`"
+        },
+        {
+          "locator": "src/relaybench/claim_analysis.py:810-856",
+          "observation": "只要 >=2 族就给 estimable 区间；所引行字面含 `shares_given_parent_complete`、`other_qualifier_transitions`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `src/relaybench/claim_analysis.py:810-856` 改为 complete-case-by-design，否则整块 not_estimable",
+        "acceptance": "py -3 -m pytest tests/test_claim_analysis.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "NLI 校准不能证明自动评价器已就绪",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "docs/nli-results-v1.md:38-44",
+          "observation": "自述只是句子级公开 gold 匹配；所引行字面含 `unaddressed`、`checkpoint`"
+        },
+        {
+          "locator": "docs/evaluator-readiness.md:82-86",
+          "observation": "列出长简报多 claim 效度等待办；所引行字面含 `resource`、`bohrium`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `docs/evaluator-readiness.md:82-86` 增加长简报多 claim 人工集验证计划与阈值",
+        "acceptance": "py -3 -m pytest tests/test_nli_analysis.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-006",
+      "statement": "关键推断规则尚未冻结",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "docs/protocol-v1-candidate.md:249-254",
+          "observation": "主结局/校正族仍待选；所引行字面含 `qualifier`、`complete`"
+        },
+        {
+          "locator": "docs/protocol-v1-candidate.md:345",
+          "observation": "held-out split 未定"
+        }
+      ],
+      "remediation": {
+        "action": "在看结局前冻结 `docs/protocol-v1-candidate.md:249-254` 的主结局与修正族",
+        "acceptance": "py -3 -m pytest tests/test_contrasts.py",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

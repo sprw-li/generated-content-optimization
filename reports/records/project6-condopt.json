@@ -1,0 +1,179 @@
+{
+  "schema_version": "3.6",
+  "scope": {
+    "inputs": [
+      "src/condopt/algorithms/qnehvi.py",
+      "focused benchmark",
+      "tests"
+    ],
+    "exclusions": [
+      "third-party"
+    ],
+    "readonly": true,
+    "coverage_note": "完整复审发现集（来自本会话的只读审查）；只读且未修改项目；证据行号对应审查时快照，若项目已变更需重跑定位校验",
+    "resolve_root": "D:\\Dev\\Project6-skill-Opt_of_Cpndition",
+    "source_hashes": {
+      "algorithm": "sha256(concat(path + bytes) over sorted files)",
+      "inputs": [
+        "D:\\Dev\\Project6-skill-Opt_of_Cpndition"
+      ],
+      "before": "fe49d13a3d72a9f8dd1b2dd3dde2a93969003796e1fba5b09bc5605c54ce4363",
+      "after": "fe49d13a3d72a9f8dd1b2dd3dde2a93969003796e1fba5b09bc5605c54ce4363",
+      "stable": true,
+      "mode": "two-invocation",
+      "before_at": "2026-11-15T13:32:11Z",
+      "after_at": "2026-11-15T13:32:34Z"
+    }
+  },
+  "github_sources": [],
+  "comparisons": [],
+  "gate": "REJECT",
+  "project": {
+    "name": "project6-condopt",
+    "type": "mixed",
+    "snapshot": "filesystem snapshot without git metadata",
+    "evidence_scope": "isolated-multi-project"
+  },
+  "findings": [
+    {
+      "id": "DEF-001",
+      "statement": "质量门禁不全绿：两条决策规则断言真实失败",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "tests/test_decision_matrix.py:22-26",
+          "observation": "单独执行仍 exit 1",
+          "semantic_only": true,
+          "anchor_note": "最佳窗口仅共享 0 个 token（低于 3 的强匹配门槛）；该观察是对文件整体性质的描述，显式标注为语义引用，不作为字面锚定证据"
+        },
+        {
+          "locator": "scripts/decision_matrix.py:96-131",
+          "observation": "低置信度审计与平台期规则未满足断言；所引行字面含 `_low_confidence_audit_is_capped`、`suggested_reliability`"
+        }
+      ],
+      "remediation": {
+        "action": "修复 `scripts/decision_matrix.py:96-131` 的两条规则，或在 `tests/test_decision_matrix.py:22-26` 作废不再成立的断言",
+        "acceptance": "py -3 -m pytest tests/test_decision_matrix.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-002",
+      "statement": "qNEHVI 与 BoTorch 机制不等价，且不能表达异方差",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/condopt/algorithms/qnehvi.py:80-99",
+          "observation": "同一 objective_std 被复制到两个目标；所引行字面含 `sequence`、`aligned`"
+        },
+        {
+          "locator": "src/condopt/algorithms/qnehvi.py:146-155",
+          "observation": "baseline 由历史观测加噪生成，未在 X_baseline 上取 GP 后验；所引行字面含 `non_dominated_mask`、`standard_normal`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `src/condopt/algorithms/qnehvi.py:146-155` 改为在 X_baseline 上预测逐目标均值与协方差",
+        "acceptance": "py -3 -m pytest tests/test_qnehvi.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-003",
+      "statement": "TPE 是独立逐维 KDE 近似，不是 Optuna 等价",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/condopt/algorithms/tpe.py:14-18",
+          "observation": "模块自述不含 tree/conditional structure"
+        },
+        {
+          "locator": "src/condopt/algorithms/tpe.py:220-282",
+          "observation": "仅独立逐维 KDE 与类别概率；所引行字面含 `_categorical_probs`、`_numeric_bandwidth`"
+        }
+      ],
+      "remediation": {
+        "action": "把 `src/condopt/algorithms/tpe.py:14-18` 的命名改为 independent_tpe 并在 catalog 写明不支持 conditional",
+        "acceptance": "py -3 -m pytest tests/test_algorithms.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-004",
+      "statement": "qEHVI 与 CMA-ES 名称强于实际机制",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/condopt/algorithms/qehvi.py:195-203",
+          "observation": "单候选 acquisition 加局部惩罚，非联合 q 点；所引行字面含 `_local_penalty_scale`、`_posterior_draws`"
+        },
+        {
+          "locator": "src/condopt/algorithms/cmaes.py:3-9",
+          "observation": "无 evolution paths"
+        }
+      ],
+      "remediation": {
+        "action": "统一 `docs/ALGORITHM_CATALOG.md` 与 `src/condopt/algorithms/qehvi.py:195-203` 的命名边界",
+        "acceptance": "py -3 -m pytest tests/test_algorithms.py",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-005",
+      "statement": "主 benchmark 未达到自身研究规格",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "high",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "src/condopt/benchmarks.py:1201-1314",
+          "observation": "各 optimizer 自行初始化，非共享初始设计；所引行字面含 `optimizationcontext`、`make_observation`"
+        },
+        {
+          "locator": "src/condopt/benchmarks.py:1317-1368",
+          "observation": "默认 3 seeds，summarize 只有 mean/std"
+        }
+      ],
+      "remediation": {
+        "action": "在 `src/condopt/benchmarks.py:1317-1368` 实现共享初始设计、>=20 seeds 与 IQM 区间",
+        "acceptance": "py -3 scripts/benchmark.py --seeds 0 1 2",
+        "verification": "NOT_RUN"
+      }
+    },
+    {
+      "id": "DEF-006",
+      "statement": "版本文档漂移",
+      "status": "FAIL",
+      "execution": "EXECUTED_FAIL",
+      "severity": "medium",
+      "claim_kind": "present",
+      "evidence": [
+        {
+          "locator": "pyproject.toml:7",
+          "observation": "version=0.1.0，与 README.md:65 的 v0.31 不一致"
+        },
+        {
+          "locator": "docs/ARCHITECTURE.md:160",
+          "observation": "仍写 276 tests，与 README.md:100 的 486 冲突；所引行字面含 `test_benchmarks`、`runner`"
+        }
+      ],
+      "remediation": {
+        "action": "在 `pyproject.toml:7` 与服务 `README.md:65` 之间建立单一版本事实源",
+        "acceptance": "py -3 -m pytest --collect-only -q",
+        "verification": "NOT_RUN"
+      }
+    }
+  ]
+}

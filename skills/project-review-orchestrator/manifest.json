@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "project-review-orchestrator",
+  "kind": "skill",
+  "mode": "on-demand",
+  "when": [
+    "用户要求全项目审查、多项目独立评审、汇总概念实质学术等效性和改进顺序时使用"
+  ],
+  "whenNot": ["没有具体评审对象、只想了解评审方法时", "只做普通代码修改、不需要证据评审时"],
+  "requires": [
+    "filesystem-read"
+  ],
+  "merge": "shared",
+  "category": "general",
+  "intents": [
+    "project-review-orchestrator"
+  ],
+  "keywords": [
+    "项目审查",
+    "证据门禁",
+    "版本冻结",
+    "多项目"
+  ],
+  "examples": ["全项目审查这几个目录，分别给证据和改进顺序", "把这个会话作为独立项目评审", "只读审查项目，不要自动修改"],
+  "notes": {}
+}
