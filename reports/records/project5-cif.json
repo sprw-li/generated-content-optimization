@@ -10,19 +10,19 @@
       "third-party"
     ],
     "readonly": true,
-    "coverage_note": "完整复审发现集（来自本会话的只读审查）；只读且未修改项目；证据行号对应审查时快照，若项目已变更需重跑定位校验",
+    "coverage_note": "完整复审发现集（来自本会话的只读审查）；只读且未修改项目；证据行号对应审查时快照。2026-11-17 定位重校：项目已推进到 50451b8，DEF-003 的 CLI 证据从 cli.py:659-670 重定位到 cli.py:690-696（缺陷仍在：repair_all 声明了 cif_text 形参且 disorder.py:314 依赖它），其余证据重校后仍锚定原行",
     "resolve_root": "D:\\Dev\\Project5-skill-cif",
     "source_hashes": {
       "algorithm": "sha256(concat(path + bytes) over sorted files)",
       "inputs": [
         "D:\\Dev\\Project5-skill-cif"
       ],
-      "before": "fdebdb1acf74fd1d63f6810fcbc2fac97cf52ceedf2b87a32da32b35a6c09778",
-      "after": "fdebdb1acf74fd1d63f6810fcbc2fac97cf52ceedf2b87a32da32b35a6c09778",
+      "before": "5e93e4d5807a0f369845b6446dc971552d7cdf16a3b29529095b13010f51c1ea",
+      "after": "5e93e4d5807a0f369845b6446dc971552d7cdf16a3b29529095b13010f51c1ea",
       "stable": true,
       "mode": "two-invocation",
-      "before_at": "2026-11-15T13:32:08Z",
-      "after_at": "2026-11-15T13:32:30Z"
+      "before_at": "2026-11-16T17:03:21Z",
+      "after_at": "2026-11-16T17:04:00Z"
     }
   },
   "github_sources": [],
@@ -31,7 +31,7 @@
   "project": {
     "name": "project5-cif",
     "type": "mixed",
-    "snapshot": "pre-existing dirty worktree; no clean HEAD claim",
+    "snapshot": "修订 50451b865604195d82566f752c67bfcc38faaca8 的 dirty worktree（无 clean HEAD 声明）；DEF-003 已按该修订重新定位",
     "evidence_scope": "isolated-multi-project"
   },
   "findings": [
@@ -86,8 +86,8 @@
       "claim_kind": "present",
       "evidence": [
         {
-          "locator": "cifkit/cli.py:659-670",
-          "observation": "从文件解析 Structure 后调用 repair 未传 cif_text"
+          "locator": "cifkit/cli.py:690-696",
+          "observation": "`s = Structure.from_file(args.file)` 后 `repair_all(s, add_hydrogen=..., resolve_disorder=..., remove_close_contacts=...)` 未传 `cif_text`"
         },
         {
           "locator": "cifkit/repair/disorder.py:314-316",
@@ -95,7 +95,7 @@
         }
       ],
       "remediation": {
-        "action": "在 `cifkit/cli.py:659-670` 传入原始 cif_text，并在不可映射时 fail closed",
+        "action": "在 `cifkit/cli.py:690-696` 传入原始 cif_text，并在不可映射时 fail closed",
         "acceptance": "py -3 -m pytest tests/test_repair.py -k disorder",
         "verification": "NOT_RUN"
       }
